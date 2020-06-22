@@ -269,20 +269,12 @@ src/Tools/PhantomJS/tools/phantomjs/ChangeLog
 desktop.ini
 App.Debug.config
 
-# service fabric local config
-**/ApplicationParameters/Local.1Node.xml
-**/ApplicationParameters/Local.5Node.xml
 *.bak
 *.feature.cs
-src/SFA.DAS.Payments.AcceptanceTests.EndToEnd/App.Debug.config-sit
-src/SFA.DAS.Payments.AcceptanceTests.EndToEnd/App.Debug.config-das
 *.DotSettings
-/src/SFA.DAS.Payments.AcceptanceTests.EndToEnd/App.Debug - Local.config
-/src/SFA.DAS.Payments.AcceptanceTests.Core/Infrastructure/BindingBootstrapper-old.cs
-/src/SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests/appsettings.development.json
 /src/NDependOut
-/src/SFA.DAS.Payments.ndproj
 
 # Azure Functions localsettings file
+appsettings.development.json
 local.settings.json
 .ionide
