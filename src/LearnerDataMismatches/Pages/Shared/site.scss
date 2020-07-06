@@ -1,0 +1,8 @@
+﻿@import "node_modules/govuk-frontend/govuk/all";
+
+.app-width-container {
+    @include govuk-width-container(1200px);
+}
+
+body {
+}

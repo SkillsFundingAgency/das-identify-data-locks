@@ -364,3 +364,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+src/LearnerDataMismatches/wwwroot/css/site.css
+src/LearnerDataMismatches/wwwroot/css/site.min.css
+src/LearnerDataMismatches/wwwroot/js/all.js
+src/LearnerDataMismatches/wwwroot/assets/
