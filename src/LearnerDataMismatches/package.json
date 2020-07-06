@@ -1,0 +1,14 @@
+{
+  "name": "learnerdatamismatches",
+  "version": "1.0.0",
+  "description": "DLock report for learners",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "govuk-frontend": "^3.7.0"
+  }
+}
