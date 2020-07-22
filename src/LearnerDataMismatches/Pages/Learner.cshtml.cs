@@ -20,7 +20,12 @@ namespace LearnerDataMismatches.Pages
         public IEnumerable<CollectionPeriod> CollectionPeriods { get; private set; }
 
         public string LearnerName { get; set; }
-        public IEnumerable<string> DataLockNames { get; set; } = new string[0];
+        public IEnumerable<string> DataLockNames =>
+            CollectionPeriods
+                .SelectMany(c => c.UniqueDataLockNames)
+                .Distinct()
+                .OrderBy(x => x);
+
         public string EmployerName { get; set; }
         public string EmployerId { get; set; }
         public string ProviderName { get; set; }
