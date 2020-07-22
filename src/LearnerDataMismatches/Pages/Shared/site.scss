@@ -6,3 +6,48 @@
 
 body {
 }
+
+.dunlocker .returns {
+    border-left: 4px solid #1D70B8;
+    margin-top: 40px;
+    margin-left: 1rem;
+}
+
+.dunlocker .returns .entry {
+    margin-bottom: 40px;
+    padding-left: 30px;
+    position: relative;
+    top: -10px;
+}
+
+.dunlocker .returns .entry:before {
+    content: " ";
+    height: 4px;
+    width: 10px;
+    background: #1D70B8;
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+.dunlocker .returns .entry .rnumb, .dunlocker .returns .entry .rcontent {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.dunlocker .returns .entry .rcontent {
+    margin-left: 2em;
+}
+
+.dunlocker .returns .entry .rcontent .thelock {
+    margin-bottom: 0.5rem;
+}
+
+.dunlocker .returns .entry .rcontent .date {
+    color: #626a6e;
+}
+
+.dunlocker .returns .entry .flag .govuk-details__summary:before {
+    color: #d4351c;
+}
