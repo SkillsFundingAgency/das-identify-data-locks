@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/LearnerDataMismatches/LearnerDataMismatches.csproj",
+                "${workspaceFolder}/SFA.DAS.LearnerDataMismatches/SFA.DAS.LearnerDataMismatches.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
