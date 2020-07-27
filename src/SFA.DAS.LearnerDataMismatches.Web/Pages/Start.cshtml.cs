@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace SFA.DAS.LearnerDataMismatches.Pages
+namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 {
     public class StartModel : PageModel
     {

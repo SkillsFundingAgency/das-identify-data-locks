@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Payments.Application.Repositories;
 
-namespace SFA.DAS.LearnerDataMismatches
+namespace SFA.DAS.LearnerDataMismatches.Web
 {
     public class Startup
     {

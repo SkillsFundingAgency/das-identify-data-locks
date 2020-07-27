@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace SFA.DAS.LearnerDataMismatches.Pages
+namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 {
     public class PrivacyModel : PageModel
     {

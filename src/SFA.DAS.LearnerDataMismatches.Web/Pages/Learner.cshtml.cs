@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using SFA.DAS.LearnerDataMismatches.Model;
+using SFA.DAS.LearnerDataMismatches.Web.Model;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.LearnerDataMismatches.Pages
+namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 {
     public class LearnerModel : PageModel
     {

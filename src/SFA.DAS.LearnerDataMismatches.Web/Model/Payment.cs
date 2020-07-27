@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.LearnerDataMismatches.Model
+﻿namespace SFA.DAS.LearnerDataMismatches.Web.Model
 {
     public class Payment : ICommitmentItem
     {

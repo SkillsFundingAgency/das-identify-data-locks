@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.LearnerDataMismatches.Model
+namespace SFA.DAS.LearnerDataMismatches.Web.Model
 {
     public class Commitment
     {

@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Payments.Model.Core;
 
-namespace SFA.DAS.LearnerDataMismatches.Model
+namespace SFA.DAS.LearnerDataMismatches.Web.Model
 {
     public class DataLock : ICommitmentItem
     {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace SFA.DAS.LearnerDataMismatches
+namespace SFA.DAS.LearnerDataMismatches.Web
 {
     public class Program
     {
