@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="compilerconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Remove="wwwroot\assets\**" />
     <Content Remove="wwwroot\js\all.js" />
   </ItemGroup>
@@ -19,6 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="3.1.6" />
   </ItemGroup>
 
   <ItemGroup>

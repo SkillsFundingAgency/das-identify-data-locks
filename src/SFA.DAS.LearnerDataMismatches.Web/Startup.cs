@@ -25,7 +25,12 @@ namespace SFA.DAS.LearnerDataMismatches.Web
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IPaymentsDataContext, PaymentsDataContext>();
 
-            services.AddRazorPages();
+            services.AddRazorPages(options => {
+                options.Conventions.AllowAnonymousToPage("/index");
+                options.Conventions.AuthorizePage("/start");
+            });
+            services.AddAuthentication(Configuration);
+            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +52,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
