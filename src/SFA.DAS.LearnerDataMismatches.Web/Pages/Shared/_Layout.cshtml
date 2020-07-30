@@ -51,7 +51,10 @@
     
     <div class="govuk-width-container">
         @RenderSection("BreadCrumbs", required: false)
-        <a href="logged-out" class="govuk-link" style="float: right; margin-top: -30px;">Sign out</a>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-page="signedout" class="govuk-link" style="float: right; margin-top: -30px;">Sign out</a>
+        }
         <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
             @RenderBody()
         </main>
