@@ -19,10 +19,9 @@
 
 </head>
 
-<body class="govuk-template__body ">
+<body class="govuk-template__body">
     <script>
         document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-
     </script>
 
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
@@ -50,7 +49,9 @@
         </div>
     </header>
     
-    <div class="govuk-width-container app-width-container">
+    <div class="govuk-width-container">
+        @RenderSection("BreadCrumbs", required: false)
+        <a href="logged-out" class="govuk-link" style="float: right; margin-top: -30px;">Sign out</a>
         <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
             @RenderBody()
         </main>
