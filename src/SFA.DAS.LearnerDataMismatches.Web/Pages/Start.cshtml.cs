@@ -1,13 +1,13 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SFA.DAS.LearnerDataMismatches.Web.TagHelpers;
 
 namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 {
     public class StartModel : PageModel
     {
         [BindProperty]
-        public int? Uln { get; set; }
+        public string Uln { get; set; }
 
         public IActionResult OnPost()
         {
@@ -24,7 +24,8 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private void ValidateModel()
         {
-            if(Uln == null || Uln <= 0 || Uln > 9999999999)
+            var isUlnANumber = long.TryParse(Uln, out long uln);
+            if(Uln == null || isUlnANumber == false || uln <= 0 || uln > 9999999999)
             {
                 ModelState.AddModelError(nameof(Uln), "Enter a valid ULN");
             }

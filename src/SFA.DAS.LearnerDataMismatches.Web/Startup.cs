@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web
             });
             services.AddAuthentication(Configuration);
             services.AddAuthorization();
+            services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
