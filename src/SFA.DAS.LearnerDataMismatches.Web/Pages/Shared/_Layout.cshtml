@@ -48,20 +48,21 @@
             </div>
         </div>
     </header>
-    
+
     <div class="govuk-width-container">
-        @RenderSection("BreadCrumbs", required: false)
-        @if (User.Identity.IsAuthenticated)
-        {
-            <a asp-page="signedout" class="govuk-link" style="float: right; margin-top: -30px;">Sign out</a>
-        }
+        <div style="position:relative">
+            @RenderSection("BreadCrumbs", required: false)
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-page="signedout" class="govuk-link" style="position:absolute; right:0; top:0">Sign out</a>
+            }
+        </div>
         <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @RenderSection("Scripts", required: false)
 </body>
 </html>
