@@ -7,7 +7,9 @@ using Respawn;
 using SFA.DAS.LearnerDataMismatches.Web;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Application.Repositories;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design",
     "RCS1110:Declare type inside namespace.",
@@ -47,6 +49,18 @@ public static class Testing
         return scopeFactory.CreateScope().ServiceProvider.GetRequiredService<T>();
     }
 
+    public static async Task AddAsync<TEntity>(TEntity entity)
+        where TEntity : class
+    {
+        using var scope = scopeFactory.CreateScope();
+
+        var context = scope.ServiceProvider.GetService<PaymentsDataContext>();
+
+        context.Add(entity);
+
+        await context.SaveChangesAsync();
+    }
+
     private static void EnsureDatabase()
     {
         using var scope = scopeFactory.CreateScope();
@@ -54,5 +68,10 @@ public static class Testing
         var context = scope.ServiceProvider.GetService<PaymentsDataContext>();
 
         context.Database.EnsureCreated();
+    }
+
+    internal static async Task Reset()
+    {
+        await checkpoint.Reset(configuration.GetConnectionString("PaymentsDatabase"));
     }
 }

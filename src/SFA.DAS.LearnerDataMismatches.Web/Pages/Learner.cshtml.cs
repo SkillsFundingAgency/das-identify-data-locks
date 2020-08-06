@@ -18,6 +18,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string Uln { get; set; } = "9000000407";
 
         public IEnumerable<CollectionPeriod> CollectionPeriods { get; private set; }
+        public IEnumerable<Domain.CollectionPeriod> NewCollectionPeriods { get; private set; }
 
         public string LearnerName { get; set; }
         public IEnumerable<string> DataLockNames =>
@@ -47,8 +48,23 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
             var collectionsTask = BuildCollectionPeriods(learnerUln);
             var learnerTask = Task.CompletedTask;// QueryLearner(learnerUln);
+            var newCollectionsTask = BuildNewCollections(learnerUln);
 
-            await Task.WhenAll(collectionsTask, learnerTask);
+            await Task.WhenAll(collectionsTask, learnerTask, newCollectionsTask);
+        }
+
+        private async Task BuildNewCollections(long learnerUln)
+        {
+            NewCollectionPeriods = await context.EarningEvent
+                .Where(x => x.LearnerUln == learnerUln)
+                .Select(x => new Domain.CollectionPeriod
+                {
+                    Ilr = new Domain.DataMatch
+                    {
+                        Ukprn = x.Ukprn,
+                    }
+                })
+                .ToListAsync();
         }
 
         //private Task QueryLearner(long learnerUln)
