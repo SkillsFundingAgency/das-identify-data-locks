@@ -55,10 +55,21 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private async Task BuildNewCollections(long learnerUln)
         {
+            var apps = await context.Apprenticeship
+                .Include(x => x.ApprenticeshipPriceEpisodes)
+                .Where(x => x.Uln == learnerUln)
+                .Select(x => new Domain.DataMatch
+                {
+                    Ukprn = x.Ukprn,
+                    Uln = x.Uln,
+                })
+                .ToListAsync();
+
             NewCollectionPeriods = await context.EarningEvent
                 .Where(x => x.LearnerUln == learnerUln)
                 .Select(x => new Domain.CollectionPeriod
                 {
+                    Apprenticeship = apps.FirstOrDefault(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
                     Ilr = new Domain.DataMatch
                     {
                         Ukprn = x.Ukprn,
