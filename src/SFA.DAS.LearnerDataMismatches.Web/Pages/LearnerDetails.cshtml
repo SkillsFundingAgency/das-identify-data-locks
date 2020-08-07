@@ -11,7 +11,35 @@
     }
 </style>
 <div class="govuk-grid-row">
+    <h1>Data</h1>
     <h2>Apprenticeships</h2>
+    <pre>
+        @Newtonsoft.Json.JsonConvert.SerializeObject(Model.Apprenticeship)
+    </pre>
+
+    <h2>EarningEvents</h2>
+    <pre>
+        @Newtonsoft.Json.JsonConvert.SerializeObject(Model.Earnings.SelectMany(x => x))
+    </pre>
+
+    <h2>DataLockEvents</h2>
+    <pre>
+        @Newtonsoft.Json.JsonConvert.SerializeObject(
+            Model.DataLocks,
+            new Newtonsoft.Json.JsonSerializerSettings()
+            { 
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            })
+    </pre>
+
+    <h2>PriceEpisodes</h2>
+    <pre>
+        @Newtonsoft.Json.JsonConvert.SerializeObject(Model.PriceEpisodes);
+    </pre>
+
+    <h1>Report</h1>
+    <h2>Apprenticeships</h2>
+
 
     @foreach (var app in Model.Apprenticeship)
     {
