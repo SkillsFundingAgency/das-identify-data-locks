@@ -18,7 +18,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
         public short Framework { get; set; }
         public short Program { get; set; }
         public short Pathway { get; set; }
-        public decimal Decimal { get; set; }
+        public decimal Cost { get; set; }
         public DateTime PriceStart { get; set; }
         public short AimSequenceNumber { get; set; }
         public DateTime? PausedOn { get; set; }

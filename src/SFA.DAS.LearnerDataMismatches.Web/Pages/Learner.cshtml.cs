@@ -21,6 +21,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public IEnumerable<Domain.CollectionPeriod> NewCollectionPeriods { get; private set; }
 
         public string LearnerName { get; set; }
+
         public IEnumerable<string> DataLockNames =>
             CollectionPeriods
                 .SelectMany(c => c.UniqueDataLockNames)
@@ -62,6 +63,11 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 {
                     Ukprn = x.Ukprn,
                     Uln = x.Uln,
+                    Standard = (short)x.StandardCode.Value,
+                    Framework = (short)x.FrameworkCode.Value,
+                    Program = (short)x.ProgrammeType.Value,
+                    Pathway = (short)x.PathwayCode.Value,
+                    Cost = x.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
                 })
                 .ToListAsync();
 
@@ -69,10 +75,19 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Where(x => x.LearnerUln == learnerUln)
                 .Select(x => new Domain.CollectionPeriod
                 {
-                    Apprenticeship = apps.FirstOrDefault(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
+                    Apprenticeship = apps.Find(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
                     Ilr = new Domain.DataMatch
                     {
                         Ukprn = x.Ukprn,
+                        Standard = (short)x.LearningAimStandardCode,
+                        Framework = (short)x.LearningAimFrameworkCode,
+                        Program = (short)x.LearningAimProgrammeType,
+                        Pathway = (short)x.LearningAimPathwayCode,
+                        Cost = x.PriceEpisodes.Sum(x =>
+                            x.TotalNegotiatedPrice1 +
+                            x.TotalNegotiatedPrice2 +
+                            x.TotalNegotiatedPrice3 +
+                            x.TotalNegotiatedPrice4),
                     }
                 })
                 .ToListAsync();
@@ -117,7 +132,6 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .GroupBy(x => x.CollectionPeriod)
                 .ToList()
                 ;
-
         }
 
         private async Task<List<EarningEventModel>> GetEarningEventsBase(long learnerUln)
@@ -225,7 +239,6 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         private static string FrameworkString(ApprenticeshipModel c)
         {
             return $"{StandardString(c)}-{c.AgreedOnDate:dd-MM-yyyy}";
-
         }
 
         private static string StandardString(ApprenticeshipModel c)
