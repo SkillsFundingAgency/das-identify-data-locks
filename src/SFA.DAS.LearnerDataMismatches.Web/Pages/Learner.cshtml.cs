@@ -68,12 +68,16 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                     Program = (short)x.ProgrammeType.Value,
                     Pathway = (short)x.PathwayCode.Value,
                     Cost = x.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
+                    PriceStart = x.ApprenticeshipPriceEpisodes.FirstOrDefault().StartDate,
                 })
                 .ToListAsync();
 
-            NewCollectionPeriods = await context.EarningEvent
+            var earnings = await context.EarningEvent
+                .Include(x => x.PriceEpisodes)
                 .Where(x => x.LearnerUln == learnerUln)
-                .Select(x => new Domain.CollectionPeriod
+                .ToListAsync();
+
+            NewCollectionPeriods = earnings.Select(x => new Domain.CollectionPeriod
                 {
                     Apprenticeship = apps.Find(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
                     Ilr = new Domain.DataMatch
@@ -88,9 +92,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                             x.TotalNegotiatedPrice2 +
                             x.TotalNegotiatedPrice3 +
                             x.TotalNegotiatedPrice4),
+                        PriceStart = x.PriceEpisodes.FirstOrDefault()?.StartDate,
                     }
-                })
-                .ToListAsync();
+                }).ToList();
         }
 
         //private Task QueryLearner(long learnerUln)

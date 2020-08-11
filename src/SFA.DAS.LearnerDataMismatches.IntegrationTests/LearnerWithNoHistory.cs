@@ -5,6 +5,7 @@ using NUnit.Framework.Internal;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -88,6 +89,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                         Program = 25,
                         Pathway = 0,
                         Cost = 25972.0,
+                        PriceStart = new DateTime(2019, 12, 01),
                     },
                     Ilr = new
                     {
@@ -97,6 +99,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                         Program = 25,
                         Pathway = 0,
                         Cost = 25972.0,
+                        PriceStart = new DateTime(2019, 12, 01),
                     }
                 });
         }
