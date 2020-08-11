@@ -24,7 +24,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
         public DateTime? PausedOn { get; set; }
         public DateTime? StoppedOn { get; set; }
         public DateTime? PlannedCompletion { get; set; }
-        public string CompletionStatus { get; set; }
+        public ApprenticeshipStatus CompletionStatus { get; set; }
         public decimal Tnp1 { get; set; }
         public decimal Tnp2 { get; set; }
         public decimal Tnp3 { get; set; }
@@ -35,5 +35,14 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
     public enum DataLock
     {
         Dlock01 = 1,
+    }
+
+    public enum ApprenticeshipStatus
+    {
+        Unknown = 0,
+        Active,
+        Paused,
+        Stopped,
+        Inactive,
     }
 }

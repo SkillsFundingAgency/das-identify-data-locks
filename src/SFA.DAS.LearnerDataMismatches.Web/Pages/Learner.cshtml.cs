@@ -69,6 +69,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                     Pathway = (short)x.PathwayCode.Value,
                     Cost = x.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
                     PriceStart = x.ApprenticeshipPriceEpisodes.FirstOrDefault().StartDate,
+                    CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
                 })
                 .ToListAsync();
 
@@ -93,8 +94,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                             x.TotalNegotiatedPrice3 +
                             x.TotalNegotiatedPrice4),
                         PriceStart = x.PriceEpisodes.FirstOrDefault()?.StartDate,
+                        //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
                     }
-                }).ToList();
+            }).ToList();
         }
 
         //private Task QueryLearner(long learnerUln)
