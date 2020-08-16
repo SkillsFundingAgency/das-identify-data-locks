@@ -47,11 +47,11 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
             LearnerName = "Unknown Learner Name";
 
-            var collectionsTask = BuildCollectionPeriods(learnerUln);
+            await BuildCollectionPeriods(learnerUln);
+            await BuildNewCollections(learnerUln);
             var learnerTask = Task.CompletedTask;// QueryLearner(learnerUln);
-            var newCollectionsTask = BuildNewCollections(learnerUln);
 
-            await Task.WhenAll(collectionsTask, learnerTask, newCollectionsTask);
+            await Task.WhenAll(learnerTask);
         }
 
         private async Task BuildNewCollections(long learnerUln)
