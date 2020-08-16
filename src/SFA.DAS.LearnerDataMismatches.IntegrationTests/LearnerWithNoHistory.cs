@@ -101,7 +101,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                         Pathway = 0,
                         Cost = 25972.0,
                         PriceStart = new DateTime(2019, 12, 01),
-                        CompletionStatus = Domain.ApprenticeshipStatus.Active,
+                        //CompletionStatus = Domain.ApprenticeshipStatus.Active,
                     }
                 });
         }

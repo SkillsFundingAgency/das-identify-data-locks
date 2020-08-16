@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Model;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -17,7 +18,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         [BindProperty(SupportsGet = true)]
         public string Uln { get; set; } = "9000000407";
 
-        public IEnumerable<CollectionPeriod> CollectionPeriods { get; private set; }
+        public IEnumerable<Model.CollectionPeriod> CollectionPeriods { get; private set; }
         public IEnumerable<Domain.CollectionPeriod> NewCollectionPeriods { get; private set; }
 
         public string LearnerName { get; set; }
@@ -56,21 +57,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private async Task BuildNewCollections(long learnerUln)
         {
-            var apps = await context.Apprenticeship
+            var apprenticeships = await context.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
                 .Where(x => x.Uln == learnerUln)
-                .Select(x => new Domain.DataMatch
-                {
-                    Ukprn = x.Ukprn,
-                    Uln = x.Uln,
-                    Standard = (short)x.StandardCode.Value,
-                    Framework = (short)x.FrameworkCode.Value,
-                    Program = (short)x.ProgrammeType.Value,
-                    Pathway = (short)x.PathwayCode.Value,
-                    Cost = x.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
-                    PriceStart = x.ApprenticeshipPriceEpisodes.FirstOrDefault().StartDate,
-                    CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
-                })
                 .ToListAsync();
 
             var earnings = await context.EarningEvent
@@ -78,25 +67,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Where(x => x.LearnerUln == learnerUln)
                 .ToListAsync();
 
-            NewCollectionPeriods = earnings.Select(x => new Domain.CollectionPeriod
-                {
-                    Apprenticeship = apps.Find(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
-                    Ilr = new Domain.DataMatch
-                    {
-                        Ukprn = x.Ukprn,
-                        Standard = (short)x.LearningAimStandardCode,
-                        Framework = (short)x.LearningAimFrameworkCode,
-                        Program = (short)x.LearningAimProgrammeType,
-                        Pathway = (short)x.LearningAimPathwayCode,
-                        Cost = x.PriceEpisodes.Sum(x =>
-                            x.TotalNegotiatedPrice1 +
-                            x.TotalNegotiatedPrice2 +
-                            x.TotalNegotiatedPrice3 +
-                            x.TotalNegotiatedPrice4),
-                        PriceStart = x.PriceEpisodes.FirstOrDefault()?.StartDate,
-                        //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
-                    }
-            }).ToList();
+            var report = new LearnerReport(apprenticeships, earnings);
+
+            NewCollectionPeriods = report.CollectionPeriods;
         }
 
         //private Task QueryLearner(long learnerUln)
@@ -118,7 +91,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
             var apprenticeships = await GetApprenticeships(learnerUln);
 
-            CollectionPeriods = earnings.OrderBy(x => x.Key).Select(periods => new CollectionPeriod
+            CollectionPeriods = earnings.OrderBy(x => x.Key).Select(periods => new Model.CollectionPeriod
             {
                 PeriodName = $"R0{periods.Key}",
                 PriceEpisodes = periods.SelectMany(x => x.PriceEpisodes, (period, earning) => MapPriceEpisode(period, earning, paidCommitments, lockedCommitments, apprenticeships)).ToList(),
@@ -219,7 +192,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                         .Where(y => y.CollectionPeriod == earning.CollectionPeriod)
                         .SelectMany(y => y.NonPayablePeriods)
                         .SelectMany(y => y.DataLockEventNonPayablePeriodFailures)
-                        .Select(y => new DataLock
+                        .Select(y => new Model.DataLock
                         {
                             Amount = y.DataLockEventNonPayablePeriod.Amount,
                             DataLockErrorCode = y.DataLockFailure,
