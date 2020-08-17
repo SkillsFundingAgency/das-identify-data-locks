@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SFA.DAS.LearnerDataMismatches.Domain
@@ -45,7 +45,8 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                         e.TotalNegotiatedPrice4),
                     PriceStart = x.PriceEpisodes.FirstOrDefault()?.StartDate,
                     //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
-                }
+                },
+                Period = new Period(x.AcademicYear, x.CollectionPeriod),
             }).ToList();
         }
 

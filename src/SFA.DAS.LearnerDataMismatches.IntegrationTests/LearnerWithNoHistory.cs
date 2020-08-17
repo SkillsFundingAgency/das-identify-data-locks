@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -104,6 +105,38 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                         //CompletionStatus = Domain.ApprenticeshipStatus.Active,
                     }
                 });
+        }
+
+        [Test]
+        public async Task History_is_ordered()
+        {
+            var apps = JsonConvert.DeserializeObject<ApprenticeshipModel[]>(ApprenticeshipC);
+            foreach (var a in apps)
+                await Testing.AddAsync(a);
+
+            var appid = apps.FirstOrDefault()?.Id;
+
+            foreach (var a in JsonConvert.DeserializeObject<EarningEventModel[]>(EarningsC))
+                await Testing.AddAsync(a);
+
+            foreach (var a in JsonConvert.DeserializeObject<DataLockEventModel[]>(DataLocksC))
+            {
+                foreach (var b in a.NonPayablePeriods.SelectMany(x => x.DataLockEventNonPayablePeriodFailures))
+                    b.ApprenticeshipId = appid;
+
+                await Testing.AddAsync(a);
+            }
+
+            var learner = Testing.Create<LearnerModel>();
+            learner.Uln = "2839925663";
+            await learner.OnGetAsync();
+
+            learner.NewCollectionPeriods.Should().ContainEquivalentOf(
+                new
+                {
+                    Period = new Period(1920, 12),
+                }, 
+                options => options.WithStrictOrdering());
         }
     }
 }
