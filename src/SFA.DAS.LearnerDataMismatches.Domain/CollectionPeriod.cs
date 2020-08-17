@@ -5,6 +5,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
 {
     public class CollectionPeriod
     {
+        public Period Period { get; set; }
         public DataMatch Apprenticeship { get; set; }
         public DataMatch Ilr { get; set; }
         public List<DataLock> DataLocks { get; set; }
@@ -29,7 +30,6 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
         public decimal Tnp2 { get; set; }
         public decimal Tnp3 { get; set; }
         public decimal Tnp4 { get; set; }
-
     }
 
     public enum DataLock
