@@ -1,0 +1,152 @@
+﻿@page "{uln}"
+@model LearnerDetailsModel
+@{
+}
+
+<style>
+    .data-lock {
+        border-left: 1px solid darkgreen;
+        padding-left: 1em;
+        margin-bottom: 1em;
+    }
+</style>
+<div class="govuk-grid-row">
+    <h1>Data</h1>
+    <h2>Apprenticeships</h2>
+    <pre>
+        @Newtonsoft.Json.JsonConvert.SerializeObject(Model.Apprenticeship)
+    </pre>
+
+    <h2>EarningEvents</h2>
+    <pre>
+        @Newtonsoft.Json.JsonConvert.SerializeObject(Model.Earnings.SelectMany(x => x))
+    </pre>
+
+    <h2>DataLockEvents</h2>
+    <pre>
+        @Newtonsoft.Json.JsonConvert.SerializeObject(
+            Model.DataLocks,
+            new Newtonsoft.Json.JsonSerializerSettings()
+            { 
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            })
+    </pre>
+
+    <h2>PriceEpisodes</h2>
+    <pre>
+        @Newtonsoft.Json.JsonConvert.SerializeObject(Model.PriceEpisodes);
+    </pre>
+
+    <h1>Report</h1>
+    <h2>Apprenticeships</h2>
+
+
+    @foreach (var app in Model.Apprenticeship)
+    {
+        <h2>@app.Id - @app.LegalEntityName (@app.Ukprn)</h2>
+        @*<table>
+                <tr>
+                    <th>Id</th>
+                    <th>Ukprn</th>
+                </tr>
+                <tr>
+                    <td>@app.Id</td>
+                    <td>@app.Ukprn</td>
+                </tr>
+            </table>*@
+
+        <h3>Price Episodes</h3>
+        @foreach (var pe in app.ApprenticeshipPriceEpisodes)
+        {
+            <table>
+                <tr>
+                    <th>AccountId</th>
+                    <th>StartDate</th>
+                    <th>EndDate</th>
+                    <th>Cost</th>
+                </tr>
+                <tr>
+                    <td>@pe.Id</td>
+                    <td>@pe.StartDate.ToShortDateString()</td>
+                    <td>@pe.EndDate?.ToShortDateString()</td>
+                    <td>@pe.Cost</td>
+                </tr>
+            </table>
+        }
+    }
+
+    <hr/>
+    <h2>Data Lock Events</h2>
+    @foreach (var ev in Model.DataLocks)
+    {
+        <div class="data-lock">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Ukprn</th>
+                    <th>CollectionPeriod</th>
+                </tr>
+                <tr>
+                    <td>@ev.Id</td>
+                    <td>@ev.Ukprn</td>
+                    <td>@ev.CollectionPeriod</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th>PriceEpisodeIdentifier</th>
+                    <th>DeliveryPeriod</th>
+                    <th>Amount</th>
+                    <th>TransactionType</th>
+                    <th>Locks</th>
+                </tr>
+                @foreach (var period in ev.NonPayablePeriods)
+                {
+                    <tr>
+                        <td>@period.PriceEpisodeIdentifier</td>
+                        <td>@period.DeliveryPeriod</td>
+                        <td>@period.Amount</td>
+                        <td>@period.TransactionType</td>
+                        <td>@string.Join(" ,", @period.DataLockEventNonPayablePeriodFailures.Select(x => x.DataLockFailure.ToString()))</td>
+                    </tr>
+
+                }
+            </table>
+        </div>
+    }
+
+    <hr />
+    <h2>Earnings</h2>
+    @foreach(var ukprnEarnings in Model.Earnings)
+    {
+        <h3>@ukprnEarnings.Key</h3>
+        <table>
+            <tr>
+                <td>AcademicYear</td>
+                <td>CollectionPeriod</td>
+                <td>ProgrammeType</td>
+                <td>StandardCode</td>
+                <td>FrameworkCode</td>
+                <td>PathwayCode</td>
+                <td>StartDate</td>
+            </tr>
+            @foreach (var earning in ukprnEarnings)
+            {
+            <tr>
+                <td>@earning.AcademicYear</td>
+                <td>@earning.CollectionPeriod</td>
+                <td>@earning.LearningAimProgrammeType</td>
+                <td>@earning.LearningAimStandardCode</td>
+                <td>@earning.LearningAimFrameworkCode</td>
+                <td>@earning.LearningAimPathwayCode</td>
+                <td>@earning.LearningStartDate.Value.ToShortDateString()</td>
+                @*<td>@earning.PriceEpisodes.Sum(x => x.</td>*@
+            </tr>
+            }
+        </table>
+    }
+
+    <hr/>
+    <h2>Price Episodes</h2>
+</div>
