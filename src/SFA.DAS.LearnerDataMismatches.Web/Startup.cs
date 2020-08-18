@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
+using SFA.DAS.LearnerDataMismatches.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 
 namespace SFA.DAS.LearnerDataMismatches.Web
@@ -29,10 +32,12 @@ namespace SFA.DAS.LearnerDataMismatches.Web
             services.AddRazorPages(options => {
                 options.Conventions.AllowAnonymousToPage("/index");
                 options.Conventions.AuthorizePage("/start");
+                options.Conventions.AuthorizePage("/learner");
             });
             services.AddAuthentication(Configuration);
             services.AddAuthorization();
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
+            RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +66,16 @@ namespace SFA.DAS.LearnerDataMismatches.Web
             {
                 endpoints.MapRazorPages();
             });
+        }
+
+        private void RegisterServices(IServiceCollection services)
+        {
+            var commitmentsClientApiConfiguration = new CommitmentsClientApiConfiguration();
+            Configuration.GetSection(nameof(CommitmentsClientApiConfiguration)).Bind(commitmentsClientApiConfiguration);
+            services.AddSingleton<CommitmentsClientApiConfiguration>(commitmentsClientApiConfiguration);
+            services.AddSingleton<ICommitmentsApiClientFactory, CommitmentsApiClientFactory>();
+            services.AddTransient<ICommitmentsApiClient>(x => x.GetService<ICommitmentsApiClientFactory>().CreateClient());
+            services.AddTransient<ICommitmentsService, CommitmentsService>();
         }
     }
 }
