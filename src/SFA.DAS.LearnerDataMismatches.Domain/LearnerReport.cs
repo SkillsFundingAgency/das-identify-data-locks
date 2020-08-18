@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SFA.DAS.LearnerDataMismatches.Domain
@@ -14,6 +14,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
             this.earnings = earnings;
 
             var apps = apps2
+                .Where(x => x.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active)
                 .Select(x => new DataMatch
                 {
                     Ukprn = x.Ukprn,
@@ -28,7 +29,9 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                 })
                 .ToList();
 
-            CollectionPeriods = earnings.Select(x => new CollectionPeriod
+            CollectionPeriods = earnings
+                .Where(x => apps.Select(y => y.Ukprn).Contains(x.Ukprn))
+                .Select(x => new CollectionPeriod
             {
                 Apprenticeship = apps.Find(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
                 Ilr = new DataMatch
@@ -45,7 +48,8 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                         e.TotalNegotiatedPrice4),
                     PriceStart = x.PriceEpisodes.FirstOrDefault()?.StartDate,
                     //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
-                }
+                },
+                Period = new Period(x.AcademicYear, x.CollectionPeriod),
             }).ToList();
         }
 

@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -28,6 +29,17 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         [Test]
         public async Task Insert_some_history()
         {
+            await Testing.AddAsync(new ApprenticeshipModel
+            {
+                Ukprn = 12345678,
+                Uln = 8888888,
+                Status = Payments.Model.Core.Entities.ApprenticeshipStatus.Active,
+                StandardCode = 0,
+                FrameworkCode = 0,
+                ProgrammeType = 0,
+                PathwayCode = 0,
+            });
+
             var earning = new EarningEventModel
             {
                 Ukprn = 12345678,
@@ -104,6 +116,73 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                         //CompletionStatus = Domain.ApprenticeshipStatus.Active,
                     }
                 });
+        }
+
+        [Test]
+        public async Task History_is_ordered()
+        {
+            var apps = JsonConvert.DeserializeObject<ApprenticeshipModel[]>(ApprenticeshipC);
+            foreach (var a in apps)
+                await Testing.AddAsync(a);
+
+            var appid = apps.FirstOrDefault()?.Id;
+
+            foreach (var a in JsonConvert.DeserializeObject<EarningEventModel[]>(EarningsC))
+                await Testing.AddAsync(a);
+
+            foreach (var a in JsonConvert.DeserializeObject<DataLockEventModel[]>(DataLocksC))
+            {
+                foreach (var b in a.NonPayablePeriods.SelectMany(x => x.DataLockEventNonPayablePeriodFailures))
+                    b.ApprenticeshipId = appid;
+
+                await Testing.AddAsync(a);
+            }
+
+            var learner = Testing.Create<LearnerModel>();
+            learner.Uln = "2839925663";
+            await learner.OnGetAsync();
+
+            learner.NewCollectionPeriods.Should()
+                .NotBeEmpty()
+                .And.BeInDescendingOrder()
+                .And.BeEquivalentTo(
+                    new { Period = new Period(1920, 12) },
+                    new { Period = new Period(1920, 11) },
+                    new { Period = new Period(1920, 10) },
+                    new { Period = new Period(1920, 9) },
+                    new { Period = new Period(1920, 8) },
+                    new { Period = new Period(1920, 7) },
+                    new { Period = new Period(1920, 6) },
+                    new { Period = new Period(1920, 5) }
+                );
+        }
+
+        [Test]
+        public async Task History_only_contains_active_provider()
+        {
+            var apps = JsonConvert.DeserializeObject<ApprenticeshipModel[]>(ApprenticeshipC);
+            foreach (var a in apps)
+                await Testing.AddAsync(a);
+
+            var appid = apps.FirstOrDefault()?.Id;
+
+            foreach (var a in JsonConvert.DeserializeObject<EarningEventModel[]>(EarningsC))
+                await Testing.AddAsync(a);
+
+            foreach (var a in JsonConvert.DeserializeObject<DataLockEventModel[]>(DataLocksC))
+            {
+                foreach (var b in a.NonPayablePeriods.SelectMany(x => x.DataLockEventNonPayablePeriodFailures))
+                    b.ApprenticeshipId = appid;
+
+                await Testing.AddAsync(a);
+            }
+
+            var learner = Testing.Create<LearnerModel>();
+            learner.Uln = "2839925663";
+            await learner.OnGetAsync();
+
+            learner.NewCollectionPeriods.Should()
+                .OnlyContain(x => x.Apprenticeship.Ukprn == 10003678);
         }
     }
 }

@@ -114,16 +114,16 @@
         <div class="timeline govuk-!-margin-top-7">
 
             <div class="funding-year">
-                <h2 class="govuk-heading-m">2020 - 2021 funding year</h2>
+                <h2 class="govuk-heading-m">:) 2020 - 2021 funding year</h2>
 
                 <div class="returns">
 
-                    @foreach (var period in Model.CollectionPeriods)
+                    @foreach (var period in Model.NewCollectionPeriods)
                     {
                         <div class="entry">
-                            <div class="rnumb govuk-heading-m">@period.PeriodName</div>
+                            <div class="rnumb govuk-heading-m">@period.Period</div>
                             <div class="rcontent">
-                                <p class="govuk-body govuk-!-font-weight-bold thelock">@String.Join(", ", period.UniqueDataLockNames)  </p>
+                                <p class="govuk-body govuk-!-font-weight-bold thelock">@String.Join(", ", period.DataLocks)  </p>
                                 <!-- <p class="govuk-body-s date">Started: xx/xx/2020</p> -->
 
 
@@ -148,92 +148,104 @@
                                             <tbody class="govuk-table__body">
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">UKPRN</th>
-                                                    <td class="govuk-table__cell">1000456</td>
-                                                    <td class="govuk-table__cell">1000456</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Ukprn</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Ukprn</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">ULN</th>
-                                                    <td class="govuk-table__cell">999934556</td>
-                                                    <td class="govuk-table__cell">999934556</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Uln</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Uln</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Standard code</th>
-                                                    <td class="govuk-table__cell">0</td>
-                                                    <td class="govuk-table__cell">0</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Standard</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Standard</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Framework code</th>
-                                                    <td class="govuk-table__cell">01</td>
-                                                    <td class="govuk-table__cell">01</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Framework</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Framework</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Program type</th>
-                                                    <td class="govuk-table__cell">xx</td>
-                                                    <td class="govuk-table__cell">xx</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Program</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Program</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Pathway code</th>
-                                                    <td class="govuk-table__cell">001122</td>
-                                                    <td class="govuk-table__cell">001122</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Pathway</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Pathway</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row" style="background-color: #FFB3A7;">
                                                     <th scope="row" class="govuk-table__header">Cost</th>
-                                                    <td class="govuk-table__cell">£90000</td>
-                                                    <td class="govuk-table__cell">£90000</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Cost</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Cost</td>
                                                     <td class="govuk-table__cell govuk-!-font-weight-bold">D_lock07</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Start date</th>
-                                                    <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                                    <td class="govuk-table__cell">xx/xx/xxxx</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.PriceStart</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.PriceStart</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Aim sequence number</th>
-                                                    <td class="govuk-table__cell">1234</td>
-                                                    <td class="govuk-table__cell">1234</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.AimSequenceNumber</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.AimSequenceNumber</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Pause date</th>
-                                                    <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                                    <td class="govuk-table__cell">xx/xx/xxxx</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.PausedOn</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.PausedOn</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Stop date</th>
-                                                    <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                                    <td class="govuk-table__cell">xx/xx/xxxx</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.StoppedOn</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.StoppedOn</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Planned completion date</th>
-                                                    <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                                    <td class="govuk-table__cell">xx/xx/xxxx</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.PlannedCompletion</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.PlannedCompletion</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">Completion status</th>
-                                                    <td class="govuk-table__cell">Complete</td>
-                                                    <td class="govuk-table__cell">Complete</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.CompletionStatus</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.CompletionStatus</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">TNP 1</th>
-                                                    <td class="govuk-table__cell">£90000</td>
-                                                    <td class="govuk-table__cell">£90000</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Tnp1</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Tnp1</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">TNP 2</th>
-                                                    <td class="govuk-table__cell">£60000</td>
-                                                    <td class="govuk-table__cell">£60000</td>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Tnp2</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Tnp2</td>
+                                                    <td class="govuk-table__cell">-</td>
+                                                </tr>
+                                                <tr class="govuk-table__row">
+                                                    <th scope="row" class="govuk-table__header">TNP 3</th>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Tnp3</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Tnp3</td>
+                                                    <td class="govuk-table__cell">-</td>
+                                                </tr>
+                                                <tr class="govuk-table__row">
+                                                    <th scope="row" class="govuk-table__header">TNP 4</th>
+                                                    <td class="govuk-table__cell">@period.Apprenticeship?.Tnp4</td>
+                                                    <td class="govuk-table__cell">@period.Ilr?.Tnp4</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
                                                 <tr class="govuk-table__row">
@@ -242,163 +254,18 @@
                                                     <td class="govuk-table__cell">2</td>
                                                     <td class="govuk-table__cell">-</td>
                                                 </tr>
-
                                             </tbody>
                                         </table>
 
                                     </div>
                                 </details>
-
-
                             </div>
                         </div>
                     }
-
-                </div>
-            </div>
-
-        </div>
-
-        <div class="funding-year">
-            <h2 class="govuk-heading-m">2019 - 2020 funding year</h2>
-
-            <div class="returns">
-
-                <div class="entry">
-                    <div class="rnumb govuk-heading-m">R14</div>
-                    <div class="rcontent">
-                        <p class="govuk-body govuk-!-font-weight-bold thelock">-</p>
-
-                        <details class="govuk-details" data-module="govuk-details">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                    View submission details
-                                </span>
-                            </summary>
-                            <div class="">
-
-                                <table class="govuk-table govuk-!-margin-top-7">
-                                    <thead class="govuk-table__head">
-                                        <tr class="govuk-table__row">
-
-                                            <th scope="col" class="govuk-table__header"></th>
-                                            <th scope="col" class="govuk-table__header">Apprenticeship Service</th>
-                                            <th scope="col" class="govuk-table__header">ILR submission</th>
-                                            <th scope="col" class="govuk-table__header">Data lock</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="govuk-table__body">
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">UKPRN</th>
-                                            <td class="govuk-table__cell">1000456</td>
-                                            <td class="govuk-table__cell">1000456</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">ULN</th>
-                                            <td class="govuk-table__cell">999934556</td>
-                                            <td class="govuk-table__cell">999934556</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Standard code</th>
-                                            <td class="govuk-table__cell">0</td>
-                                            <td class="govuk-table__cell">0</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Framework code</th>
-                                            <td class="govuk-table__cell">01</td>
-                                            <td class="govuk-table__cell">01</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Program type</th>
-                                            <td class="govuk-table__cell">xx</td>
-                                            <td class="govuk-table__cell">xx</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Pathway code</th>
-                                            <td class="govuk-table__cell">001122</td>
-                                            <td class="govuk-table__cell">001122</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Cost</th>
-                                            <td class="govuk-table__cell">£90000</td>
-                                            <td class="govuk-table__cell">£90000</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Start date</th>
-                                            <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                            <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Aim sequence number</th>
-                                            <td class="govuk-table__cell">1234</td>
-                                            <td class="govuk-table__cell">1234</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Pause date</th>
-                                            <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                            <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Stop date</th>
-                                            <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                            <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Planned completion date</th>
-                                            <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                            <td class="govuk-table__cell">xx/xx/xxxx</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">Completion status</th>
-                                            <td class="govuk-table__cell">Complete</td>
-                                            <td class="govuk-table__cell">Complete</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">TNP 1</th>
-                                            <td class="govuk-table__cell">£90000</td>
-                                            <td class="govuk-table__cell">£90000</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">TNP 2</th>
-                                            <td class="govuk-table__cell">£60000</td>
-                                            <td class="govuk-table__cell">£60000</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">No. of View submission details per return</th>
-                                            <td class="govuk-table__cell">2</td>
-                                            <td class="govuk-table__cell">2</td>
-                                            <td class="govuk-table__cell">-</td>
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </details>
-
-                    </div>
                 </div>
             </div>
         </div>
-
     </div>
-
-
 </div>
-</div>
+
 
