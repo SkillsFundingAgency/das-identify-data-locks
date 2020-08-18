@@ -70,6 +70,11 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             var report = new LearnerReport(apprenticeships, earnings);
 
             NewCollectionPeriods = report.CollectionPeriods;
+
+            NewCollectionPeriods = NewCollectionPeriods
+                .GroupBy(x => x.Period)
+                .Select(x => x.First())
+                .OrderByDescending(x => x);
         }
 
         //private Task QueryLearner(long learnerUln)

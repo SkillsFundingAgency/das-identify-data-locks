@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LearnerDataMismatches.Domain
 {
-    public struct Period : IComparable<Period>
+    public struct Period : IComparable<Period>, IComparable
     {
         public Period(int year, int month) : this()
         {
@@ -25,5 +25,11 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                 (0, 0) => 0,
                 _ => 1,
             };
+
+        public int CompareTo(object obj) =>
+            obj is Period other
+                ? CompareTo(other)
+                : throw new ArgumentException(
+                    $"Object is not a {nameof(Period)}");
     }
 }

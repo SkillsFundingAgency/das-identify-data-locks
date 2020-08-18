@@ -50,6 +50,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         public void Sorts(Period[] unordered, Period[] expected)
         {
             unordered.OrderBy(x => x).Should().ContainInOrder(expected);
+            unordered.OrderBy(x => x).Should().BeInAscendingOrder();
         }
     }
 }

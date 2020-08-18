@@ -131,12 +131,22 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             learner.Uln = "2839925663";
             await learner.OnGetAsync();
 
-            learner.NewCollectionPeriods.Should().ContainEquivalentOf(
-                new
-                {
-                    Period = new Period(1920, 12),
-                }, 
-                options => options.WithStrictOrdering());
+            learner.NewCollectionPeriods.Should()
+                .NotBeEmpty()
+                .And.BeInDescendingOrder()
+                .And.BeEquivalentTo(
+                    new { Period = new Period(1920, 12) },
+                    new { Period = new Period(1920, 11) },
+                    new { Period = new Period(1920, 10) },
+                    new { Period = new Period(1920, 9) },
+                    new { Period = new Period(1920, 8) },
+                    new { Period = new Period(1920, 7) },
+                    new { Period = new Period(1920, 6) },
+                    new { Period = new Period(1920, 5) },
+                    new { Period = new Period(1920, 4) },
+                    new { Period = new Period(1920, 3) },
+                    new { Period = new Period(1920, 2) }
+                );
         }
     }
 }
