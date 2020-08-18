@@ -29,6 +29,17 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         [Test]
         public async Task Insert_some_history()
         {
+            await Testing.AddAsync(new ApprenticeshipModel
+            {
+                Ukprn = 12345678,
+                Uln = 8888888,
+                Status = Payments.Model.Core.Entities.ApprenticeshipStatus.Active,
+                StandardCode = 0,
+                FrameworkCode = 0,
+                ProgrammeType = 0,
+                PathwayCode = 0,
+            });
+
             var earning = new EarningEventModel
             {
                 Ukprn = 12345678,
@@ -142,11 +153,36 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                     new { Period = new Period(1920, 8) },
                     new { Period = new Period(1920, 7) },
                     new { Period = new Period(1920, 6) },
-                    new { Period = new Period(1920, 5) },
-                    new { Period = new Period(1920, 4) },
-                    new { Period = new Period(1920, 3) },
-                    new { Period = new Period(1920, 2) }
+                    new { Period = new Period(1920, 5) }
                 );
+        }
+
+        [Test]
+        public async Task History_only_contains_active_provider()
+        {
+            var apps = JsonConvert.DeserializeObject<ApprenticeshipModel[]>(ApprenticeshipC);
+            foreach (var a in apps)
+                await Testing.AddAsync(a);
+
+            var appid = apps.FirstOrDefault()?.Id;
+
+            foreach (var a in JsonConvert.DeserializeObject<EarningEventModel[]>(EarningsC))
+                await Testing.AddAsync(a);
+
+            foreach (var a in JsonConvert.DeserializeObject<DataLockEventModel[]>(DataLocksC))
+            {
+                foreach (var b in a.NonPayablePeriods.SelectMany(x => x.DataLockEventNonPayablePeriodFailures))
+                    b.ApprenticeshipId = appid;
+
+                await Testing.AddAsync(a);
+            }
+
+            var learner = Testing.Create<LearnerModel>();
+            learner.Uln = "2839925663";
+            await learner.OnGetAsync();
+
+            learner.NewCollectionPeriods.Should()
+                .OnlyContain(x => x.Apprenticeship.Ukprn == 10003678);
         }
     }
 }
