@@ -8,7 +8,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
         public Period Period { get; set; }
         public DataMatch Apprenticeship { get; set; }
         public DataMatch Ilr { get; set; }
-        public List<DataLock> DataLocks { get; set; }
+        public List<DataLock> DataLocks { get; set; } = new List<DataLock>();
 
         public int CompareTo(CollectionPeriod other) =>
             Period.CompareTo(other.Period);
