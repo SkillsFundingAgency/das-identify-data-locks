@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.LearnerDataMismatches.Domain;
+using SFA.DAS.LearnerDataMismatches.Web.Infrastructure;
 using SFA.DAS.LearnerDataMismatches.Web.Model;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -16,7 +17,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
     public class LearnerModel : PageModel
     {
         [BindProperty(SupportsGet = true)]
-        public string Uln { get; set; } = "9000000407";
+        public string Uln { get; set; }
 
         public IEnumerable<Model.CollectionPeriod> CollectionPeriods { get; private set; }
         public IEnumerable<Domain.CollectionPeriod> NewCollectionPeriods { get; private set; }
@@ -35,12 +36,13 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string ProviderId { get; set; }
 
         private readonly IPaymentsDataContext context;
-        //private readonly ICommitmentsApiClient commitments;
+        private readonly ICommitmentsService _commitmentsService;
 
-        public LearnerModel(IPaymentsDataContext context/*, ICommitmentsApiClient commitments*/)
-        =>
-            this.context/*, this.commitments*/ = context/*, commitments*/;
-
+        public LearnerModel(IPaymentsDataContext context, ICommitmentsService commitmentsService)
+        {
+            this.context = context; 
+            _commitmentsService = commitmentsService;
+        }
         public async Task OnGetAsync()
         {
             if (!long.TryParse(Uln, out var learnerUln))
@@ -75,6 +77,15 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .GroupBy(x => x.Period)
                 .Select(x => x.First())
                 .OrderByDescending(x => x);
+
+            var activeAppreticeship = apprenticeships.FirstOrDefault(a => a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
+
+            await PopulateAppreticesDetails(activeAppreticeship.AccountId);
+        }
+
+        private async Task PopulateAppreticesDetails(long accountId)
+        {
+            LearnerName = await _commitmentsService.GetApprenticesName(Uln, accountId);
         }
 
         //private Task QueryLearner(long learnerUln)
