@@ -14,7 +14,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             ValidateModel();
             if(ModelState.IsValid)
             {
-                return RedirectToPage("learner");
+                return RedirectToPage("learner", new { Uln = Uln });
             }
             else
             {
