@@ -36,12 +36,12 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string ProviderId { get; set; }
 
         private readonly IPaymentsDataContext context;
-        private readonly ICommitmentsService _commitmentsService;
+        private readonly ICommitmentsService commitmentsService;
 
         public LearnerModel(IPaymentsDataContext context, ICommitmentsService commitmentsService)
         {
             this.context = context; 
-            _commitmentsService = commitmentsService;
+            this.commitmentsService = commitmentsService;
         }
         public async Task OnGetAsync()
         {
@@ -85,7 +85,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private async Task PopulateAppreticesDetails(long accountId)
         {
-            LearnerName = await _commitmentsService.GetApprenticesName(Uln, accountId);
+            LearnerName = await commitmentsService.GetApprenticesName(Uln, accountId);
         }
 
         //private Task QueryLearner(long learnerUln)
