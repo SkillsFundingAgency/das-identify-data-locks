@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
+using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.LearnerDataMismatches.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 
@@ -76,6 +77,12 @@ namespace SFA.DAS.LearnerDataMismatches.Web
             services.AddSingleton<ICommitmentsApiClientFactory, CommitmentsApiClientFactory>();
             services.AddTransient<ICommitmentsApiClient>(x => x.GetService<ICommitmentsApiClientFactory>().CreateClient());
             services.AddTransient<ICommitmentsService, CommitmentsService>();
+
+            var accountsApiConfiguration = new AccountApiConfiguration();
+            Configuration.GetSection(nameof(AccountApiConfiguration)).Bind(accountsApiConfiguration);
+            services.AddSingleton<IAccountApiConfiguration>(accountsApiConfiguration);
+            services.AddTransient<IAccountApiClient, AccountApiClient>();
+            services.AddTransient<IEmployerService, EmployerService>();
         }
     }
 }
