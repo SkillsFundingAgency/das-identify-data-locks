@@ -10,6 +10,7 @@ using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.LearnerDataMismatches.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Providers.Api.Client;
 
 namespace SFA.DAS.LearnerDataMismatches.Web
 {
@@ -83,6 +84,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web
             services.AddSingleton<IAccountApiConfiguration>(accountsApiConfiguration);
             services.AddTransient<IAccountApiClient, AccountApiClient>();
             services.AddTransient<IEmployerService, EmployerService>();
+
+            services.AddTransient<IProviderApiClient>((x) => new ProviderApiClient(Configuration.GetValue<string>("FatApiBaseUri")));
+            services.AddTransient<IProviderService, ProviderService>();
         }
     }
 }
