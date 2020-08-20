@@ -19,13 +19,15 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests.Infrastructure
         private const string _validSearchTerm = "123";
         private const string _invalidSearchTerm = "000";
         private const long _accountId = 1111;
+        private const string _firstName = "firstName";
+        private const string _lastName = "lastName";
 
         private GetApprenticeshipsResponse _emptyResponse = new GetApprenticeshipsResponse { Apprenticeships = Enumerable.Empty<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()};
         private GetApprenticeshipsResponse _populatedResponse = new GetApprenticeshipsResponse 
         { 
             Apprenticeships = new [] 
             { new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse() {
-                FirstName = "firstname", LastName = "lastname"
+                FirstName = _firstName, LastName = _lastName
             } }
         };
 
@@ -47,7 +49,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests.Infrastructure
         {
             var result = await _sut.GetApprenticesName(_validSearchTerm, _accountId);
 
-            Assert.IsNotEmpty(result);
+            Assert.AreEqual($"{_firstName} {_lastName}", result);
         }
         
         [Test]
