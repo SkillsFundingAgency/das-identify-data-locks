@@ -38,12 +38,14 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         private readonly IPaymentsDataContext context;
         private readonly ICommitmentsService commitmentsService;
         private readonly IEmployerService employerService;
+        private readonly IProviderService providerService;
 
-        public LearnerModel(IPaymentsDataContext context, ICommitmentsService commitmentsService, IEmployerService employerService)
+        public LearnerModel(IPaymentsDataContext context, ICommitmentsService commitmentsService, IEmployerService employerService, IProviderService providerService)
         {
             this.context = context;
             this.commitmentsService = commitmentsService;
             this.employerService = employerService;
+            this.providerService = providerService;
         }
 
         public async Task OnGetAsync()
@@ -88,7 +90,17 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             {
                 await PopulateAppreticesDetails(activeAppreticeship.AccountId);
                 await PopulateEmployerDetails(activeAppreticeship.AccountId);
+                
+                PopulateProviderDetails(activeAppreticeship.Ukprn);
             }
+
+
+        }
+
+        private void PopulateProviderDetails(long ukprn)
+        {
+            ProviderName = providerService.GetProviderName(ukprn);
+            ProviderId = ukprn.ToString();
         }
 
         private async Task PopulateEmployerDetails(long accountId)
