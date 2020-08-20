@@ -39,10 +39,10 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
             });
 
         internal ApprenticeshipBuilder ForProgramme(
-            int standardCode,
-            int frameworkCode,
-            int programmeType,
-            int pathwayCode) =>
+            int standardCode = 50,
+            int frameworkCode = 25,
+            int programmeType = 12,
+            int pathwayCode = 11) =>
             this.With(x =>
             {
                 x.StandardCode = standardCode;
@@ -81,6 +81,10 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 {
                     Ukprn = Ukprn,
                     LearnerUln = Uln,
+                    LearningAimStandardCode = StandardCode,
+                    LearningAimFrameworkCode = FrameworkCode,
+                    LearningAimProgrammeType = ProgrammeType,
+                    LearningAimPathwayCode = PathwayCode,
                 }
             }.ToList();
         }

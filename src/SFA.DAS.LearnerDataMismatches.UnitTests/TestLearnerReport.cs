@@ -20,6 +20,22 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 yield return (
                     () => builder().ForLearner(uln: 12),
                     new { Uln = 12 });
+
+                yield return (
+                    () => builder().ForProgramme(standardCode: 12),
+                    new { Standard = 12 });
+
+                yield return (
+                    () => builder().ForProgramme(frameworkCode: 12),
+                    new { Framework = 12 });
+
+                yield return (
+                    () => builder().ForProgramme(programmeType: 12),
+                    new { Program = 12 });
+
+                yield return (
+                    () => builder().ForProgramme(pathwayCode: 12),
+                    new { Pathway = 12 });
             }
 
             static ApprenticeshipBuilder builder() => new ApprenticeshipBuilder();
