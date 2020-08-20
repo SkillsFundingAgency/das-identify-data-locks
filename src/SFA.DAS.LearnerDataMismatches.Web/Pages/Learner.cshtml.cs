@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Infrastructure;
 using SFA.DAS.LearnerDataMismatches.Web.Model;
@@ -37,11 +38,13 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private readonly IPaymentsDataContext context;
         private readonly ICommitmentsService commitmentsService;
+        private readonly IEmployerService employerService; 
 
-        public LearnerModel(IPaymentsDataContext context, ICommitmentsService commitmentsService)
+        public LearnerModel(IPaymentsDataContext context, ICommitmentsService commitmentsService, IEmployerService employerService)
         {
             this.context = context; 
             this.commitmentsService = commitmentsService;
+            this.employerService = employerService;
         }
         public async Task OnGetAsync()
         {
@@ -81,6 +84,13 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             var activeAppreticeship = apprenticeships.FirstOrDefault(a => a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
 
             await PopulateAppreticesDetails(activeAppreticeship.AccountId);
+
+            await PopulateEmployerDetails(activeAppreticeship.AccountId);
+        }
+
+        private async Task PopulateEmployerDetails(long accountId)
+        {
+            EmployerName = await employerService.GetEmployerName(accountId);
         }
 
         private async Task PopulateAppreticesDetails(long accountId)
