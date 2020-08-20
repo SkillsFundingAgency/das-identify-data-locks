@@ -16,6 +16,10 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 yield return (
                     () => builder().WithProvider(ukprn: 12),
                     new { Ukprn = 12 });
+
+                yield return (
+                    () => builder().ForLearner(uln: 12),
+                    new { Uln = 12 });
             }
 
             static ApprenticeshipBuilder builder() => new ApprenticeshipBuilder();
