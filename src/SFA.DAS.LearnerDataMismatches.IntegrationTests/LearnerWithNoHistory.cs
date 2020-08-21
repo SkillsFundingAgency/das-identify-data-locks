@@ -1,7 +1,10 @@
 ﻿using FluentAssertions;
 using Newtonsoft.Json;
+using NSubstitute;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -21,6 +24,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         public async Task Then_there_are_no_CollectionPeriods()
         {
             var learner = Testing.Create<LearnerModel>();
+            learner.Uln = "1";
             await learner.OnGetAsync();
 
             learner.CollectionPeriods.Should().BeEmpty();
@@ -183,6 +187,35 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
 
             learner.NewCollectionPeriods.Should()
                 .OnlyContain(x => x.Apprenticeship.Ukprn == 10003678);
+        }
+
+        [Test]
+        public async Task Learner_name_is_found()
+        {
+            var apps = JsonConvert.DeserializeObject<ApprenticeshipModel[]>(ApprenticeshipC);
+            foreach (var a in apps)
+                await Testing.AddAsync(a);
+
+            Testing.CommitmentsApi
+                .GetApprenticeships(Arg.Is<GetApprenticeshipsRequest>(req =>
+                    req.AccountId == 15084 && req.SearchTerm == "2839925663"))
+                .Returns(Task.FromResult(new GetApprenticeshipsResponse
+                {
+                    Apprenticeships = new[]
+                    {
+                        new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse
+                        {
+                            FirstName = "LearnerFirstname",
+                            LastName = "LearnerLastname",
+                        }
+                    }
+                }));
+
+            var learner = Testing.Create<LearnerModel>();
+            learner.Uln = "2839925663";
+            await learner.OnGetAsync();
+
+            learner.LearnerName.Should().Be("LearnerFirstname LearnerLastname");
         }
     }
 }

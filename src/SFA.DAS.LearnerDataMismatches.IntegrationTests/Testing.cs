@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using NSubstitute;
 using NUnit.Framework;
 using Respawn;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.LearnerDataMismatches.Web;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Application.Repositories;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -26,6 +27,8 @@ public static class Testing
     private static IServiceScopeFactory scopeFactory;
     private static Checkpoint checkpoint;
 
+    public static ICommitmentsApiClient CommitmentsApi;
+
     [OneTimeSetUp]
     public static void RunBeforeAnyTests()
     {
@@ -33,6 +36,9 @@ public static class Testing
         services.AddLogging();
         services.AddScoped<LearnerModel>();
         new Startup(configuration).ConfigureServices(services);
+
+        services.RemoveAll(typeof(ICommitmentsApiClient));
+        services.AddScoped(_ => CommitmentsApi);
 
         scopeFactory = services.BuildServiceProvider().GetService<IServiceScopeFactory>();
 
@@ -73,5 +79,6 @@ public static class Testing
     internal static async Task Reset()
     {
         await checkpoint.Reset(configuration.GetConnectionString("PaymentsDatabase"));
+        CommitmentsApi = Substitute.For<ICommitmentsApiClient>();
     }
 }
