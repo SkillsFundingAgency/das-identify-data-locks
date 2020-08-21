@@ -49,7 +49,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         }
 
         [Test, TestCaseSource(nameof(IndividualPeriodValues))]
-        public void B(Func<ApprenticeshipBuilder> build, object period)
+        public void PopulatessDataMatches(Func<ApprenticeshipBuilder> build, object period)
         {
             var a = build();
 

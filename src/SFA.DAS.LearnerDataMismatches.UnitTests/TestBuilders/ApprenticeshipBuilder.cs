@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using SFA.DAS.Payments.Model.Core.Audit;
+﻿using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Collections.Generic;
