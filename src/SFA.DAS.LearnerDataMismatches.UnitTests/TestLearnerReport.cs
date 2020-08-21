@@ -1,49 +1,40 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.LearnerDataMismatches.Domain;
-using SFA.DAS.Payments.Model.Core.Audit;
-using SFA.DAS.Payments.Model.Core.Entities;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SFA.DAS.LearnerDataMismatches.UnitTests
 {
     public class TestLearnerReport
     {
-        [Test]
-        public void A()
+        private static IEnumerable<TestCaseData> IndividualPeriodValues()
         {
-            var apprentices = new[]
+            static IEnumerable<(Func<ApprenticeshipBuilder> input, object expected)> cases()
             {
-                new ApprenticeshipModel
-                {
-                    Ukprn = 12345678,
-                    Uln = 8888888,
-                    Status = Payments.Model.Core.Entities.ApprenticeshipStatus.Active,
-                    StandardCode = 0,
-                    FrameworkCode = 0,
-                    ProgrammeType = 0,
-                    PathwayCode = 0,
-                }
-            }.ToList();
+                yield return (
+                    () => builder().WithProvider(ukprn: 12),
+                    new { Ukprn = 12 });
+            }
 
-            var earning = new[]
-            {
-                new EarningEventModel
-                {
-                    Ukprn = 12345678,
-                    LearnerUln = 8888888,
-                }
-            }.ToList();
+            static ApprenticeshipBuilder builder() => new ApprenticeshipBuilder();
 
-            var sut = new LearnerReport(apprentices, earning);
+            return cases().Select(x => new TestCaseData(x.input, x.expected));
+        }
+
+        [Test, TestCaseSource(nameof(IndividualPeriodValues))]
+        public void B(Func<ApprenticeshipBuilder> build, object period)
+        {
+            var a = build();
+
+            var sut = new LearnerReport(a.BuildApprentices(), a.BuildEarnings());
 
             sut.CollectionPeriods.Should().ContainEquivalentOf(
                 new
                 {
-                    Ilr = new
-                    {
-                        Ukprn = 12345678,
-                    }
+                    Apprenticeship = period,
+                    Ilr = period,
                 });
         }
     }
