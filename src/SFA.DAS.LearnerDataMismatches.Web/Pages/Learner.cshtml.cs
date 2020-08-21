@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Infrastructure;
 using SFA.DAS.LearnerDataMismatches.Web.Model;
@@ -38,14 +37,15 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private readonly IPaymentsDataContext context;
         private readonly ICommitmentsService commitmentsService;
-        private readonly IEmployerService employerService; 
+        private readonly IEmployerService employerService;
 
         public LearnerModel(IPaymentsDataContext context, ICommitmentsService commitmentsService, IEmployerService employerService)
         {
-            this.context = context; 
+            this.context = context;
             this.commitmentsService = commitmentsService;
             this.employerService = employerService;
         }
+
         public async Task OnGetAsync()
         {
             if (!long.TryParse(Uln, out var learnerUln))
@@ -81,11 +81,14 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Select(x => x.First())
                 .OrderByDescending(x => x);
 
-            var activeAppreticeship = apprenticeships.FirstOrDefault(a => a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
+            var activeAppreticeship = apprenticeships.FirstOrDefault(a =>
+                a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
 
-            await PopulateAppreticesDetails(activeAppreticeship.AccountId);
-
-            await PopulateEmployerDetails(activeAppreticeship.AccountId);
+            if (activeAppreticeship != null)
+            {
+                await PopulateAppreticesDetails(activeAppreticeship.AccountId);
+                await PopulateEmployerDetails(activeAppreticeship.AccountId);
+            }
         }
 
         private async Task PopulateEmployerDetails(long accountId)

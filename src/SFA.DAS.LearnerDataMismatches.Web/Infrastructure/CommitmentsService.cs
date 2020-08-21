@@ -26,7 +26,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
                 SearchTerm = uln
             };
             var result = await _commitmentsApiClient.GetApprenticeships(request);
-            var apprenticeship = result.Apprenticeships.FirstOrDefault();
+            var apprenticeship = result?.Apprenticeships?.FirstOrDefault();
             if (apprenticeship == null) return string.Empty;
             return $"{apprenticeship.FirstName} {apprenticeship.LastName}";
         }
