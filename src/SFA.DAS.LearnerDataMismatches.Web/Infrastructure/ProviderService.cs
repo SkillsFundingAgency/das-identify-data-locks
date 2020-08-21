@@ -17,7 +17,6 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
         }
         public string GetProviderName(long ukprn)
         {
-            ukprn = 10083920;
             try
             {
                 var provider = _providerApiClient.Get(ukprn);
