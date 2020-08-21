@@ -90,11 +90,8 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             {
                 await PopulateAppreticesDetails(activeAppreticeship.AccountId);
                 await PopulateEmployerDetails(activeAppreticeship.AccountId);
-                
                 PopulateProviderDetails(activeAppreticeship.Ukprn);
             }
-
-
         }
 
         private void PopulateProviderDetails(long ukprn)
