@@ -36,6 +36,11 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 yield return (
                     () => builder().ForProgramme(pathwayCode: 12),
                     new { Pathway = 12 });
+
+                yield return (
+                    () => builder().ForProgramme(episodes: episodes =>
+                                                 episodes.WithPrice(1, 2, 3, 4)),
+                    new { Cost = 10 });
             }
 
             static ApprenticeshipBuilder builder() => new ApprenticeshipBuilder();
