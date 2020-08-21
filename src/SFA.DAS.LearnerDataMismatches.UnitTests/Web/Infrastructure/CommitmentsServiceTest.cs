@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,49 +12,41 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests.Infrastructure
 {
     public class CommitmentsServiceTest
     {
-        private Mock<ICommitmentsApiClient> _apiClientMock = new Mock<ICommitmentsApiClient>();
-        private CommitmentsService _sut;
-
-        private const string _validSearchTerm = "123";
-        private const string _invalidSearchTerm = "000";
-        private const long _accountId = 1111;
-        private const string _firstName = "firstName";
-        private const string _lastName = "lastName";
-
-        private GetApprenticeshipsResponse _emptyResponse = new GetApprenticeshipsResponse { Apprenticeships = Enumerable.Empty<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()};
-        private GetApprenticeshipsResponse _populatedResponse = new GetApprenticeshipsResponse 
-        { 
-            Apprenticeships = new [] 
-            { new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse() {
-                FirstName = _firstName, LastName = _lastName
-            } }
-        };
-
-        [SetUp]
-        public void InitialiseTest()
-        {
-            _apiClientMock
-                .Setup(a => a
-                    .GetApprenticeships(It.Is<GetApprenticeshipsRequest>(x => x.SearchTerm == _validSearchTerm), It.IsAny<CancellationToken>())).ReturnsAsync(_populatedResponse);
-            _apiClientMock
-                .Setup(a => a
-                    .GetApprenticeships(It.Is<GetApprenticeshipsRequest>(x => x.SearchTerm == _invalidSearchTerm), It.IsAny<CancellationToken>())).ReturnsAsync(_emptyResponse);
-
-            _sut = new CommitmentsService(_apiClientMock.Object);
-        }
-
         [Test]
         public async Task WhenCommitmentExists_ThenReturnApprenticesName()
         {
-            var result = await _sut.GetApprenticesName(_validSearchTerm, _accountId);
+            var firstName = "firstName";
+            var lastName = "lastName";
+            var validSearchTerm = "123";
+            var apiClientMock = new Mock<ICommitmentsApiClient>();
+            var populatedResponse = new GetApprenticeshipsResponse 
+            { 
+                Apprenticeships = new [] 
+                { new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse() {
+                    FirstName = firstName, LastName = lastName
+                } }
+            };
+            apiClientMock
+                .Setup(a => a
+                    .GetApprenticeships(It.Is<GetApprenticeshipsRequest>(x => x.SearchTerm == validSearchTerm), It.IsAny<CancellationToken>())).ReturnsAsync(populatedResponse);
+            var sut = new CommitmentsService(apiClientMock.Object);
+            var result = await sut.GetApprenticesName(validSearchTerm, 123);
 
-            Assert.AreEqual($"{_firstName} {_lastName}", result);
+            Assert.AreEqual($"{firstName} {lastName}", result);
         }
         
         [Test]
         public async Task WhenCommitmentDoNotExist_ThenReturnEmptyString()
         {
-            var result = await _sut.GetApprenticesName(_invalidSearchTerm, _accountId);
+            var apiClientMock = new Mock<ICommitmentsApiClient>();
+            var invalidSearchTerm = "000";
+
+            var emptyResponse = new GetApprenticeshipsResponse { Apprenticeships = Enumerable.Empty<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()};
+            apiClientMock
+                .Setup(a => a
+                    .GetApprenticeships(It.Is<GetApprenticeshipsRequest>(x => x.SearchTerm == invalidSearchTerm), It.IsAny<CancellationToken>())).ReturnsAsync(emptyResponse);
+            var sut = new CommitmentsService(apiClientMock.Object);
+            var result = await sut.GetApprenticesName(invalidSearchTerm, 123);
 
             Assert.IsEmpty(result);
         }
