@@ -36,6 +36,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                 Apprenticeship = apps.Find(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
                 Ilr = new DataMatch
                 {
+                    Uln = x.LearnerUln,
                     Ukprn = x.Ukprn,
                     Standard = (short)x.LearningAimStandardCode,
                     Framework = (short)x.LearningAimFrameworkCode,
