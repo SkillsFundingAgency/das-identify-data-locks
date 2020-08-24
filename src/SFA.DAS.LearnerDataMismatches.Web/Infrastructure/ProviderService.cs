@@ -22,7 +22,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
                 var provider = _providerApiClient.Get(ukprn);
                 return provider.ProviderName;
             }
-            catch (HttpRequestException)
+            catch
             {
                 return string.Empty;
             }
