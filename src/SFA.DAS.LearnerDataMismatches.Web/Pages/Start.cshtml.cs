@@ -46,7 +46,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 
                 if (!apprenticeship.Any())
                 {
-                    ModelState.AddModelError(nameof(Uln), "Uln not found");
+                    ModelState.AddModelError(nameof(Uln), "ULN not found");
                 }
             }
 
