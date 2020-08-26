@@ -86,11 +86,13 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                     FrameworkCode = FrameworkCode,
                     ProgrammeType = ProgrammeType,
                     PathwayCode = PathwayCode,
+                    StopDate = Episodes.StoppedDate,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel
                         {
                             StartDate = Episodes.StartDate,
+                            EndDate = Episodes.StoppedDate,
                             Cost = Episodes.TotalNegotiatedPrice1 +
                                    Episodes.TotalNegotiatedPrice2 +
                                    Episodes.TotalNegotiatedPrice3 +
@@ -123,6 +125,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                         new EarningEventPriceEpisodeModel
                         {
                             StartDate = Episodes.StartDate,
+                            ActualEndDate = Episodes.StoppedDate,
                             TotalNegotiatedPrice1 = Episodes.TotalNegotiatedPrice1,
                             TotalNegotiatedPrice2 = Episodes.TotalNegotiatedPrice2,
                             TotalNegotiatedPrice3 = Episodes.TotalNegotiatedPrice3,
@@ -194,6 +197,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         public int TotalNegotiatedPrice3 { get; private set; } = 300;
         public int TotalNegotiatedPrice4 { get; private set; } = 400;
         public DateTime StartDate { get; private set; } = new DateTime(2020, 03, 15);
+        public DateTime? StoppedDate { get; private set; }
 
         internal ApprenticePriceEpisodeBuilder WithPrice(int tnp1, int tnp2, int tnp3, int tnp4)
             => this.With(x =>
@@ -208,6 +212,12 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
             this.With(x =>
             {
                 x.StartDate = starting;
+            });
+
+        internal ApprenticePriceEpisodeBuilder Stopped(DateTime stopped) =>
+            this.With(x =>
+            {
+                x.StoppedDate = stopped;
             });
 
         internal ApprenticePriceEpisodeBuilder Configure(
