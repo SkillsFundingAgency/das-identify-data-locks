@@ -39,12 +39,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             }
             else
             {
-                var apprenticeship = await _context
-                    .Apprenticeship
-                    .Where(x => x.Uln == uln)
-                    .ToListAsync();
-                
-                if (!apprenticeship.Any())
+                var apprenticeship = await _context.Apprenticeship.FirstOrDefaultAsync(x => x.Uln == uln);
+
+                if (apprenticeship == null)
                 {
                     ModelState.AddModelError(nameof(Uln), "ULN not found");
                 }
