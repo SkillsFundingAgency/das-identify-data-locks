@@ -72,10 +72,10 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         }
 
         [Test]
-        public void PopulatesDataLockLinks()
+        public void PopulatesDataLock()
         {
             var builder = new ApprenticeshipBuilder()
-                .ForProgramme(standardCode: 10, locked: (11, null, null, null));
+                .ForProgramme(standardCode: 10, lockedStandardCode: 11);
 
             var sut = builder.CreateLearnerReport();
 
