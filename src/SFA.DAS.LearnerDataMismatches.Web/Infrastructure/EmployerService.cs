@@ -6,7 +6,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
 {
     public interface IEmployerService
     {
-        Task<string> GetEmployerName(long accountId);
+        Task<(string employerName, string publicAccountId)> GetEmployerName(long accountId);
     }
 
     public class EmployerService : IEmployerService
@@ -17,17 +17,17 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<string> GetEmployerName(long accountId)
+        public async Task<(string employerName, string publicAccountId)> GetEmployerName(long accountId)
         {
             try
             {
                 var result = await _accountApiClient.GetAccount(accountId);
-                return result.DasAccountName;
+                return (result.DasAccountName, result.PublicHashedAccountId);
             }
             catch (Exception)
             {
                 //if the employer id is invalid the service throws 500
-                return string.Empty;
+                return (string.Empty, string.Empty);
             }
         }
     }

@@ -102,7 +102,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private async Task PopulateEmployerDetails(long accountId)
         {
-            EmployerName = await employerService.GetEmployerName(accountId);
+            (EmployerName, EmployerId) = await employerService.GetEmployerName(accountId);
         }
 
         private async Task PopulateAppreticesDetails(long accountId)
