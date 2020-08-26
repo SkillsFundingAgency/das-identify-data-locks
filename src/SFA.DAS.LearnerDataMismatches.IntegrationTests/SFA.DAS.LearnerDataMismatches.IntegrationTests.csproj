@@ -6,6 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TestData\Apprenticeship.json" />
+    <None Remove="TestData\DataLocks.json" />
+    <None Remove="TestData\EarningEvents.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TestData\Apprenticeship.json" />
+    <EmbeddedResource Include="TestData\DataLocks.json" />
+    <EmbeddedResource Include="TestData\EarningEvents.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.6" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
