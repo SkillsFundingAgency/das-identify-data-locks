@@ -11,33 +11,40 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
     {
         private static IEnumerable<TestCaseData> IndividualPeriodValues()
         {
-            static IEnumerable<(Func<ApprenticeshipBuilder> input, object expected)> cases()
+            static IEnumerable<(string name, Func<ApprenticeshipBuilder> input, object expected)> cases()
             {
                 yield return (
+                    "UKPRN",
                     () => builder().WithProvider(ukprn: 12),
                     new { Ukprn = 12 });
 
                 yield return (
+                    "ULN",
                     () => builder().ForLearner(uln: 12),
                     new { Uln = 12 });
 
                 yield return (
+                    "Standard Code",
                     () => builder().ForProgramme(standardCode: 12),
                     new { Standard = 12 });
 
                 yield return (
+                    "Framework Code",
                     () => builder().ForProgramme(frameworkCode: 12),
                     new { Framework = 12 });
 
                 yield return (
+                    "Programme Type",
                     () => builder().ForProgramme(programmeType: 12),
                     new { Program = 12 });
 
                 yield return (
+                    "Pathway Code",
                     () => builder().ForProgramme(pathwayCode: 12),
                     new { Pathway = 12 });
 
                 yield return (
+                    "Cost",
                     () => builder().ForProgramme(episodes: episodes =>
                                                  episodes.WithPrice(1, 2, 3, 4)),
                     new { Cost = 10 });
@@ -45,7 +52,8 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
 
             static ApprenticeshipBuilder builder() => new ApprenticeshipBuilder();
 
-            return cases().Select(x => new TestCaseData(x.input, x.expected));
+            return cases().Select(x => new TestCaseData(x.input, x.expected)
+                                               .SetName($"Populates {x.name}"));
         }
 
         [Test, TestCaseSource(nameof(IndividualPeriodValues))]
