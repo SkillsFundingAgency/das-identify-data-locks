@@ -25,10 +25,35 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string LearnerName { get; set; }
 
         public IEnumerable<string> DataLockNames =>
-            CollectionPeriods
-                .SelectMany(c => c.UniqueDataLockNames)
-                .Distinct()
-                .OrderBy(x => x);
+            NewCollectionPeriods
+            .SelectMany(x => x.DataLocks)
+            .Select(x => x.ToString())
+            .OrderBy(x => x);
+
+        public IEnumerable<DataLockHelpCentreLink> DataLockLinks =>
+            NewCollectionPeriods
+            .SelectMany(x => x.DataLocks)
+            .Select(MapDataLockLinks)
+            .OrderBy(x => x.Name);
+
+
+        private static readonly Dictionary<Domain.DataLock, (string url, string description)> links
+            = new Dictionary<Domain.DataLock, (string url, string description)>
+            {
+                {Domain.DataLock.Dlock01, ("", "No matching UKPRN record found") },
+            };
+
+        private DataLockHelpCentreLink MapDataLockLinks(Domain.DataLock @lock)
+        {
+            links.TryGetValue(@lock, out var link);
+
+            return new DataLockHelpCentreLink
+            {
+                Name = @lock.ToString(),
+                Description = link.description,
+                Url = link.url,
+            };
+        }
 
         public string EmployerName { get; set; }
         public string EmployerId { get; set; }
@@ -74,7 +99,13 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Where(x => x.LearnerUln == learnerUln)
                 .ToListAsync();
 
-            var report = new LearnerReport(apprenticeships, earnings);
+            var locks = await context.DataLockgEvent
+                .Include(x => x.NonPayablePeriods)
+                .ThenInclude(x => x.DataLockEventNonPayablePeriodFailures)
+                .Where(x => x.LearnerUln == learnerUln)
+                .ToListAsync();
+
+            var report = new LearnerReport(apprenticeships, earnings, locks);
 
             NewCollectionPeriods = report.CollectionPeriods;
 

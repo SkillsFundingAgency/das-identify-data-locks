@@ -5,15 +5,12 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
 {
     public class LearnerReport
     {
-        private List<Payments.Model.Core.Entities.ApprenticeshipModel> apps2;
-        private List<Payments.Model.Core.Audit.EarningEventModel> earnings;
-
-        public LearnerReport(List<Payments.Model.Core.Entities.ApprenticeshipModel> apprenticeships, List<Payments.Model.Core.Audit.EarningEventModel> earnings)
+        public LearnerReport(
+            List<Payments.Model.Core.Entities.ApprenticeshipModel> apprenticeships,
+            List<Payments.Model.Core.Audit.EarningEventModel> earnings,
+            List<Payments.Model.Core.Audit.DataLockEventModel> locks)
         {
-            this.apps2 = apprenticeships;
-            this.earnings = earnings;
-
-            var apps = apps2
+            var apps = apprenticeships
                 .Where(x => x.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active)
                 .Select(x => new DataMatch
                 {
@@ -33,7 +30,15 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                 .Where(x => apps.Select(y => y.Ukprn).Contains(x.Ukprn))
                 .Select(x => new CollectionPeriod
             {
+                DataLocks = locks
+                    .Where(l => l.Ukprn == x.Ukprn && l.CollectionPeriod == x.CollectionPeriod)
+                    .SelectMany(l => l.NonPayablePeriods)
+                    .SelectMany(l => l.DataLockEventNonPayablePeriodFailures)
+                    .Select(l => (DataLock)l.DataLockFailure)
+                    .ToList(),
+                
                 Apprenticeship = apps.Find(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
+                
                 Ilr = new DataMatch
                 {
                     Uln = x.LearnerUln,

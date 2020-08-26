@@ -134,5 +134,15 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
 
             learner.LearnerName.Should().Be("LearnerFirstname LearnerLastname");
         }
+
+        [Test]
+        public async Task Data_locks_are_shown()
+        {
+            var learner = Testing.Create<LearnerModel>();
+            learner.Uln = LearnerUln;
+            await learner.OnGetAsync();
+
+            learner.DataLockNames.Should().Contain("Dlock01");
+        }
     }
 }

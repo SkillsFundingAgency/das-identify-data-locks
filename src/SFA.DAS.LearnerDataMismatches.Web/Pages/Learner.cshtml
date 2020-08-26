@@ -36,7 +36,10 @@
                     Active Data lock(s)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @String.Join(", ", Model.DataLockNames)
+                    @foreach (var l in Model.DataLockLinks)
+                    {
+                    <span>@l.Name - <a href="@l.Url">@l.Description</a></span><br />
+                    }
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -70,8 +73,8 @@
 
 
     </div>
-    <!-- END left col -->
-    <!-- right col -->
+ <!-- END left col -->
+ <!-- right col -->
     <div class="govuk-grid-column-one-third">
 
         <aside class="app-related-items" role="complementary">
@@ -124,7 +127,7 @@
 
 
     </div>
-    <!-- END right col -->
+ <!-- END right col -->
 
 
 

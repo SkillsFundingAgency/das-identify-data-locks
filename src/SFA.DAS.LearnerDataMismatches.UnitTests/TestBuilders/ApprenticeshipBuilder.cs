@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core.Audit;
+﻿using SFA.DAS.LearnerDataMismatches.Domain;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -65,7 +66,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 {
                     Uln = Uln,
                     Ukprn = Ukprn,
-                    Status = ApprenticeshipStatus.Active,
+                    Status = Payments.Model.Core.Entities.ApprenticeshipStatus.Active,
                     StandardCode = StandardCode,
                     FrameworkCode = FrameworkCode,
                     ProgrammeType = ProgrammeType,
@@ -109,6 +110,14 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 }
             }.ToList();
         }
+
+        private List<DataLockEventModel> BuildDataLocks()
+        {
+            return new List<DataLockEventModel>();
+        }
+
+        internal LearnerReport CreateLearnerReport() =>
+            new LearnerReport(BuildApprentices(), BuildEarnings(), BuildDataLocks());
     }
 
     public class ApprenticePriceEpisodeBuilder

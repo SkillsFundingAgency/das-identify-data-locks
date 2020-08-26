@@ -61,7 +61,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         {
             var a = build();
 
-            var sut = new LearnerReport(a.BuildApprentices(), a.BuildEarnings());
+            var sut = a.CreateLearnerReport();
 
             sut.CollectionPeriods.Should().ContainEquivalentOf(
                 new
