@@ -33,27 +33,8 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public IEnumerable<DataLockHelpCentreLink> DataLockLinks =>
             NewCollectionPeriods
             .SelectMany(x => x.DataLocks)
-            .Select(MapDataLockLinks)
+            .Select(DataLockHelpCentreLink.Create)
             .OrderBy(x => x.Name);
-
-
-        private static readonly Dictionary<Domain.DataLock, (string url, string description)> links
-            = new Dictionary<Domain.DataLock, (string url, string description)>
-            {
-                {Domain.DataLock.Dlock01, ("", "No matching UKPRN record found") },
-            };
-
-        private DataLockHelpCentreLink MapDataLockLinks(Domain.DataLock @lock)
-        {
-            links.TryGetValue(@lock, out var link);
-
-            return new DataLockHelpCentreLink
-            {
-                Name = @lock.ToString(),
-                Description = link.description,
-                Url = link.url,
-            };
-        }
 
         public string EmployerName { get; set; }
         public string EmployerId { get; set; }
