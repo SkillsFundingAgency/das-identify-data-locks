@@ -70,5 +70,20 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                     Ilr = period,
                 });
         }
+
+        [Test]
+        public void PopulatesDataLockLinks()
+        {
+            var builder = new ApprenticeshipBuilder()
+                .ForProgramme(standardCode: 10, locked: (11, null, null, null));
+
+            var sut = builder.CreateLearnerReport();
+
+            sut.CollectionPeriods.Should().ContainEquivalentOf(
+                new
+                {
+                    DataLocks = new[] { DataLock.Dlock03 },
+                });
+        }
     }
 }
