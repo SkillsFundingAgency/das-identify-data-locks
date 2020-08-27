@@ -50,11 +50,13 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                     new { Cost = 10 });
 
                 yield return (
+                    "Starting",
                     () => builder().ForProgramme(episodes: episodes =>
                                                  episodes.Starting(new DateTime(2020, 01, 25))),
                     new { PriceStart = new DateTime(2020, 01, 25) });
 
                 yield return (
+                    "Stopped",
                     () => builder().ForProgramme(episodes: episodes =>
                                                  episodes.Stopped(new DateTime(2020, 01, 26))),
                     new { StoppedOn = new DateTime(2020, 01, 26) });
