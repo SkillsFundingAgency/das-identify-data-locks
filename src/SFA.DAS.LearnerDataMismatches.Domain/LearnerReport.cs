@@ -6,28 +6,12 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
     public class LearnerReport
     {
         public LearnerReport(
-            List<Payments.Model.Core.Entities.ApprenticeshipModel> apprenticeships,
+            Payments.Model.Core.Entities.ApprenticeshipModel? activeApprenticeship,
             List<Payments.Model.Core.Audit.EarningEventModel> earnings,
             List<Payments.Model.Core.Audit.DataLockEventModel> locks)
         {
-            var apps = apprenticeships
-                .Where(x => x.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active)
-                .Select(x => new DataMatch
-                {
-                    Ukprn = x.Ukprn,
-                    Uln = x.Uln,
-                    Standard = (short)x.StandardCode.Value,
-                    Framework = (short)x.FrameworkCode.Value,
-                    Program = (short)x.ProgrammeType.Value,
-                    Pathway = (short)x.PathwayCode.Value,
-                    Cost = x.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
-                    PriceStart = x.ApprenticeshipPriceEpisodes.FirstOrDefault()?.StartDate,
-                    CompletionStatus = (ApprenticeshipStatus)x.Status,
-                })
-                .ToList();
-
             CollectionPeriods = earnings
-                .Where(x => apps.Select(y => y.Ukprn).Contains(x.Ukprn))
+                .Where(x => x.Ukprn == activeApprenticeship?.Ukprn)
                 .Select(x => new CollectionPeriod
                 {
                     DataLocks = locks
@@ -37,7 +21,18 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                     .Select(l => (DataLock)l.DataLockFailure)
                     .ToList(),
 
-                    Apprenticeship = apps.Find(a => a.Uln == x.LearnerUln && a.Ukprn == x.Ukprn),
+                    Apprenticeship = new DataMatch
+                    {
+                        Ukprn = activeApprenticeship.Ukprn,
+                        Uln = activeApprenticeship.Uln,
+                        Standard = (short)activeApprenticeship.StandardCode.Value,
+                        Framework = (short)activeApprenticeship.FrameworkCode.Value,
+                        Program = (short)activeApprenticeship.ProgrammeType.Value,
+                        Pathway = (short)activeApprenticeship.PathwayCode.Value,
+                        Cost = activeApprenticeship.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
+                        PriceStart = activeApprenticeship.ApprenticeshipPriceEpisodes.FirstOrDefault()?.StartDate,
+                        CompletionStatus = (ApprenticeshipStatus)activeApprenticeship.Status,
+                    },
 
                     Ilr = new DataMatch
                     {

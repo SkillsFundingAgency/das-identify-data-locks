@@ -181,7 +181,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         internal LearnerReport CreateLearnerReport()
         {
             var value = Earnings;
-            return new LearnerReport(BuildApprentices(), value, BuildDataLocks().ToList());
+            return new LearnerReport(BuildApprentices().FirstOrDefault(), value, BuildDataLocks().ToList());
         }
     }
 

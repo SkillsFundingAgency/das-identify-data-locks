@@ -74,10 +74,11 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private async Task BuildNewCollections(long learnerUln)
         {
-            var apprenticeships = await context.Apprenticeship
+            var activeAppreticeship = await context.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
                 .Where(x => x.Uln == learnerUln)
-                .ToListAsync();
+                .FirstOrDefaultAsync(a =>
+                    a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
 
             var earnings = await context.EarningEvent
                 .Include(x => x.PriceEpisodes)
@@ -90,12 +91,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Where(x => x.LearnerUln == learnerUln)
                 .ToListAsync();
 
-            var report = new LearnerReport(apprenticeships, earnings, locks);
+            var report = new LearnerReport(activeAppreticeship, earnings, locks);
 
             NewCollectionPeriods = report.CollectionPeriods;
-
-            var activeAppreticeship = apprenticeships.FirstOrDefault(a =>
-                a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
 
             if (activeAppreticeship != null)
             {
