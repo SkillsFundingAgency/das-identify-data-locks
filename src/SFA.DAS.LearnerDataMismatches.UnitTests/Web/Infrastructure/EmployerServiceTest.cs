@@ -19,17 +19,18 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests.Web.Infrastructure
             _mockAccountApiClient.Setup(x => x.GetAccount(It.IsAny<long>())).Throws(new Exception());
             var sut = new EmployerService(_mockAccountApiClient.Object);
             var result = await sut.GetEmployerName(123);
-            result.Should().BeEmpty();
+            result.Should().Be((string.Empty, string.Empty));
         }
 
         [Test]
         public async Task WhenInvalidEmployerAccountId_ThenReturnEmployerName()
         {
             var expectedName = "employer name";
-            _mockAccountApiClient.Setup(x => x.GetAccount(It.IsAny<long>())).ReturnsAsync(new AccountDetailViewModel{DasAccountName=expectedName});
+            var expectedAccountId = "expectedid";
+            _mockAccountApiClient.Setup(x => x.GetAccount(It.IsAny<long>())).ReturnsAsync(new AccountDetailViewModel{DasAccountName=expectedName, PublicHashedAccountId=expectedAccountId});
             var sut = new EmployerService(_mockAccountApiClient.Object);
             var result = await sut.GetEmployerName(123);
-            result.Should().Be(expectedName);
+            result.Should().Be((expectedName, expectedAccountId));
         }
     }
 }
