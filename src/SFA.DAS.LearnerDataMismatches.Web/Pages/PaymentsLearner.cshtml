@@ -1,4 +1,4 @@
-@page "{uln}"
+@* @page "{uln}"
 @model LearnerModel
 @{
 }
@@ -40,13 +40,13 @@
 
 <h1>Learner Report</h1>
 
-@*<form method="get" id="form">
+<!-- <form method="get" id="form">
         Unique Learner Number:
         <input asp-for="Uln" />
         <input type="submit"
                value="Go!"
                onclick="window.location = '/LearnerReport/' + document.getElementById('LearnerUln').value; return false;" />
-    </form>*@
+    </form> -->
 
 <hr />
 @if (Model.CollectionPeriods == null || !Model.CollectionPeriods.Any())
@@ -164,4 +164,4 @@ else
             </li>
         }
     </ul>
-}
+} *@
