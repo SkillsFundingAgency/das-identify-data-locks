@@ -48,6 +48,18 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                     () => builder().ForProgramme(episodes: episodes =>
                                                  episodes.WithPrice(1, 2, 3, 4)),
                     new { Cost = 10 });
+
+                yield return (
+                    "Starting",
+                    () => builder().ForProgramme(episodes: episodes =>
+                                                 episodes.Starting(new DateTime(2020, 01, 25))),
+                    new { PriceStart = new DateTime(2020, 01, 25) });
+
+                yield return (
+                    "Stopped",
+                    () => builder().ForProgramme(episodes: episodes =>
+                                                 episodes.Stopped(new DateTime(2020, 01, 26))),
+                    new { StoppedOn = new DateTime(2020, 01, 26) });
             }
 
             static ApprenticeshipBuilder builder() => new ApprenticeshipBuilder();
