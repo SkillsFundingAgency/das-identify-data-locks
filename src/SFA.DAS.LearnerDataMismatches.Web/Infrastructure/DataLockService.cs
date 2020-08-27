@@ -75,6 +75,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
                         Pathway = (short)activeApprenticeship.PathwayCode.Value,
                         Cost = activeApprenticeship.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
                         PriceStart = activeApprenticeship.ApprenticeshipPriceEpisodes.FirstOrDefault()?.StartDate,
+                        StoppedOn = activeApprenticeship.StopDate,
                         CompletionStatus = (Domain.ApprenticeshipStatus)activeApprenticeship.Status,
                     },
 
@@ -92,6 +93,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
                             e.TotalNegotiatedPrice3 +
                             e.TotalNegotiatedPrice4),
                         PriceStart = x.PriceEpisodes.FirstOrDefault()?.StartDate,
+                        StoppedOn = x.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
                         //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
                     },
                     Period = new Period(x.AcademicYear, x.CollectionPeriod),
