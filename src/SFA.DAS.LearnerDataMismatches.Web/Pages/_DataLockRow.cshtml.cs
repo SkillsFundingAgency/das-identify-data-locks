@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 {
-    public class DataLockRowModel
+    public class _DataLockRowModel
     {
         public string Heading { get; }
 
@@ -20,7 +20,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         private readonly CollectionPeriod period;
         private readonly Func<DataMatch, object> valueExtractor;
 
-        public DataLockRowModel(
+        public _DataLockRowModel(
             string heading,
             DataLock data,
             CollectionPeriod period,

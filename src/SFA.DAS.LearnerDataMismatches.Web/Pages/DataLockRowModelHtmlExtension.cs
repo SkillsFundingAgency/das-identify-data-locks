@@ -15,7 +15,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             string heading,
             Func<DataMatch, object> value)
         {
-            var model = new DataLockRowModel(heading, dlock, period, value);
+            var model = new _DataLockRowModel(heading, dlock, period, value);
             return htmlHelper.PartialAsync("_DataLockRow", model);
         }
 
@@ -25,7 +25,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             string heading,
             Func<DataMatch, object> value)
         {
-            var model = new DataLockRowModel(heading, 0, period, value);
+            var model = new _DataLockRowModel(heading, 0, period, value);
             return htmlHelper.PartialAsync("_DataLockRow", model);
         }
     }
