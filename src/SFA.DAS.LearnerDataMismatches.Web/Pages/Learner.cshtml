@@ -175,23 +175,23 @@
                                             </thead>
                                             <tbody class="govuk-table__body">
 
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("UKPRN", Domain.DataLock.Dlock01, period, x => x.Ukprn));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("ULN", Domain.DataLock.Dlock02, period, x => x.Uln));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Standard code", Domain.DataLock.Dlock03, period, x => x.Standard));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Framework code", Domain.DataLock.Dlock04, period, x => x.Framework));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Program type", Domain.DataLock.Dlock05, period, x => x.Program));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Pathway code", Domain.DataLock.Dlock06, period, x => x.Pathway));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Cost", Domain.DataLock.Dlock07, period, x => x.Cost));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Start date", Domain.DataLock.Dlock09, period, x => x.PriceStart));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Pause date", Domain.DataLock.Dlock12, period, x => x.PausedOn));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Stop date", Domain.DataLock.Dlock10, period, x => x.StoppedOn));
-                                                
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Planned completion date", period, x => x.PlannedCompletion));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("Completion status", period, x => x.CompletionStatus));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("TNP 1", period, x => x.Tnp1));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("TNP 2", period, x => x.Tnp2));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("TNP 3", period, x => x.Tnp3));
-                                                @await Html.PartialAsync("_DataLockRow", new DataLockRowModel("TNP 4", period, x => x.Tnp4));
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock01, "UKPRN", x => x.Ukprn)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock02, "ULN", x => x.Uln)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock03, "Standard code", x => x.Standard)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock04, "Framework code", x => x.Framework)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock05, "Program type", x => x.Program)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock06, "Pathway code", x => x.Pathway)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock07, "Cost", x => x.Cost)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock09, "Start date", x => x.PriceStart)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock12, "Pause date", x => x.PausedOn)
+                                                @await Html.PeriodDataLockRow(period, Domain.DataLock.Dlock10, "Stop date", x => x.StoppedOn)
+
+                                                @await Html.PeriodDataRow(period, "Planned completion date", x => x.PlannedCompletion)
+                                                @await Html.PeriodDataRow(period, "Completion status", x => x.CompletionStatus)
+                                                @await Html.PeriodDataRow(period, "TNP 1", x => x.Tnp1)
+                                                @await Html.PeriodDataRow(period, "TNP 2", x => x.Tnp2)
+                                                @await Html.PeriodDataRow(period, "TNP 3", x => x.Tnp3)
+                                                @await Html.PeriodDataRow(period, "TNP 4", x => x.Tnp4)
 
 
                                                 <tr class="govuk-table__row">
