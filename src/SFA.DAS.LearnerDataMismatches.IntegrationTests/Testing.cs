@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
 using Respawn;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.LearnerDataMismatches.IntegrationTests;
 using SFA.DAS.LearnerDataMismatches.Web;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Application.Repositories;
@@ -55,16 +57,32 @@ public static class Testing
         return scopeFactory.CreateScope().ServiceProvider.GetRequiredService<T>();
     }
 
-    public static async Task AddAsync<TEntity>(TEntity entity)
+    public static async Task AddEntities<TEntity>(params TEntity[] entities)
         where TEntity : class
     {
         using var scope = scopeFactory.CreateScope();
 
         var context = scope.ServiceProvider.GetService<PaymentsDataContext>();
 
-        context.Add(entity);
+        foreach(var entity in entities)
+            context.Add(entity);
 
         await context.SaveChangesAsync();
+    }
+
+    public static async Task<TEntity[]> AddEntitiesFromJson<TEntity>(string json)
+        where TEntity : class
+    {
+        var entities = JsonConvert.DeserializeObject<TEntity[]>(json);
+        await AddEntities(entities);
+        return entities;
+    }
+
+    internal static Task<TEntity[]> AddEntitiesFromJsonResource<TEntity>(string name)
+        where TEntity : class
+    {
+        var json = Resources.LoadAsString(name);
+        return AddEntitiesFromJson<TEntity>(json);
     }
 
     private static void EnsureDatabase()

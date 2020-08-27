@@ -1,0 +1,60 @@
+[{
+        "Id": 0,
+        "AccountId": 15084,
+        "AgreementId": "5ZRPV5",
+        "AgreedOnDate": "2018-11-20T00:00:00",
+        "Uln": 2839925663,
+        "Ukprn": 10000610,
+        "EstimatedStartDate": "2018-09-01T00:00:00",
+        "EstimatedEndDate": "2019-12-01T00:00:00",
+        "StandardCode": 0,
+        "ProgrammeType": 2,
+        "FrameworkCode": 521,
+        "PathwayCode": 2,
+        "LegalEntityName": "BOSHERS MASTER BUILDERS LIMITED",
+        "TransferSendingEmployerAccountId": null,
+        "StopDate": "2019-12-01T00:00:00",
+        "Priority": 6,
+        "Status": 3,
+        "IsLevyPayer": true,
+        "ApprenticeshipPriceEpisodes": [{
+                "Id": 0,
+                "ApprenticeshipId": 397288,
+                "StartDate": "2018-09-01T00:00:00",
+                "EndDate": null,
+                "Cost": 7000.00000,
+                "Removed": false
+            }
+        ],
+        "ApprenticeshipEmployerType": 1
+    }, {
+        "Id": 0,
+        "AccountId": 15084,
+        "AgreementId": "5ZRPV5",
+        "AgreedOnDate": "2020-01-29T00:00:00",
+        "Uln": 2839925663,
+        "Ukprn": 10003678,
+        "EstimatedStartDate": "2019-12-01T00:00:00",
+        "EstimatedEndDate": "2024-12-01T00:00:00",
+        "StandardCode": 50,
+        "ProgrammeType": 25,
+        "FrameworkCode": 0,
+        "PathwayCode": 0,
+        "LegalEntityName": "BOSHERS MASTER BUILDERS LIMITED",
+        "TransferSendingEmployerAccountId": null,
+        "StopDate": null,
+        "Priority": 0,
+        "Status": 1,
+        "IsLevyPayer": true,
+        "ApprenticeshipPriceEpisodes": [{
+                "Id": 0,
+                "ApprenticeshipId": 742353,
+                "StartDate": "2019-12-01T00:00:00",
+                "EndDate": null,
+                "Cost": 25972.00000,
+                "Removed": false
+            }
+        ],
+        "ApprenticeshipEmployerType": 1
+    }
+]

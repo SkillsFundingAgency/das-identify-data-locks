@@ -20,15 +20,25 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string Uln { get; set; }
 
         public IEnumerable<Model.CollectionPeriod> CollectionPeriods { get; private set; }
+            = Enumerable.Empty<Model.CollectionPeriod>();
+
         public IEnumerable<Domain.CollectionPeriod> NewCollectionPeriods { get; private set; }
+            = Enumerable.Empty<Domain.CollectionPeriod>();
 
         public string LearnerName { get; set; }
 
         public IEnumerable<string> DataLockNames =>
-            CollectionPeriods
-                .SelectMany(c => c.UniqueDataLockNames)
-                .Distinct()
-                .OrderBy(x => x);
+            NewCollectionPeriods
+            .SelectMany(x => x.DataLocks)
+            .Select(x => x.ToString())
+            .OrderBy(x => x);
+
+        public IEnumerable<DataLockHelpCentreLink> DataLockLinks =>
+            NewCollectionPeriods
+            .SelectMany(x => x.DataLocks)
+            .Distinct()
+            .Select(DataLockHelpCentreLink.Create)
+            .OrderBy(x => x.Name);
 
         public string EmployerName { get; set; }
         public string EmployerId { get; set; }
@@ -64,27 +74,26 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private async Task BuildNewCollections(long learnerUln)
         {
-            var apprenticeships = await context.Apprenticeship
+            var activeAppreticeship = await context.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
                 .Where(x => x.Uln == learnerUln)
-                .ToListAsync();
+                .FirstOrDefaultAsync(a =>
+                    a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
 
             var earnings = await context.EarningEvent
                 .Include(x => x.PriceEpisodes)
                 .Where(x => x.LearnerUln == learnerUln)
                 .ToListAsync();
 
-            var report = new LearnerReport(apprenticeships, earnings);
+            var locks = await context.DataLockEvent
+                .Include(x => x.NonPayablePeriods)
+                .ThenInclude(x => x.DataLockEventNonPayablePeriodFailures)
+                .Where(x => x.LearnerUln == learnerUln)
+                .ToListAsync();
+
+            var report = new LearnerReport(activeAppreticeship, earnings, locks);
 
             NewCollectionPeriods = report.CollectionPeriods;
-
-            NewCollectionPeriods = NewCollectionPeriods
-                .GroupBy(x => x.Period)
-                .Select(x => x.First())
-                .OrderByDescending(x => x);
-
-            var activeAppreticeship = apprenticeships.FirstOrDefault(a =>
-                a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
 
             if (activeAppreticeship != null)
             {
@@ -177,7 +186,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private async Task<List<DataLockEventModel>> GetLockedCommitments(long learnerUln)
         {
-            var lockedCommitmentsQueryable = context.DataLockgEvent
+            var lockedCommitmentsQueryable = context.DataLockEvent
                 .Include(de => de.NonPayablePeriods)
                 .ThenInclude(npp => npp.DataLockEventNonPayablePeriodFailures)
                 .Where(x => x.LearnerUln == learnerUln);//.ToList();

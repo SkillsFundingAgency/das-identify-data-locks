@@ -1,4 +1,6 @@
-﻿using SFA.DAS.Payments.Model.Core.Audit;
+﻿using SFA.DAS.LearnerDataMismatches.Domain;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -22,6 +24,9 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         public int Ukprn { get; private set; } = 111222333;
         public string ProviderName { get; private set; } = "Cambridge College";
 
+        private int? lockedUkprn { get; set; }
+        private (int? standard, int? framework, int? programme, int? pathway)? LockedProgramme;
+
         internal ApprenticeshipBuilder ForLearner(
             int uln = 123456789,
             string firstName = "Stephen",
@@ -35,11 +40,13 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
 
         internal ApprenticeshipBuilder WithProvider(
             int ukprn = 111222333,
-            string name = "Cambridge College") =>
+            string name = "Cambridge College",
+            int? locked = null) =>
             this.With(x =>
             {
                 x.Ukprn = ukprn;
                 x.ProviderName = name;
+                x.lockedUkprn = locked;
             });
 
         internal ApprenticeshipBuilder ForProgramme(
@@ -47,6 +54,10 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
             int frameworkCode = 25,
             int programmeType = 12,
             int pathwayCode = 11,
+            int? lockedStandardCode = null,
+            int? lockedFrameworkCode = null,
+            int? lockedProgrammeType = null,
+            int? lockedPathwayCode = null,
             Func<ApprenticePriceEpisodeBuilder, ApprenticePriceEpisodeBuilder>? episodes = null) =>
             this.With(x =>
             {
@@ -54,6 +65,11 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 x.FrameworkCode = frameworkCode;
                 x.ProgrammeType = programmeType;
                 x.PathwayCode = pathwayCode;
+                x.LockedProgramme =
+                    ( lockedStandardCode
+                    , lockedFrameworkCode
+                    , lockedProgrammeType
+                    , lockedPathwayCode);
                 x.Episodes = x.Episodes.Copy().Configure(episodes);
             });
 
@@ -65,7 +81,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 {
                     Uln = Uln,
                     Ukprn = Ukprn,
-                    Status = ApprenticeshipStatus.Active,
+                    Status = Payments.Model.Core.Entities.ApprenticeshipStatus.Active,
                     StandardCode = StandardCode,
                     FrameworkCode = FrameworkCode,
                     ProgrammeType = ProgrammeType,
@@ -84,15 +100,20 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
             }.ToList();
         }
 
-        internal List<EarningEventModel> BuildEarnings()
+        private List<EarningEventModel> Earnings => LazyEarnings ??= BuildEarnings();
+
+        private List<EarningEventModel>? LazyEarnings;
+
+        private List<EarningEventModel> BuildEarnings()
         {
             return new[]
             {
                 new EarningEventModel
                 {
+                    EventId = Guid.NewGuid(),
                     Ukprn = Ukprn,
                     LearnerUln = Uln,
-                    LearningAimStandardCode = StandardCode,
+                    LearningAimStandardCode = LockedProgramme?.standard ?? StandardCode,
                     LearningAimFrameworkCode = FrameworkCode,
                     LearningAimProgrammeType = ProgrammeType,
                     LearningAimPathwayCode = PathwayCode,
@@ -108,6 +129,59 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                     }
                 }
             }.ToList();
+        }
+
+        private IEnumerable<DataLockEventModel> BuildDataLocks()
+        {
+            var earning = Earnings.FirstOrDefault();
+
+            DataLockEventModel BuildLock(DataLockErrorCode dataLock, Action<DataLockEventModel> update)
+            {
+                var dlock = new DataLockEventModel
+                {
+                    Ukprn = Ukprn,
+                    EarningEventId = earning?.EventId ?? Guid.Empty,
+                    LearnerUln = Uln,
+                    LearningAimStandardCode = StandardCode,
+                    LearningAimFrameworkCode = FrameworkCode,
+                    LearningAimProgrammeType = ProgrammeType,
+                    LearningAimPathwayCode = PathwayCode,
+                    NonPayablePeriods = new List<DataLockEventNonPayablePeriodModel>
+                    {
+                        new DataLockEventNonPayablePeriodModel
+                        {
+                            DataLockEventNonPayablePeriodFailures =
+                                new List<DataLockEventNonPayablePeriodFailureModel>
+                                {
+                                    new DataLockEventNonPayablePeriodFailureModel
+                                    {
+                                        DataLockFailure = dataLock,
+                                    }
+                                }
+                        }
+                    }
+                };
+                update(dlock);
+                return dlock;
+            }
+
+            if (lockedUkprn != null)
+                yield return BuildLock(DataLockErrorCode.DLOCK_01, dlock => dlock.Ukprn = lockedUkprn.Value);
+
+            if (LockedProgramme?.standard != null)
+                yield return BuildLock(DataLockErrorCode.DLOCK_03, dlock => dlock.LearningAimStandardCode = LockedProgramme.Value.standard.Value);
+
+            if (LockedProgramme?.framework != null)
+                yield return BuildLock(DataLockErrorCode.DLOCK_04, dlock => dlock.LearningAimStandardCode = LockedProgramme.Value.framework.Value);
+
+            if (LockedProgramme?.programme != null)
+                yield return BuildLock(DataLockErrorCode.DLOCK_05, dlock => dlock.LearningAimProgrammeType = LockedProgramme.Value.programme.Value);
+        }
+
+        internal LearnerReport CreateLearnerReport()
+        {
+            var value = Earnings;
+            return new LearnerReport(BuildApprentices().FirstOrDefault(), value, BuildDataLocks().ToList());
         }
     }
 
