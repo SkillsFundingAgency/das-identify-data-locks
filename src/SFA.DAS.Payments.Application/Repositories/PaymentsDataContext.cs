@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; protected set; }
         public virtual DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
         public virtual DbSet<CurrentPriceEpisode> CurrentPriceEpisodes { get; set; }
-        public virtual DbSet<DataLockEventModel> DataLockgEvent { get; set; }
+        public virtual DbSet<DataLockEventModel> DataLockEvent { get; set; }
         public virtual DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriod { get; set; }
         public virtual DbSet<DataLockEventNonPayablePeriodFailureModel> DataLockEventNonPayablePeriodFailure { get; set; }
         public virtual DbSet<RequiredPaymentEventModel> RequiredPaymentEvent { get; set; }

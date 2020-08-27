@@ -41,7 +41,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .ToListAsync();
 
             DataLocks = await context
-                .DataLockgEvent
+                .DataLockEvent
                 .Include(x => x.NonPayablePeriods)
                 .ThenInclude(x => x.DataLockEventNonPayablePeriodFailures)
                 .Where(x => x.LearnerUln == Uln)

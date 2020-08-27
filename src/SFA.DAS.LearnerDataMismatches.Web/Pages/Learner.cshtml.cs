@@ -20,7 +20,10 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string Uln { get; set; }
 
         public IEnumerable<Model.CollectionPeriod> CollectionPeriods { get; private set; }
+            = Enumerable.Empty<Model.CollectionPeriod>();
+
         public IEnumerable<Domain.CollectionPeriod> NewCollectionPeriods { get; private set; }
+            = Enumerable.Empty<Domain.CollectionPeriod>();
 
         public string LearnerName { get; set; }
 
@@ -80,7 +83,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Where(x => x.LearnerUln == learnerUln)
                 .ToListAsync();
 
-            var locks = await context.DataLockgEvent
+            var locks = await context.DataLockEvent
                 .Include(x => x.NonPayablePeriods)
                 .ThenInclude(x => x.DataLockEventNonPayablePeriodFailures)
                 .Where(x => x.LearnerUln == learnerUln)
@@ -89,11 +92,6 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             var report = new LearnerReport(apprenticeships, earnings, locks);
 
             NewCollectionPeriods = report.CollectionPeriods;
-
-            NewCollectionPeriods = NewCollectionPeriods
-                .GroupBy(x => x.Period)
-                .Select(x => x.First())
-                .OrderByDescending(x => x);
 
             var activeAppreticeship = apprenticeships.FirstOrDefault(a =>
                 a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
@@ -189,7 +187,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
 
         private async Task<List<DataLockEventModel>> GetLockedCommitments(long learnerUln)
         {
-            var lockedCommitmentsQueryable = context.DataLockgEvent
+            var lockedCommitmentsQueryable = context.DataLockEvent
                 .Include(de => de.NonPayablePeriods)
                 .ThenInclude(npp => npp.DataLockEventNonPayablePeriodFailures)
                 .Where(x => x.LearnerUln == learnerUln);//.ToList();
