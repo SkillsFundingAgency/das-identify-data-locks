@@ -36,6 +36,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public IEnumerable<DataLockHelpCentreLink> DataLockLinks =>
             NewCollectionPeriods
             .SelectMany(x => x.DataLocks)
+            .Distinct()
             .Select(DataLockHelpCentreLink.Create)
             .OrderBy(x => x.Name);
 
