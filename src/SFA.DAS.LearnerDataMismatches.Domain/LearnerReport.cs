@@ -15,7 +15,5 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
         public string LearnerName { get; set; }
         public bool HasAnyDataLocks => DataLocks.Any();
         public bool HasActiveApprenticeship => ActiveApprenticeship != null;
-                        StoppedOn = activeApprenticeship.StopDate,
-                        StoppedOn = x.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
     }
 }
