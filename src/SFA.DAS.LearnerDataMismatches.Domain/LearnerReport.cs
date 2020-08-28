@@ -19,6 +19,8 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                     .SelectMany(l => l.NonPayablePeriods)
                     .SelectMany(l => l.DataLockEventNonPayablePeriodFailures)
                     .Select(l => (DataLock)l.DataLockFailure)
+                    .Distinct()
+                    .OrderBy(x => x)
                     .ToList(),
 
                     Apprenticeship = new DataMatch

@@ -97,5 +97,34 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                     DataLocks = new[] { DataLock.Dlock03 },
                 });
         }
+
+        [Test]
+        public void PopulatesDataLocksInOrder()
+        {
+            var builder = new ApprenticeshipBuilder()
+                .ForProgramme(standardCode: 10, lockedStandardCode: 11,
+                              frameworkCode: 20, lockedFrameworkCode: 22);
+
+            var sut = builder.CreateLearnerReport(modifyLocks: l =>
+                l.OrderByDescending(x => x.NonPayablePeriods
+                    .SelectMany(x => x.DataLockEventNonPayablePeriodFailures)
+                    .Select(x => x.DataLockFailure)
+                    .First()));
+
+            foreach (var p in sut.CollectionPeriods)
+                p.DataLocks.Should().HaveCountGreaterOrEqualTo(2).And.BeInAscendingOrder(x => x);
+        }
+
+        [Test]
+        public void PopulatesDataLocksWithoutDuplicates()
+        {
+            var builder = new ApprenticeshipBuilder()
+                .ForProgramme(standardCode: 10, lockedStandardCode: 11);
+
+            var sut = builder.CreateLearnerReport(modifyLocks: l => l.Append(l.First()));
+
+            foreach (var p in sut.CollectionPeriods)
+                p.DataLocks.Should().OnlyHaveUniqueItems();
+        }
     }
 }
