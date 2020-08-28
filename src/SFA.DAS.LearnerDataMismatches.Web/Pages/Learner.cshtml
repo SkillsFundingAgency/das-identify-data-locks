@@ -153,6 +153,10 @@
                         <div class="entry">
                             <div class="rnumb govuk-heading-m">@period.Period</div>
                             <div class="rcontent">
+                                @foreach (var dlock in period.DataLocks)
+                                {
+                                    <p class="govuk-body govuk-!-font-weight-bold thelock">@dlock</p>
+                                }
 
                                 <details class="govuk-details flag" data-module="govuk-details">
                                     <summary class="govuk-details__summary">
