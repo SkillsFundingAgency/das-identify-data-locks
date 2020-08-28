@@ -1,34 +1,35 @@
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
 {
-    public interface ICommitmentsService
+    public class CommitmentsService
     {
-        Task<string> GetApprenticesName(string uln, long accountId);
-    }
+        private readonly ICommitmentsApiClient commitmentsApiClient;
 
-    public class CommitmentsService : ICommitmentsService
-    {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        public CommitmentsService(ICommitmentsApiClient commitmentsApiClient)
-        {
-            _commitmentsApiClient = commitmentsApiClient;
-        }
+        public CommitmentsService(ICommitmentsApiClient commitmentsApiClient) =>
+            this.commitmentsApiClient = commitmentsApiClient;
 
         public async Task<string> GetApprenticesName(string uln, long accountId)
         {
-            var request = new GetApprenticeshipsRequest()
+            try
             {
-                AccountId = accountId,
-                SearchTerm = uln
-            };
-            var result = await _commitmentsApiClient.GetApprenticeships(request);
-            var apprenticeship = result?.Apprenticeships?.FirstOrDefault();
-            if (apprenticeship == null) return string.Empty;
-            return $"{apprenticeship.FirstName} {apprenticeship.LastName}";
+                var request = new GetApprenticeshipsRequest()
+                {
+                    AccountId = accountId,
+                    SearchTerm = uln
+                };
+                var result = await commitmentsApiClient.GetApprenticeships(request);
+                var apprenticeship = result?.Apprenticeships?.FirstOrDefault();
+                if (apprenticeship == null) return string.Empty;
+                return $"{apprenticeship.FirstName} {apprenticeship.LastName}";
+            }
+            catch
+            {
+                return "";
+            }
         }
     }
 }

@@ -74,20 +74,20 @@ namespace SFA.DAS.LearnerDataMismatches.Web
         {
             var commitmentsClientApiConfiguration = new CommitmentsClientApiConfiguration();
             Configuration.GetSection(nameof(CommitmentsClientApiConfiguration)).Bind(commitmentsClientApiConfiguration);
-            services.AddSingleton<CommitmentsClientApiConfiguration>(commitmentsClientApiConfiguration);
+            services.AddSingleton(commitmentsClientApiConfiguration);
             services.AddSingleton<ICommitmentsApiClientFactory, CommitmentsApiClientFactory>();
-            services.AddTransient<ICommitmentsApiClient>(x => x.GetService<ICommitmentsApiClientFactory>().CreateClient());
-            services.AddTransient<ICommitmentsService, CommitmentsService>();
+            services.AddTransient(x => x.GetService<ICommitmentsApiClientFactory>().CreateClient());
+            services.AddTransient<CommitmentsService>();
 
             var accountsApiConfiguration = new AccountApiConfiguration();
             Configuration.GetSection(nameof(AccountApiConfiguration)).Bind(accountsApiConfiguration);
             services.AddSingleton<IAccountApiConfiguration>(accountsApiConfiguration);
             services.AddTransient<IAccountApiClient, AccountApiClient>();
-            services.AddTransient<IEmployerService, EmployerService>();
+            services.AddTransient<EmployerService>();
 
             services.AddTransient<IProviderApiClient>((x) => new ProviderApiClient(Configuration.GetValue<string>("FatApiBaseUri")));
-            services.AddTransient<IProviderService, ProviderService>();
-            services.AddTransient<IDataLockService, DataLockService>();
+            services.AddTransient<ProviderService>();
+            services.AddTransient<DataLockService>();
             services.AddTransient<LearnerReportProvider>();
         }
     }
