@@ -1,30 +1,23 @@
-using System;
-using System.Threading.Tasks;
 using SFA.DAS.EAS.Account.Api.Client;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
 {
-    public interface IEmployerService
+    public class EmployerService
     {
-        Task<(string employerName, string publicAccountId)> GetEmployerName(long accountId);
-    }
+        private readonly IAccountApiClient accountApiClient;
 
-    public class EmployerService : IEmployerService
-    {
-        private readonly IAccountApiClient _accountApiClient;
-        public EmployerService(IAccountApiClient accountApiClient)
-        {
-            _accountApiClient = accountApiClient;
-        }
+        public EmployerService(IAccountApiClient accountApiClient) =>
+            this.accountApiClient = accountApiClient;
 
         public async Task<(string employerName, string publicAccountId)> GetEmployerName(long accountId)
         {
             try
             {
-                var result = await _accountApiClient.GetAccount(accountId);
+                var result = await accountApiClient.GetAccount(accountId);
                 return (result.DasAccountName, result.PublicHashedAccountId);
             }
-            catch (Exception)
+            catch
             {
                 //if the employer id is invalid the service throws 500
                 return (string.Empty, string.Empty);

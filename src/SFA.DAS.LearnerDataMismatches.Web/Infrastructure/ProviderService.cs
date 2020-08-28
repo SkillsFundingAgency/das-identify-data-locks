@@ -1,25 +1,19 @@
-using System.Net.Http;
 using SFA.DAS.Providers.Api.Client;
 
 namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
 {
-    public interface IProviderService
+    public class ProviderService
     {
-        string GetProviderName(long ukprn);
-    }
+        private readonly IProviderApiClient providerApiClient;
 
-    public class ProviderService : IProviderService
-    {
-        private readonly IProviderApiClient _providerApiClient;
-        public ProviderService(IProviderApiClient providerApiClient)
-        {
-            _providerApiClient = providerApiClient;
-        }
+        public ProviderService(IProviderApiClient providerApiClient) =>
+            this.providerApiClient = providerApiClient;
+
         public string GetProviderName(long ukprn)
         {
             try
             {
-                var provider = _providerApiClient.Get(ukprn);
+                var provider = providerApiClient.Get(ukprn);
                 return provider.ProviderName;
             }
             catch

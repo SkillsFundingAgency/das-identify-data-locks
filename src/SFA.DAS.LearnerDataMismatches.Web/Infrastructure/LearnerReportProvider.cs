@@ -5,12 +5,16 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
 {
     public class LearnerReportProvider
     {
-        private readonly IDataLockService dataLockService;
-        private readonly IEmployerService employerService;
-        private readonly IProviderService providerService;
-        private readonly ICommitmentsService commitmentsService;
+        private readonly DataLockService dataLockService;
+        private readonly EmployerService employerService;
+        private readonly ProviderService providerService;
+        private readonly CommitmentsService commitmentsService;
 
-        public LearnerReportProvider(IDataLockService dataLockService, IEmployerService employerService, IProviderService providerService, ICommitmentsService commitmentsService)
+        public LearnerReportProvider(
+            DataLockService dataLockService,
+            EmployerService employerService,
+            ProviderService providerService,
+            CommitmentsService commitmentsService)
         {
             this.commitmentsService = commitmentsService;
             this.providerService = providerService;
@@ -23,7 +27,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
             var activeApprenticeship = await dataLockService.GetActiveApprenticeship(uln);
             if (activeApprenticeship == null) return new LearnerReport();
 
-            var (earnings, dlocks) = await dataLockService.LoadLearnerData(activeApprenticeship);
+            var (earnings, dlocks) = await dataLockService.GetLearnerData(activeApprenticeship);
             var providerName = providerService.GetProviderName(activeApprenticeship.Ukprn);
             var (employerName, employerId) = await employerService.GetEmployerName(activeApprenticeship.AccountId);
             var learnerName = await commitmentsService.GetApprenticesName(uln.ToString(), activeApprenticeship.AccountId);
