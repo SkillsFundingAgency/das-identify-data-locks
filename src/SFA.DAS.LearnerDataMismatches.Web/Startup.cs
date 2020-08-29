@@ -88,7 +88,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web
             services.AddTransient<IProviderApiClient>((x) => new ProviderApiClient(Configuration.GetValue<string>("FatApiBaseUri")));
             services.AddTransient<IProviderService, ProviderService>();
             services.AddTransient<IDataLockService, DataLockService>();
-            services.AddTransient<ILearnerReportProvider, LearnerReportProvider>();
+            services.AddTransient<LearnerReportProvider>();
         }
     }
 }

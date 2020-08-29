@@ -1,22 +1,27 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
 {
     public interface IDataLockService
     {
         Task<ApprenticeshipModel> GetActiveApprenticeship(long uln);
+
         Task<IEnumerable<CollectionPeriod>> GetAllActiveDataLocks(ApprenticeshipModel activeApprenticeship);
+
+        Task<(IEnumerable<EarningEventModel> earnings, IEnumerable<DataLockEventModel> dlocks)> LoadLearnerData(ApprenticeshipModel apprenticeship);
     }
 
     public class DataLockService : IDataLockService
     {
         private readonly IPaymentsDataContext _context;
+
         public DataLockService(IPaymentsDataContext context)
         {
             _context = context;
@@ -29,6 +34,24 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
                 .Where(x => x.Uln == uln)
                 .FirstOrDefaultAsync(a =>
                     a.Status == Payments.Model.Core.Entities.ApprenticeshipStatus.Active);
+        }
+
+        public
+        async Task<(IEnumerable<EarningEventModel> earnings, IEnumerable<DataLockEventModel> dlocks)>
+        LoadLearnerData(ApprenticeshipModel apprenticeship)
+        {
+            var earnings = await _context.EarningEvent
+                .Include(x => x.PriceEpisodes)
+                .Where(x => x.LearnerUln == apprenticeship.Uln)
+                .ToListAsync();
+
+            var locks = await _context.DataLockEvent
+                .Include(x => x.NonPayablePeriods)
+                .ThenInclude(x => x.DataLockEventNonPayablePeriodFailures)
+                .Where(x => x.LearnerUln == apprenticeship.Uln)
+                .ToListAsync();
+
+            return (earnings, locks);
         }
 
         public async Task<IEnumerable<CollectionPeriod>> GetAllActiveDataLocks(ApprenticeshipModel activeApprenticeship)
