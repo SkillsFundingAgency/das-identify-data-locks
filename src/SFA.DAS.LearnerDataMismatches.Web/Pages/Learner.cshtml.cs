@@ -32,9 +32,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages {
         public string EmployerId { get; set; }
         public string ProviderName { get; set; }
         public string ProviderId { get; set; }
-        private readonly ILearnerReportProvider learnerReportProvider;
+        private readonly LearnerReportProvider learnerReportProvider;
 
-        public LearnerModel (ILearnerReportProvider learnerReportProvider) 
+        public LearnerModel (LearnerReportProvider learnerReportProvider) 
         {
             this.learnerReportProvider = learnerReportProvider;
         }
@@ -44,14 +44,14 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages {
                 throw new Exception ("Invalid ULN");
 
 
-            var report = await learnerReportProvider.GetLearnerReport(uln);
+            var report = await learnerReportProvider.BuildLearnerReport(uln);
 
-            LearnerName = report.LearnerName;
+            LearnerName = report.Learner.Name;
             NewCollectionPeriods = report.DataLocks;
-            ProviderName = report.ProviderName;
-            ProviderId = report.ProviderId;
-            EmployerName = report.EmployerName;
-            EmployerId = report.EmployerId;
+            ProviderName = report.Provider.Name;
+            ProviderId = report.Provider.Id;
+            EmployerName = report.Employer.Name;
+            EmployerId = report.Employer.Id;
         }
     }
 }

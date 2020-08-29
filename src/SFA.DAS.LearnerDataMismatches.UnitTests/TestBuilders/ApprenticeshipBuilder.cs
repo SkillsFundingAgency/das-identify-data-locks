@@ -183,11 +183,11 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 yield return BuildLock(DataLockErrorCode.DLOCK_05, dlock => dlock.LearningAimProgrammeType = LockedProgramme.Value.programme.Value);
         }
 
-        internal LearnerReport CreateLearnerReport(Func<IEnumerable<DataLockEventModel>, IEnumerable<DataLockEventModel>>? modifyLocks = null)
+        internal CollectionPeriodReport CreateLearnerReport(Func<IEnumerable<DataLockEventModel>, IEnumerable<DataLockEventModel>>? modifyLocks = null)
         {
             var locks = BuildDataLocks();
             if (modifyLocks != null) locks = modifyLocks(locks);
-            return new LearnerReport(BuildApprentices().FirstOrDefault(), Earnings, locks.ToList());
+            return new CollectionPeriodReport(BuildApprentices().FirstOrDefault(), Earnings, locks.ToList());
         }
     }
 
