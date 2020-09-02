@@ -36,6 +36,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             .OrderBy (x => x.Name);
         
         public AcademicYear AcademicYear => new AcademicYear(DateTime.Today);
+        public bool HasDataLocks => NewCollectionPeriods.Any();
         private readonly LearnerReportProvider learnerReportProvider;
 
         public LearnerModel (LearnerReportProvider learnerReportProvider) 
