@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
 {
-    public class LearnerWithNoHistory
+    public class LearnerWithRealisticHistory
     {
         [SetUp]
         public async Task SetUp()
@@ -45,7 +45,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         [Test]
         public async Task Finds_collection_period_data()
         {
-            var learner = Testing.Create<LearnerModel>();
+            var learner = Testing.CreatePage<LearnerModel>();
             learner.Uln = LearnerUln;
             await learner.OnGetAsync();
 
@@ -80,7 +80,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         [Test]
         public async Task History_is_ordered()
         {
-            var learner = Testing.Create<LearnerModel>();
+            var learner = Testing.CreatePage<LearnerModel>();
             learner.Uln = LearnerUln;
             await learner.OnGetAsync();
 
@@ -102,7 +102,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         [Test]
         public async Task History_only_contains_active_provider()
         {
-            var learner = Testing.Create<LearnerModel>();
+            var learner = Testing.CreatePage<LearnerModel>();
             learner.Uln = LearnerUln;
             await learner.OnGetAsync();
 
@@ -128,7 +128,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                     }
                 }));
 
-            var learner = Testing.Create<LearnerModel>();
+            var learner = Testing.CreatePage<LearnerModel>();
             learner.Uln = LearnerUln;
             await learner.OnGetAsync();
 
@@ -138,7 +138,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         [Test]
         public async Task Data_locks_are_shown()
         {
-            var learner = Testing.Create<LearnerModel>();
+            var learner = Testing.CreatePage<LearnerModel>();
             learner.Uln = LearnerUln;
             await learner.OnGetAsync();
 
