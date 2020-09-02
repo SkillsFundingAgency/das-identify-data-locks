@@ -6,6 +6,7 @@ using NUnit.Framework.Internal;
 using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -158,6 +159,25 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
 
             learner.ProviderId.Should().Be(apprenticeship.Ukprn.ToString());
             learner.ProviderName.Should().Be("Best Training Provider");
+        }
+
+        [Test]
+        public async Task Account_details_are_shown()
+        {
+            Testing.AccountsApi
+                .GetAccount(apprenticeship.AccountId)
+                .Returns(Task.FromResult(new AccountDetailViewModel
+                {
+                    DasAccountName = "Fantastic Employer",
+                    PublicHashedAccountId = "qwerty",
+                }));
+
+            var learner = Testing.CreatePage<LearnerModel>();
+            learner.Uln = apprenticeship.Uln.ToString();
+            await learner.OnGetAsync();
+
+            learner.EmployerId.Should().Be("qwerty");
+            learner.EmployerName.Should().Be("Fantastic Employer");
         }
 
         [Test]
