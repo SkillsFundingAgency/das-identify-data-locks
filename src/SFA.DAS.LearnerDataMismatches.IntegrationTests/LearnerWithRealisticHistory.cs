@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
 {
-    public class LearnerWithNoHistory
+    public class LearnerWithRealisticHistory
     {
         [SetUp]
         public async Task SetUp()
