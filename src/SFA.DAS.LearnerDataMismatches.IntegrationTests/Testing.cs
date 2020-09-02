@@ -56,10 +56,10 @@ public static class Testing
         new Startup(configuration).ConfigureServices(services);
         services.AddLogging();
         services.AddPages();
-        services.ConfigureMockServices(
-            _ => CommitmentsApi,
-            _ => ProviderApi,
-            _ => AccountsApi);
+        services
+            .ConfigureMockService(_ => CommitmentsApi)
+            .ConfigureMockService(_ => ProviderApi)
+            .ConfigureMockService(_ => AccountsApi);
         return services;
     }
 
