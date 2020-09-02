@@ -3,8 +3,10 @@ using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Pages;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -12,9 +14,11 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using PaymentsApprenticeshipStatus = SFA.DAS.Payments.Model.Core.Entities.ApprenticeshipStatus;
 
 namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
 {
+    [Explicit]
     public class LearnerWithRealisticHistory
     {
         [SetUp]
@@ -23,8 +27,10 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             await Testing.Reset();
 
             var apps = await Testing.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.LearnerDataMismatches.IntegrationTests.TestData.Apprenticeship.json");
-            var appid = apps.FirstOrDefault()?.Id;
-            LearnerUln = apps.FirstOrDefault()?.Uln.ToString();
+            if (apps.Length == 0) throw new Exception("There must be an apprenticeship to run these tests.");
+
+            apprenticeship = apps.FirstOrDefault(x => x.Status == PaymentsApprenticeshipStatus.Active);
+            var appid = apprenticeship.Id;
 
             await Testing.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.LearnerDataMismatches.IntegrationTests.TestData.EarningEvents.json");
 
@@ -40,13 +46,13 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             await Testing.AddEntities(dlocks);
         }
 
-        private string LearnerUln;
+        private ApprenticeshipModel apprenticeship;
 
         [Test]
         public async Task Finds_collection_period_data()
         {
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.NewCollectionPeriods.Should().ContainEquivalentOf(
@@ -81,7 +87,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         public async Task History_is_ordered()
         {
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.NewCollectionPeriods.Should()
@@ -103,7 +109,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         public async Task History_only_contains_active_provider()
         {
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.NewCollectionPeriods.Should()
@@ -111,11 +117,13 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         }
 
         [Test]
-        public async Task Learner_name_is_found()
+        public async Task Learner_name_is_shown()
         {
             Testing.CommitmentsApi
-                .GetApprenticeships(Arg.Is<GetApprenticeshipsRequest>(req =>
-                    req.AccountId == 15084 && req.SearchTerm == "2839925663"))
+                .GetApprenticeships(Arg.Is<GetApprenticeshipsRequest>(
+                    req =>
+                        req.AccountId == apprenticeship.AccountId &&
+                        req.SearchTerm == apprenticeship.Uln.ToString()))
                 .Returns(Task.FromResult(new GetApprenticeshipsResponse
                 {
                     Apprenticeships = new[]
@@ -129,17 +137,55 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                 }));
 
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.LearnerName.Should().Be("LearnerFirstname LearnerLastname");
         }
 
         [Test]
+        public async Task Provider_details_are_shown()
+        {
+            Testing.ProviderApi
+                .Get(apprenticeship.Ukprn)
+                .Returns(new Provider
+                {
+                    Ukprn = apprenticeship.Ukprn,
+                    ProviderName = "Best Training Provider",
+                });
+
+            var learner = Testing.CreatePage<LearnerModel>();
+            learner.Uln = apprenticeship.Uln.ToString();
+            await learner.OnGetAsync();
+
+            learner.ProviderId.Should().Be(apprenticeship.Ukprn.ToString());
+            learner.ProviderName.Should().Be("Best Training Provider");
+        }
+
+        [Test]
+        public async Task Account_details_are_shown()
+        {
+            Testing.AccountsApi
+                .GetAccount(apprenticeship.AccountId)
+                .Returns(Task.FromResult(new AccountDetailViewModel
+                {
+                    DasAccountName = "Fantastic Employer",
+                    PublicHashedAccountId = "qwerty",
+                }));
+
+            var learner = Testing.CreatePage<LearnerModel>();
+            learner.Uln = apprenticeship.Uln.ToString();
+            await learner.OnGetAsync();
+
+            learner.EmployerId.Should().Be("qwerty");
+            learner.EmployerName.Should().Be("Fantastic Employer");
+        }
+
+        [Test]
         public async Task Data_locks_are_shown()
         {
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.DataLockNames.Should().Contain("Dlock01");

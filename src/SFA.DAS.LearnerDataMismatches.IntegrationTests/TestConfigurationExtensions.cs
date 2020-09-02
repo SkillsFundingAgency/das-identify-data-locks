@@ -12,13 +12,14 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             services.AddScoped<LearnerModel>();
         }
 
-        public static void ConfigureMockService<T>(
+        public static ServiceCollection ConfigureMockService<T>(
             this ServiceCollection services,
             Func<IServiceProvider, T> service)
             where T : class
         {
             services.RemoveAll(typeof(T));
             services.AddScoped(service);
+            return services;
         }
     }
 }

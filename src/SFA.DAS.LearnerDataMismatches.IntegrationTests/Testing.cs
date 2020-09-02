@@ -6,9 +6,11 @@ using NSubstitute;
 using NUnit.Framework;
 using Respawn;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.LearnerDataMismatches.IntegrationTests;
 using SFA.DAS.LearnerDataMismatches.Web;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Providers.Api.Client;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -28,6 +30,8 @@ public static class Testing
     private static Checkpoint checkpoint;
 
     public static ICommitmentsApiClient CommitmentsApi;
+    public static IProviderApiClient ProviderApi;
+    public static IAccountApiClient AccountsApi;
 
     [OneTimeSetUp]
     public static void RunBeforeAnyTests()
@@ -52,7 +56,10 @@ public static class Testing
         new Startup(configuration).ConfigureServices(services);
         services.AddLogging();
         services.AddPages();
-        services.ConfigureMockService(_ => CommitmentsApi);
+        services
+            .ConfigureMockService(_ => CommitmentsApi)
+            .ConfigureMockService(_ => ProviderApi)
+            .ConfigureMockService(_ => AccountsApi);
         return services;
     }
 
@@ -102,5 +109,7 @@ public static class Testing
     {
         await checkpoint.Reset(configuration.GetConnectionString("PaymentsDatabase"));
         CommitmentsApi = Substitute.For<ICommitmentsApiClient>();
+        ProviderApi = Substitute.For<IProviderApiClient>();
+        AccountsApi = Substitute.For<IAccountApiClient>();
     }
 }
