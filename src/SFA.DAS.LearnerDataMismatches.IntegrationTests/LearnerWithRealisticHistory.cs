@@ -18,6 +18,7 @@ using PaymentsApprenticeshipStatus = SFA.DAS.Payments.Model.Core.Entities.Appren
 
 namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
 {
+    [Explicit]
     public class LearnerWithRealisticHistory
     {
         [SetUp]
