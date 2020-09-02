@@ -19,16 +19,12 @@
     </div>
 }
 
-
 <div class="govuk-grid-row ">
-
     <!-- left col -->
     <div class="govuk-grid-column-two-thirds">
 
-
         <span class="govuk-caption-l">Data locks</span>
         <h1 class="govuk-heading-l">@Model.LearnerName</h1>
-
 
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
@@ -138,16 +134,16 @@
 
         <h2 class="govuk-heading-l govuk-!-margin-top-7">Active Data Locks</h2>
 
-        <div class="timeline govuk-!-margin-top-7">
-
-            <div class="funding-year">
+        <div class="govuk-!-margin-top-7">
+            <div asp-hide="Model.HasDataLocks" class="funding-year">
+                <p class="">There are currently no active data locks for this learner</p>
+            </div>
+            <div asp-show="Model.HasDataLocks" class="timeline funding-year">
                 <h2 class="govuk-heading-m">@Model.AcademicYear.CurrentRange funding year</h2>
 
                 <div class="returns">
-
                     @foreach (var period in Model.NewCollectionPeriods)
                     {
-
                         <div class="entry">
                             <div class="rnumb govuk-heading-m">@period.Period</div>
                             <div class="rcontent">
@@ -213,7 +209,7 @@
                     }
                 </div>
             </div>
-            <div class="funding-year">
+            <div asp-show="Model.HasDataLocks" class="funding-year">
                 <h2 class="govuk-heading-m">@Model.AcademicYear.PreviousRange funding year</h2>
             </div>
         </div>
