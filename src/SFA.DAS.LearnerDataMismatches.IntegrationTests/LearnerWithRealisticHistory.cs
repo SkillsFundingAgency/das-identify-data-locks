@@ -23,8 +23,10 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             await Testing.Reset();
 
             var apps = await Testing.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.LearnerDataMismatches.IntegrationTests.TestData.Apprenticeship.json");
-            var appid = apps.FirstOrDefault()?.Id;
-            LearnerUln = apps.FirstOrDefault()?.Uln.ToString();
+            if (apps.Length == 0) throw new Exception("There must be an apprenticeship to run these tests.");
+
+            apprenticeship = apps[0];
+            var appid = apprenticeship.Id;
 
             await Testing.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.LearnerDataMismatches.IntegrationTests.TestData.EarningEvents.json");
 
@@ -40,13 +42,13 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             await Testing.AddEntities(dlocks);
         }
 
-        private string LearnerUln;
+        private ApprenticeshipModel apprenticeship;
 
         [Test]
         public async Task Finds_collection_period_data()
         {
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.NewCollectionPeriods.Should().ContainEquivalentOf(
@@ -81,7 +83,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         public async Task History_is_ordered()
         {
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.NewCollectionPeriods.Should()
@@ -103,7 +105,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         public async Task History_only_contains_active_provider()
         {
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.NewCollectionPeriods.Should()
@@ -114,8 +116,10 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         public async Task Learner_name_is_found()
         {
             Testing.CommitmentsApi
-                .GetApprenticeships(Arg.Is<GetApprenticeshipsRequest>(req =>
-                    req.AccountId == 15084 && req.SearchTerm == "2839925663"))
+                .GetApprenticeships(Arg.Is<GetApprenticeshipsRequest>(
+                    req =>
+                        req.AccountId == apprenticeship.AccountId &&
+                        req.SearchTerm == apprenticeship.Uln.ToString()))
                 .Returns(Task.FromResult(new GetApprenticeshipsResponse
                 {
                     Apprenticeships = new[]
@@ -129,7 +133,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
                 }));
 
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.LearnerName.Should().Be("LearnerFirstname LearnerLastname");
@@ -139,7 +143,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
         public async Task Data_locks_are_shown()
         {
             var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = LearnerUln;
+            learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.DataLockNames.Should().Contain("Dlock01");
