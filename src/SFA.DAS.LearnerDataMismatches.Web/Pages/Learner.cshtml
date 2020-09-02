@@ -136,14 +136,12 @@
 <div class="govuk-grid-row dunlocker">
     <div class="govuk-grid-column-full">
 
-
         <h2 class="govuk-heading-l govuk-!-margin-top-7">Active Data Locks</h2>
-
 
         <div class="timeline govuk-!-margin-top-7">
 
             <div class="funding-year">
-                <h2 class="govuk-heading-m">2020 - 2021 funding year</h2>
+                <h2 class="govuk-heading-m">@Model.AcademicYear.CurrentRange funding year</h2>
 
                 <div class="returns">
 
@@ -214,6 +212,9 @@
                         </div>
                     }
                 </div>
+            </div>
+            <div class="funding-year">
+                <h2 class="govuk-heading-m">@Model.AcademicYear.PreviousRange funding year</h2>
             </div>
         </div>
     </div>

@@ -4,10 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SFA.DAS.LearnerDataMismatches.Domain;
 using SFA.DAS.LearnerDataMismatches.Web.Infrastructure;
 
-namespace SFA.DAS.LearnerDataMismatches.Web.Pages {
-    public class LearnerModel : PageModel {
+namespace SFA.DAS.LearnerDataMismatches.Web.Pages 
+{
+    public class LearnerModel : PageModel 
+    {
         [BindProperty (SupportsGet = true)]
         public string Uln { get; set; }
 
@@ -15,6 +18,10 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages {
 
         public string LearnerName { get; set; }
 
+        public string EmployerName { get; set; }
+        public string EmployerId { get; set; }
+        public string ProviderName { get; set; }
+        public string ProviderId { get; set; }
         public IEnumerable<string> DataLockNames =>
             NewCollectionPeriods
             .SelectMany (x => x.DataLocks)
@@ -27,11 +34,8 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages {
             .Distinct ()
             .Select (DataLockHelpCentreLink.Create)
             .OrderBy (x => x.Name);
-
-        public string EmployerName { get; set; }
-        public string EmployerId { get; set; }
-        public string ProviderName { get; set; }
-        public string ProviderId { get; set; }
+        
+        public AcademicYear AcademicYear => new AcademicYear(DateTime.Today);
         private readonly LearnerReportProvider learnerReportProvider;
 
         public LearnerModel (LearnerReportProvider learnerReportProvider) 
@@ -39,10 +43,10 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages {
             this.learnerReportProvider = learnerReportProvider;
         }
 
-        public async Task OnGetAsync () {
+        public async Task OnGetAsync () 
+        {
             if (!long.TryParse (Uln, out var uln))
                 throw new Exception ("Invalid ULN");
-
 
             var report = await learnerReportProvider.BuildLearnerReport(uln);
 
