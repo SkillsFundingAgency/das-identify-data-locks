@@ -44,12 +44,12 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             this.learnerReportProvider = learnerReportProvider;
         }
 
-        public async Task OnGetAsync () 
+        public async Task OnGetAsync() 
         {
             if (!long.TryParse (Uln, out var uln))
                 throw new Exception ("Invalid ULN");
 
-            var report = await learnerReportProvider.BuildLearnerReport(uln);
+            var report = await learnerReportProvider.BuildLearnerReport(uln, new [] {AcademicYear.Current, AcademicYear.Previous});
 
             LearnerName = report.Learner.Name;
             NewCollectionPeriods = report.DataLocks;
