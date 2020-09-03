@@ -55,7 +55,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.NewCollectionPeriods.Should().ContainEquivalentOf(
+            learner.CurrentYearDataLocks.Should().ContainEquivalentOf(
                 new
                 {
                     Apprenticeship = new
@@ -90,7 +90,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.NewCollectionPeriods.Should()
+            learner.CurrentYearDataLocks.Should()
                 .NotBeEmpty()
                 .And.BeInDescendingOrder()
                 .And.BeEquivalentTo(
@@ -112,7 +112,7 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             learner.Uln = apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.NewCollectionPeriods.Should()
+            learner.CurrentYearDataLocks.Should()
                 .OnlyContain(x => x.Apprenticeship.Ukprn == 10003678);
         }
 
