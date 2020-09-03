@@ -1,4 +1,6 @@
 using SFA.DAS.LearnerDataMismatches.Domain;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
@@ -27,19 +29,22 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
             var activeApprenticeship = await dataLockService.GetActiveApprenticeship(uln);
             if (activeApprenticeship == null) return new LearnerReport();
 
-            var (earnings, dataLocks) = await dataLockService.GetLearnerData(activeApprenticeship, academicYears);
+            var (earnings, dataLocks) = await dataLockService.GetLearnerData(activeApprenticeship.Uln, academicYears);
             var providerName = providerService.GetProviderName(activeApprenticeship.Ukprn);
             var (employerName, employerId) = await employerService.GetEmployerName(activeApprenticeship.AccountId);
             var learnerName = await commitmentsService.GetApprenticesName(uln.ToString(), activeApprenticeship.AccountId);
 
-            var periods = new CollectionPeriodReport(activeApprenticeship, earnings, dataLocks);
+            var report = new CollectionPeriodReport(activeApprenticeship, earnings, dataLocks);
+
+            var dataLocksByAcademicYear = report.CollectionPeriods.GroupBy(c => c.Period.Year).ToDictionary(g => g.Key, g => g.ToList());
 
             return new LearnerReport
             {
-                DataLocks = periods.CollectionPeriods,
+                DataLocks = dataLocksByAcademicYear,
                 Learner = (uln.ToString(), learnerName),
                 Employer = (employerId, employerName),
                 Provider = (activeApprenticeship.Ukprn.ToString(), providerName),
+                HasDataLocks = report.HasDataLocks
             };
         }
     }

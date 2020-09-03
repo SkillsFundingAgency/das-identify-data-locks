@@ -9,12 +9,13 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
     {
         public CollectionPeriodReport(ApprenticeshipModel activeApprenticeship, IEnumerable<EarningEventModel> earnings, IEnumerable<DataLockEventModel> locks)
         {
+            HasDataLocks = locks.Any();
             CollectionPeriods = earnings
             .Where(x => x.Ukprn == activeApprenticeship.Ukprn)
             .Select(x => new CollectionPeriod
             {
                 DataLocks = locks
-                    .Where(l => l.Ukprn == x.Ukprn && l.CollectionPeriod == x.CollectionPeriod)
+                    .Where(l => l.Ukprn == x.Ukprn && l.AcademicYear == x.AcademicYear && l.CollectionPeriod == x.CollectionPeriod)
                     .SelectMany(l => l.NonPayablePeriods)
                     .SelectMany(l => l.DataLockEventNonPayablePeriodFailures)
                     .Select(l => (DataLock)l.DataLockFailure)
@@ -62,5 +63,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
         }
 
         public IEnumerable<CollectionPeriod> CollectionPeriods { get; }
+
+        public bool HasDataLocks { get; }
     }
 }

@@ -24,18 +24,18 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
                     a.Status == ApprenticeshipStatus.Active);
         }
 
-        public async Task<(IEnumerable<EarningEventModel>, IEnumerable<DataLockEventModel>)> GetLearnerData(ApprenticeshipModel apprenticeship, int[] academicYears)
+        public async Task<(IEnumerable<EarningEventModel>, IEnumerable<DataLockEventModel>)> GetLearnerData(long uln, int[] academicYears)
         {
             var earnings = await context.EarningEvent
                 .Include(x => x.PriceEpisodes)
-                .Where(x => x.LearnerUln == apprenticeship.Uln)
+                .Where(x => x.LearnerUln == uln)
                 .Where(x => academicYears.Contains((x.AcademicYear)))
                 .ToListAsync();
 
             var locks = await context.DataLockEvent
                 .Include(x => x.NonPayablePeriods)
                 .ThenInclude(x => x.DataLockEventNonPayablePeriodFailures)
-                .Where(x => x.LearnerUln == apprenticeship.Uln)
+                .Where(x => x.LearnerUln == uln)
                 .Where(x => academicYears.Contains(x.AcademicYear))
                 .ToListAsync();
 

@@ -8,13 +8,13 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string Description { get; set; }
         public string Url { get; set; }
 
-        public static DataLockHelpCentreLink Create(Domain.DataLock @lock)
+        public static DataLockHelpCentreLink Create(Domain.DataLock dataLock)
         {
-            links.TryGetValue(@lock, out var description);
+            links.TryGetValue(dataLock, out var description);
 
             return new DataLockHelpCentreLink
             {
-                Name = @lock.ToString(),
+                Name = dataLock.ToString(),
                 Description = description,
                 Url = MistmatchArticleUrl,
             };
