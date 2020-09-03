@@ -29,6 +29,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
             var earnings = await context.EarningEvent
                 .Include(x => x.PriceEpisodes)
                 .Where(x => x.LearnerUln == apprenticeship.Uln)
+                .Where(x => academicYears.Contains((x.AcademicYear)))
                 .ToListAsync();
 
             var locks = await context.DataLockEvent
