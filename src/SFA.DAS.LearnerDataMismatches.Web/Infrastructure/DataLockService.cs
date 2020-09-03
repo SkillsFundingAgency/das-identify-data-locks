@@ -24,11 +24,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
                     a.Status == ApprenticeshipStatus.Active);
         }
 
-        public
-        async Task<(
-            IEnumerable<EarningEventModel> earnings,
-            IEnumerable<DataLockEventModel> dlocks)>
-        GetLearnerData(ApprenticeshipModel apprenticeship)
+        public async Task<(IEnumerable<EarningEventModel>, IEnumerable<DataLockEventModel>)> GetLearnerData(ApprenticeshipModel apprenticeship, int[] academicYears)
         {
             var earnings = await context.EarningEvent
                 .Include(x => x.PriceEpisodes)
@@ -39,6 +35,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
                 .Include(x => x.NonPayablePeriods)
                 .ThenInclude(x => x.DataLockEventNonPayablePeriodFailures)
                 .Where(x => x.LearnerUln == apprenticeship.Uln)
+                .Where(x => academicYears.Contains(x.AcademicYear))
                 .ToListAsync();
 
             return (earnings, locks);

@@ -22,17 +22,17 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
             this.dataLockService = dataLockService;
         }
 
-        public async Task<LearnerReport> BuildLearnerReport(long uln)
+        public async Task<LearnerReport> BuildLearnerReport(long uln, int[] academicYears)
         {
             var activeApprenticeship = await dataLockService.GetActiveApprenticeship(uln);
             if (activeApprenticeship == null) return new LearnerReport();
 
-            var (earnings, dlocks) = await dataLockService.GetLearnerData(activeApprenticeship);
+            var (earnings, dataLocks) = await dataLockService.GetLearnerData(activeApprenticeship, academicYears);
             var providerName = providerService.GetProviderName(activeApprenticeship.Ukprn);
             var (employerName, employerId) = await employerService.GetEmployerName(activeApprenticeship.AccountId);
             var learnerName = await commitmentsService.GetApprenticesName(uln.ToString(), activeApprenticeship.AccountId);
 
-            var periods = new CollectionPeriodReport(activeApprenticeship, earnings, dlocks);
+            var periods = new CollectionPeriodReport(activeApprenticeship, earnings, dataLocks);
 
             return new LearnerReport
             {
