@@ -17,11 +17,11 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
 
             sut.CollectionPeriods.Should().NotBeEmpty();
             sut.CollectionPeriods.First()
-                .Should().BeEquivalentTo(new
+               .Should().BeEquivalentTo(new
                 {
                     Apprenticeship = (DataMatch?)null,
                     Ilr = new { Uln = 22 },
-                    DataLocks = new [] { DataLock.Dlock02 },
+                    DataLocks = new[] { DataLock.Dlock02 },
                 });
         }
     }
