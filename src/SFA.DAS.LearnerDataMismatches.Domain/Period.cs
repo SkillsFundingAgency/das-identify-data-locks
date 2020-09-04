@@ -14,7 +14,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
         public int Month { get; }
 
         public override string ToString() =>
-            $"{Year}-R{Month}";
+            $"R{Month}";
 
         public int CompareTo(Period other)
             => (Year.CompareTo(other.Year), Month.CompareTo(other.Month))
