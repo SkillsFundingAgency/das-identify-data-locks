@@ -2,37 +2,30 @@ using System;
 
 namespace SFA.DAS.LearnerDataMismatches.Domain
 {
-    public class AcademicYear
+    public struct AcademicYear
     {
-        public int Current { get; }
-        public int Previous { get; }
+        public DateTime StartingDate { get; }
+        public int ShortRepresentation { get; }
 
-        public string CurrentRange { get; }
-        public string PreviousRange { get; }
+        public override string ToString() =>
+            $"{StartingDate.Year} - {StartingDate.Year + 1}";
 
-        public AcademicYear(DateTime today)
+        public AcademicYear PreviousAcademicYear => this - 1;
+        public AcademicYear(DateTime instant)
         {
-            var currentYear = int.Parse(today.ToString("yy"));
-            Func<int, int, int> getAcademicYear = (year1, year2) => int.Parse($"{year1}{year2}");
-            if(today.Month >= 8)
-            {
-                Current = getAcademicYear(currentYear, currentYear+1);
-                CurrentRange = $"{today.Year} - {today.Year+1}";
-                Previous = getAcademicYear(currentYear-1, currentYear);
-                PreviousRange = $"{today.Year-1} - {today.Year}";
-            }
-            else
-            {
-                Current = getAcademicYear(currentYear-1, currentYear);
-                CurrentRange = $"{today.Year-1} - {today.Year}";
-                Previous = getAcademicYear(currentYear-2, currentYear-1);
-                PreviousRange = $"{today.Year-2} - {today.Year-1}";
-            }
+            var year = instant.Month >= 8 ? instant.Year : instant.Year - 1;
+            StartingDate = new DateTime(year, 08, 01);
+            var tens = year % 100;
+            ShortRepresentation = ((tens * 100) + tens + 1);
         }
 
-        private string GetLastTwoDigits(int value)
-        {
-            return value.ToString().Substring(2);
-        }
+        public static AcademicYear operator +(AcademicYear d, int years)
+            => new AcademicYear(
+                new DateTime(
+                    d.StartingDate.Year + years,
+                    d.StartingDate.Month,
+                    d.StartingDate.Day));
+        public static AcademicYear operator -(AcademicYear d, int years)
+            => d + (-years);
     }
 }

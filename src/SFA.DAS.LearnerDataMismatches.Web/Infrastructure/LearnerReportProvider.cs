@@ -1,5 +1,4 @@
 using SFA.DAS.LearnerDataMismatches.Domain;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,12 +23,12 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
             this.dataLockService = dataLockService;
         }
 
-        public async Task<LearnerReport> BuildLearnerReport(long uln, int[] academicYears)
+        public async Task<LearnerReport> BuildLearnerReport(long uln, (AcademicYear current, AcademicYear previous) academicYears)
         {
             var activeApprenticeship = await dataLockService.GetActiveApprenticeship(uln);
             if (activeApprenticeship == null) return new LearnerReport();
 
-            var (earnings, dataLocks) = await dataLockService.GetLearnerData(activeApprenticeship.Uln, academicYears);
+            var (earnings, dataLocks) = await dataLockService.GetLearnerData(activeApprenticeship.Uln, new int[] {academicYears.current.ShortRepresentation, academicYears.previous.ShortRepresentation});
             var providerName = providerService.GetProviderName(activeApprenticeship.Ukprn);
             var (employerName, employerId) = await employerService.GetEmployerName(activeApprenticeship.AccountId);
             var learnerName = await commitmentsService.GetApprenticesName(uln.ToString(), activeApprenticeship.AccountId);
