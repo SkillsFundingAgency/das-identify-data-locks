@@ -202,5 +202,28 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             learner.AcademicYears.Current.ShortRepresentation.Should().Be(1112);
             learner.AcademicYears.Previous.ShortRepresentation.Should().Be(1011);
         }
+
+        [Test]
+        public async Task Has_data_locks_should_be_false()
+        {
+            Testing.TimeProvider.Today.Returns(new DateTime(2011,8,1));
+            var learner = Testing.CreatePage<LearnerModel>();
+            learner.Uln = apprenticeship.Uln.ToString();
+            await learner.OnGetAsync();
+            learner.HasDataLocks.Should().BeFalse();
+        }
+
+        [TestCase(2019, true, false)]
+        [TestCase(2020, false, true)]
+        public async Task Populate_datalocks_in_right_academic_year_collection(int year, bool expectedHasDataInCurrentYear, bool expectedHasDataInPreviousYear)
+        {
+            Testing.TimeProvider.Today.Returns(new DateTime(year,8,1));
+            var learner = Testing.CreatePage<LearnerModel>();
+            learner.Uln = apprenticeship.Uln.ToString();
+            await learner.OnGetAsync();
+            learner.HasDataLocks.Should().BeTrue();
+            learner.HasDataLocksInCurrentYear.Should().Be(expectedHasDataInCurrentYear);
+            learner.HasDataLocksInPreviousYear.Should().Be(expectedHasDataInPreviousYear);
+        }
     }
 }

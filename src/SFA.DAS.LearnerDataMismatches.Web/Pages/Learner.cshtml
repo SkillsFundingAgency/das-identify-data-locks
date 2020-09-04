@@ -132,8 +132,8 @@
             </div>
             <div asp-show="Model.HasDataLocks" class="funding-year">
                 <h2 class="govuk-heading-m">@Model.AcademicYears.Current.ToString() funding year</h2>
-
-                <div class="returns">
+                <p asp-hide="Model.HasDataLocksInCurrentYear">There are currently no submissions for this period</p>
+                <div asp-show="Model.HasDataLocksInCurrentYear" class="returns">
                     @foreach (var period in Model.CurrentYearDataLocks)
                     {
                         <div class="entry">
@@ -151,8 +151,6 @@
                                         </span>
                                     </summary>
                                     <div class="">
-
-
                                         <table class="govuk-table govuk-!-margin-top-7">
                                             <thead class="govuk-table__head">
                                                 <tr class="govuk-table__row">
@@ -184,7 +182,6 @@
                                                 <partial name="_DataLockRow" model='new DataLockRowModel(period, "TNP 3", x => x.Tnp3)' />
                                                 <partial name="_DataLockRow" model=' new DataLockRowModel(period, "TNP 4" , x=> x.Tnp4)' />
 
-
                                                 <tr class="govuk-table__row">
                                                     <th scope="row" class="govuk-table__header">No. of View submission details per return</th>
                                                     <td class="govuk-table__cell">2</td>
@@ -203,8 +200,8 @@
             </div>
             <div asp-show="Model.HasDataLocks" class="funding-year">
                 <h2 class="govuk-heading-m">@Model.AcademicYears.Previous.ToString() funding year</h2>
-
-                <div class="returns">
+                <p asp-hide="Model.HasDataLocksInPreviousYear">There are currently no submissions for this period</p>
+                <div asp-show="Model.HasDataLocksInPreviousYear" class="returns">
                     @foreach (var period in Model.PreviousYearDataLocks)
                     {
                         <div class="entry">
