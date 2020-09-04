@@ -89,6 +89,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web
             services.AddTransient<ProviderService>();
             services.AddTransient<DataLockService>();
             services.AddTransient<LearnerReportProvider>();
+            services.AddTransient<ITimeProvider, TimeProvider>();
         }
     }
 }

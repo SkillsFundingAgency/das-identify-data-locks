@@ -9,6 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.LearnerDataMismatches.IntegrationTests;
 using SFA.DAS.LearnerDataMismatches.Web;
+using SFA.DAS.LearnerDataMismatches.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Providers.Api.Client;
 using System.IO;
@@ -32,6 +33,7 @@ public static class Testing
     public static ICommitmentsApiClient CommitmentsApi;
     public static IProviderApiClient ProviderApi;
     public static IAccountApiClient AccountsApi;
+    public static ITimeProvider TimeProvider;
 
     [OneTimeSetUp]
     public static void RunBeforeAnyTests()
@@ -111,5 +113,6 @@ public static class Testing
         CommitmentsApi = Substitute.For<ICommitmentsApiClient>();
         ProviderApi = Substitute.For<IProviderApiClient>();
         AccountsApi = Substitute.For<IAccountApiClient>();
+        TimeProvider = Substitute.For<ITimeProvider>();
     }
 }
