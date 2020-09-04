@@ -37,13 +37,15 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Select (DataLockHelpCentreLink.Create)
                 .OrderBy (x => x.Name);
         
-        public (AcademicYear Current, AcademicYear Previous) AcademicYears => (new AcademicYear(DateTime.Today), new AcademicYear(DateTime.Today) -1);
+        public (AcademicYear Current, AcademicYear Previous) AcademicYears => (new AcademicYear(timeProvider.Today), new AcademicYear(timeProvider.Today) -1);
 
         private readonly LearnerReportProvider learnerReportProvider;
+        private readonly ITimeProvider timeProvider;
 
-        public LearnerModel (LearnerReportProvider learnerReportProvider) 
+        public LearnerModel (LearnerReportProvider learnerReportProvider, ITimeProvider timeProvider) 
         {
             this.learnerReportProvider = learnerReportProvider;
+            this.timeProvider = timeProvider;
         }
 
         public async Task OnGetAsync() 

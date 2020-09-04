@@ -44,6 +44,8 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             }
 
             await Testing.AddEntities(dlocks);
+
+            Testing.TimeProvider.Today.Returns(new DateTime(2019,8,1));
         }
 
         private ApprenticeshipModel apprenticeship;
