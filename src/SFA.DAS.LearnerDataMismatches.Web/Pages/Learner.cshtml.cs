@@ -14,8 +14,8 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         [BindProperty (SupportsGet = true)]
         public string Uln { get; set; }
 
-        public IEnumerable<Domain.CollectionPeriod> CurrentYearDataLocks { get; private set; } = Enumerable.Empty<Domain.CollectionPeriod> ();
-        public IEnumerable<Domain.CollectionPeriod> PreviousYearDataLocks { get; private set; } = Enumerable.Empty<Domain.CollectionPeriod> ();
+        public IEnumerable<CollectionPeriod> CurrentYearDataLocks { get; set; } = Enumerable.Empty<CollectionPeriod>();
+        public IEnumerable<CollectionPeriod> PreviousYearDataLocks { get; set; } = Enumerable.Empty<CollectionPeriod>();
 
         public string LearnerName { get; private set; }
         public string EmployerName { get; private set; }
@@ -37,7 +37,8 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Select (DataLockHelpCentreLink.Create)
                 .OrderBy (x => x.Name);
         
-        public AcademicYear AcademicYear => new AcademicYear(DateTime.Today);
+        public (AcademicYear Current, AcademicYear Previous) AcademicYears => (new AcademicYear(DateTime.Today), new AcademicYear(DateTime.Today) -1);
+
         private readonly LearnerReportProvider learnerReportProvider;
 
         public LearnerModel (LearnerReportProvider learnerReportProvider) 
@@ -50,7 +51,10 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             if (!long.TryParse (Uln, out var uln))
                 throw new Exception ("Invalid ULN");
 
-            var report = await learnerReportProvider.BuildLearnerReport(uln, new [] {AcademicYear.Current, AcademicYear.Previous});
+            var report = await learnerReportProvider.BuildLearnerReport(uln, AcademicYears);
+
+            Func<int, IEnumerable<CollectionPeriod>> GetDataLocksForAcademicYear = 
+                (year) => report.DataLocks.ContainsKey(year) ? report.DataLocks[year] : Enumerable.Empty<CollectionPeriod>();
 
             HasDataLocks = report.HasDataLocks;
             LearnerName = report.Learner.Name;
@@ -58,8 +62,11 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             ProviderId = report.Provider.Id;
             EmployerName = report.Employer.Name;
             EmployerId = report.Employer.Id;
-            if (report.HasDataLocks && report.DataLocks.ContainsKey(AcademicYear.Current)) CurrentYearDataLocks = report.DataLocks[AcademicYear.Current];
-            if (report.HasDataLocks && report.DataLocks.ContainsKey(AcademicYear.Previous)) PreviousYearDataLocks = report.DataLocks[AcademicYear.Previous];
+            if (report.HasDataLocks) 
+            {
+                CurrentYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Current.ShortRepresentation);
+                PreviousYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Previous.ShortRepresentation);
+            }
         }
     }
 }

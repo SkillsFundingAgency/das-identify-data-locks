@@ -18,8 +18,8 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests.Domain
         {
             var model = new AcademicYear(today);
 
-            model.Current.Should().Be(expectedCurrentYear);
-            model.Previous.Should().Be(expectedPreviousYear);
+            model.ShortRepresentation.Should().Be(expectedCurrentYear);
+            (model - 1).ShortRepresentation.Should().Be(expectedPreviousYear);
         }
         static object[] AcademicYearRangeTestData = 
         {
@@ -32,8 +32,8 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests.Domain
         {
             var model = new AcademicYear(today);
 
-            model.CurrentRange.Should().Be(expectedCurrentYearRange);
-            model.PreviousRange.Should().Be(expectedPreviousYearRange);
+            model.ToString().Should().Be(expectedCurrentYearRange);
+            (model -1).ToString().Should().Be(expectedPreviousYearRange);
         }
     }
 }

@@ -130,8 +130,8 @@
             <div asp-hide="Model.HasDataLocks" class="funding-year">
                 <p class="">There are currently no active data locks for this learner</p>
             </div>
-            <div asp-show="Model.HasDataLocks" class="timeline funding-year">
-                <h2 class="govuk-heading-m">@Model.AcademicYear.CurrentRange funding year</h2>
+            <div asp-show="Model.HasDataLocks" class="funding-year">
+                <h2 class="govuk-heading-m">@Model.AcademicYears.Current.ToString() funding year</h2>
 
                 <div class="returns">
                     @foreach (var period in Model.CurrentYearDataLocks)
@@ -202,7 +202,7 @@
                 </div>
             </div>
             <div asp-show="Model.HasDataLocks" class="funding-year">
-                <h2 class="govuk-heading-m">@Model.AcademicYear.PreviousRange funding year</h2>
+                <h2 class="govuk-heading-m">@Model.AcademicYears.Previous.ToString() funding year</h2>
 
                 <div class="returns">
                     @foreach (var period in Model.PreviousYearDataLocks)
