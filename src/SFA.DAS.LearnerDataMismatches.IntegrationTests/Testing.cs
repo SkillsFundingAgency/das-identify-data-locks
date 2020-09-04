@@ -61,7 +61,8 @@ public static class Testing
         services
             .ConfigureMockService(_ => CommitmentsApi)
             .ConfigureMockService(_ => ProviderApi)
-            .ConfigureMockService(_ => AccountsApi);
+            .ConfigureMockService(_ => AccountsApi)
+            .ConfigureMockService(_ => TimeProvider);
         return services;
     }
 

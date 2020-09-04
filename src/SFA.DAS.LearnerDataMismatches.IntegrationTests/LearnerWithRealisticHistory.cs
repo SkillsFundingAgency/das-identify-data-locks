@@ -192,5 +192,15 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
 
             learner.DataLockNames.Should().Contain("Dlock01");
         }
+
+        [Test]
+        public void Correct_academic_years_are_populated()
+        {
+            Testing.TimeProvider.Today.Returns(new DateTime(2011,8,1));
+            var learner = Testing.CreatePage<LearnerModel>();
+
+            learner.AcademicYears.Current.ShortRepresentation.Should().Be(1112);
+            learner.AcademicYears.Previous.ShortRepresentation.Should().Be(1011);
+        }
     }
 }
