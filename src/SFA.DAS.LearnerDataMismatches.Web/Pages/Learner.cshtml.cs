@@ -36,7 +36,10 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
                 .Distinct ()
                 .Select (DataLockHelpCentreLink.Create)
                 .OrderBy (x => x.Name);
-        
+
+        public bool HasDataLocksInCurrentYear => CurrentYearDataLocks.Any();
+        public bool HasDataLocksInPreviousYear => PreviousYearDataLocks.Any();
+
         public (AcademicYear Current, AcademicYear Previous) AcademicYears => (new AcademicYear(timeProvider.Today), new AcademicYear(timeProvider.Today) -1);
 
         private readonly LearnerReportProvider learnerReportProvider;
