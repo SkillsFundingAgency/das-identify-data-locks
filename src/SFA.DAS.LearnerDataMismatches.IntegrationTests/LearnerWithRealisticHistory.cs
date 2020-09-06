@@ -199,8 +199,8 @@ namespace SFA.DAS.LearnerDataMismatches.IntegrationTests
             Testing.TimeProvider.Today.Returns(new DateTime(2011,8,1));
             var learner = Testing.CreatePage<LearnerModel>();
 
-            learner.AcademicYears.Current.ShortRepresentation.Should().Be(1112);
-            learner.AcademicYears.Previous.ShortRepresentation.Should().Be(1011);
+            learner.AcademicYears.Current.Should().Be((AcademicYear)1112);
+            learner.AcademicYears.Previous.Should().Be((AcademicYear)1011);
         }
     }
 }

@@ -26,7 +26,9 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
         {
             var activeApprenticeship = await dataLockService.GetActiveApprenticeship(uln);
 
-            var (earnings, dataLocks) = await dataLockService.GetLearnerData(activeApprenticeship.Uln, new int[] {academicYears.current.ShortRepresentation, academicYears.previous.ShortRepresentation});
+            var (earnings, dataLocks) =
+                await dataLockService.GetLearnerData(
+                    uln, new int [] { academicYears.current, academicYears.current, });
 
             var report = new CollectionPeriodReport(activeApprenticeship, earnings, dataLocks);
 

@@ -67,8 +67,8 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             EmployerId = report.Employer.Id;
             if (report.HasDataLocks) 
             {
-                CurrentYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Current.ShortRepresentation);
-                PreviousYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Previous.ShortRepresentation);
+                CurrentYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Current);
+                PreviousYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Previous);
             }
         }
     }
