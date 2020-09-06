@@ -6,10 +6,10 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
     {
         public long Ukprn { get; set; }
         public long Uln { get; set; }
-        public short Standard { get; set; }
-        public short Framework { get; set; }
-        public short Program { get; set; }
-        public short Pathway { get; set; }
+        public short? Standard { get; set; }
+        public short? Framework { get; set; }
+        public short? Program { get; set; }
+        public short? Pathway { get; set; }
         public decimal Cost { get; set; }
         public DateTime? PriceStart { get; set; }
         public short AimSequenceNumber { get; set; }

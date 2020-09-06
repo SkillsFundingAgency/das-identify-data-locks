@@ -23,6 +23,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string ProviderName { get; private set; }
         public string ProviderId { get; private set; }
         public bool HasDataLocks { get; private set; }
+        // TODO - remove
         public IEnumerable<string> DataLockNames =>
             CurrentYearDataLocks
             .SelectMany (x => x.DataLocks)
