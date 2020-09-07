@@ -15,7 +15,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
             new CollectionPeriod
             {
                 Period = new Period(earning.AcademicYear, earning.CollectionPeriod),
-                DataLocks = DataLocks(datalocks, earning),
+                DataLocks = ToDataLocks(datalocks, earning),
                 Apprenticeship = apprenticeship?.ToDataMatch(),
                 Ilr = earning.ToDataMatch(),
             };
@@ -54,7 +54,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
                 //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
             };
 
-        private static List<DataLock> DataLocks(this IEnumerable<DataLockEventModel> locks, EarningEventModel earning) =>
+        private static List<DataLock> ToDataLocks(this IEnumerable<DataLockEventModel> locks, EarningEventModel earning) =>
             locks
                 .Where(l => l.Ukprn == earning.Ukprn && l.AcademicYear == earning.AcademicYear && l.CollectionPeriod == earning.CollectionPeriod)
                 .SelectMany(l => l.NonPayablePeriods)

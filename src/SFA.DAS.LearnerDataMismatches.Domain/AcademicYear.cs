@@ -7,7 +7,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
         public AcademicYear(DateTime instant)
         {
             var year = instant.Month >= FirstMonthOfAcademicYear ? instant.Year : instant.Year - 1;
-            StartingDate = new DateTime(year, 08, 01);
+            StartingDate = new DateTime(year, FirstMonthOfAcademicYear, 01);
         }
 
         private AcademicYear(int shortInt)
@@ -18,7 +18,7 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
             if (firstYear + 1 != secondYear)
                 throw new ArgumentException($"`{shortInt}` does not represent two consecutive years.");
 
-            StartingDate = new DateTime(2000 + firstYear, 08, 01);
+            StartingDate = new DateTime(2000 + firstYear, FirstMonthOfAcademicYear, 01);
         }
 
         public static implicit operator AcademicYear(int shortInt) =>
