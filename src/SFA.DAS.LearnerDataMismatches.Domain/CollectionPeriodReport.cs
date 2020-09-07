@@ -1,5 +1,6 @@
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,63 +8,48 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
 {
     public class CollectionPeriodReport
     {
-        public CollectionPeriodReport(ApprenticeshipModel activeApprenticeship, IEnumerable<EarningEventModel> earnings, IEnumerable<DataLockEventModel> locks)
-        {
-            HasDataLocks = locks.Any();
-            CollectionPeriods = earnings
-            .Where(x => x.Ukprn == activeApprenticeship.Ukprn)
-            .Select(x => new CollectionPeriod
-            {
-                DataLocks = locks
-                    .Where(l => l.Ukprn == x.Ukprn && l.AcademicYear == x.AcademicYear && l.CollectionPeriod == x.CollectionPeriod)
-                    .SelectMany(l => l.NonPayablePeriods)
-                    .SelectMany(l => l.DataLockEventNonPayablePeriodFailures)
-                    .Select(l => (DataLock)l.DataLockFailure)
-                    .Distinct()
-                    .OrderBy(x => x)
-                    .ToList(),
-
-                Apprenticeship = new DataMatch
-                {
-                    Ukprn = activeApprenticeship.Ukprn,
-                    Uln = activeApprenticeship.Uln,
-                    Standard = (short)activeApprenticeship.StandardCode.Value,
-                    Framework = (short)activeApprenticeship.FrameworkCode.Value,
-                    Program = (short)activeApprenticeship.ProgrammeType.Value,
-                    Pathway = (short)activeApprenticeship.PathwayCode.Value,
-                    Cost = activeApprenticeship.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
-                    PriceStart = activeApprenticeship.ApprenticeshipPriceEpisodes.FirstOrDefault()?.StartDate,
-                    StoppedOn = activeApprenticeship.StopDate,
-                    CompletionStatus = (ApprenticeshipStatus)activeApprenticeship.Status,
-                },
-
-                Ilr = new DataMatch
-                {
-                    Uln = x.LearnerUln,
-                    Ukprn = x.Ukprn,
-                    Standard = (short)x.LearningAimStandardCode,
-                    Framework = (short)x.LearningAimFrameworkCode,
-                    Program = (short)x.LearningAimProgrammeType,
-                    Pathway = (short)x.LearningAimPathwayCode,
-                    Cost = x.PriceEpisodes.Sum(e =>
-                        e.TotalNegotiatedPrice1 +
-                        e.TotalNegotiatedPrice2 +
-                        e.TotalNegotiatedPrice3 +
-                        e.TotalNegotiatedPrice4),
-                    PriceStart = x.PriceEpisodes.FirstOrDefault()?.StartDate,
-                    StoppedOn = x.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
-                    //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
-                },
-                Period = new Period(x.AcademicYear, x.CollectionPeriod),
-            })
-            .GroupBy(x => x.Period)
-            .Select(x => x.First())
-            .OrderByDescending(x => x)
-            .ToList();
-        }
+        public bool HasDataLocks { get; }
 
         public IEnumerable<CollectionPeriod> CollectionPeriods { get; }
 
-        public bool HasDataLocks { get; }
+        public Dictionary<AcademicYear, List<CollectionPeriod>> CollectionPeriodsByYear =>
+            CollectionPeriods
+                .GroupBy(c => (AcademicYear)c.Period.Year)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+        public CollectionPeriodReport(
+            ApprenticeshipModel activeApprenticeship,
+            IEnumerable<EarningEventModel> earnings,
+            IEnumerable<DataLockEventModel> locks)
+        {
+            HasDataLocks = locks.Any();
+
+            var providerEarnings = Filter(activeApprenticeship, earnings);
+
+            CollectionPeriods = providerEarnings
+                .Select(earning => earning.ToCollectionPeriod(activeApprenticeship, locks))
+                .GroupBy(x => x.Period)
+                .Select(x => x.First())
+                .OrderByDescending(x => x)
+                .ToList();
+        }
+
+        private IEnumerable<EarningEventModel> Filter(
+            ApprenticeshipModel activeApprenticeship,
+            IEnumerable<EarningEventModel> earnings)
+        {
+            var predicate = AllEarningsAreForSameProvider(earnings)
+                ? (Func<EarningEventModel, bool>)IncludeEverythingPredicate
+                : (Func<EarningEventModel, bool>)IncludeApprenticeshipPredicate(activeApprenticeship);
+            return earnings.Where(predicate);
+        }
+
+        private static bool AllEarningsAreForSameProvider(IEnumerable<EarningEventModel> earnings) =>
+            earnings.GroupBy(x => x.Ukprn).Count() == 1;
+
+        private Func<EarningEventModel, bool> IncludeApprenticeshipPredicate(ApprenticeshipModel apprenticeship)
+            => earning => earning.Ukprn == apprenticeship?.Ukprn;
+
+        private static bool IncludeEverythingPredicate(EarningEventModel _) => true;
     }
 }

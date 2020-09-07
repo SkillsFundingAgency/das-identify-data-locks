@@ -126,5 +126,16 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
             foreach (var p in sut.CollectionPeriods)
                 p.DataLocks.Should().OnlyHaveUniqueItems();
         }
+
+        [Test]
+        public void GroupsCollectionPeriodsByAcademicYear()
+        {
+            var builder = new ApprenticeshipBuilder()
+                .ForProgramme(episodes: e => e.WithEarnings(numMonths: 15));
+
+            var sut = builder.CreateLearnerReport();
+
+            sut.CollectionPeriodsByYear.Should().ContainKeys(1920, 2021);
+        }
     }
 }

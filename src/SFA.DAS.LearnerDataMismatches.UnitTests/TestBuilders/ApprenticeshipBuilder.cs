@@ -10,8 +10,10 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
 {
     public class ApprenticeshipBuilder
     {
-        public int Uln { get; private set; } = 123456789;
+        public long IlrUln { get; private set; } = 123456789;
+        public long? ApprenticeshipUln { get; private set; } = 123456789;
         public string FirstName { get; private set; } = "Stephen";
+
         public string LastName { get; private set; } = "Hawking";
         public int StandardCode { get; private set; } = 50;
         public int FrameworkCode { get; private set; } = 25;
@@ -24,29 +26,39 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         public int Ukprn { get; private set; } = 111222333;
         public string ProviderName { get; private set; } = "Cambridge College";
 
-        private int? lockedUkprn { get; set; }
+        private int? LockedUkprn { get; set; }
+
         private (int? standard, int? framework, int? programme, int? pathway)? LockedProgramme;
 
         internal ApprenticeshipBuilder ForLearner(
             int uln = 123456789,
             string firstName = "Stephen",
-            string lastName = "Hawking") =>
+            string lastName = "Hawking",
+            int? lockedUln = null) =>
             this.With(x =>
             {
-                x.Uln = uln;
+                x.ApprenticeshipUln = x.IlrUln = uln;
                 x.FirstName = firstName;
                 x.LastName = lastName;
+                //x.LockedUln = lockedUln;
             });
+
+        internal ApprenticeshipBuilder ForMissingLearner(
+            int uln = 123456789,
+            string firstName = "Stephen",
+            string lastName = "Hawking")
+            => ForLearner(uln, firstName, lastName)
+                .With(x => x.ApprenticeshipUln = null);
 
         internal ApprenticeshipBuilder WithProvider(
             int ukprn = 111222333,
             string name = "Cambridge College",
-            int? locked = null) =>
+            int? lockedUkprn = null) =>
             this.With(x =>
             {
                 x.Ukprn = ukprn;
                 x.ProviderName = name;
-                x.lockedUkprn = locked;
+                x.LockedUkprn = lockedUkprn;
             });
 
         internal ApprenticeshipBuilder ForProgramme(
@@ -66,20 +78,23 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 x.ProgrammeType = programmeType;
                 x.PathwayCode = pathwayCode;
                 x.LockedProgramme =
-                    ( lockedStandardCode
-                    , lockedFrameworkCode
-                    , lockedProgrammeType
-                    , lockedPathwayCode);
+                    (lockedStandardCode
+                        , lockedFrameworkCode
+                        , lockedProgrammeType
+                        , lockedPathwayCode);
                 x.Episodes = x.Episodes.Copy().Configure(episodes);
             });
 
-        internal List<ApprenticeshipModel> BuildApprentices()
+        internal IEnumerable<ApprenticeshipModel> BuildApprentices()
         {
+            if (ApprenticeshipUln == null)
+                return Enumerable.Empty<ApprenticeshipModel>();
+
             return new[]
             {
                 new ApprenticeshipModel
                 {
-                    Uln = Uln,
+                    Uln = ApprenticeshipUln.Value,
                     Ukprn = Ukprn,
                     Status = Payments.Model.Core.Entities.ApprenticeshipStatus.Active,
                     StandardCode = StandardCode,
@@ -109,13 +124,13 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
 
         private List<EarningEventModel> BuildEarnings()
         {
-            return new[]
-            {
-                new EarningEventModel
+            return Enumerable.Range(0, Episodes.NumberOfEarningPeriods)
+                .Select(i => new EarningEventModel
                 {
                     EventId = Guid.NewGuid(),
-                    Ukprn = Ukprn,
-                    LearnerUln = Uln,
+                    Ukprn = LockedUkprn ?? Ukprn,
+                    LearnerUln = IlrUln,
+                    AcademicYear = (short)new AcademicYear(Episodes.StartDate.AddMonths(i)),
                     LearningAimStandardCode = LockedProgramme?.standard ?? StandardCode,
                     LearningAimFrameworkCode = FrameworkCode,
                     LearningAimProgrammeType = ProgrammeType,
@@ -132,8 +147,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                             TotalNegotiatedPrice4 = Episodes.TotalNegotiatedPrice4,
                         }
                     }
-                }
-            }.ToList();
+                }).ToList();
         }
 
         private IEnumerable<DataLockEventModel> BuildDataLocks()
@@ -146,7 +160,8 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 {
                     Ukprn = Ukprn,
                     EarningEventId = earning?.EventId ?? Guid.Empty,
-                    LearnerUln = Uln,
+                    AcademicYear = earning?.AcademicYear ?? default,
+                    LearnerUln = IlrUln,
                     LearningAimStandardCode = StandardCode,
                     LearningAimFrameworkCode = FrameworkCode,
                     LearningAimProgrammeType = ProgrammeType,
@@ -170,8 +185,11 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 return dlock;
             }
 
-            if (lockedUkprn != null)
-                yield return BuildLock(DataLockErrorCode.DLOCK_01, dlock => dlock.Ukprn = lockedUkprn.Value);
+            if (LockedUkprn != null)
+                yield return BuildLock(DataLockErrorCode.DLOCK_01, dlock => dlock.Ukprn = LockedUkprn.Value);
+
+            if (ApprenticeshipUln == null)
+                yield return BuildLock(DataLockErrorCode.DLOCK_02, dlock => dlock.LearnerUln = IlrUln);
 
             if (LockedProgramme?.standard != null)
                 yield return BuildLock(DataLockErrorCode.DLOCK_03, dlock => dlock.LearningAimStandardCode = LockedProgramme.Value.standard.Value);
@@ -183,11 +201,16 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 yield return BuildLock(DataLockErrorCode.DLOCK_05, dlock => dlock.LearningAimProgrammeType = LockedProgramme.Value.programme.Value);
         }
 
-        internal CollectionPeriodReport CreateLearnerReport(Func<IEnumerable<DataLockEventModel>, IEnumerable<DataLockEventModel>>? modifyLocks = null)
+        internal CollectionPeriodReport CreateLearnerReport(
+            Func<IEnumerable<DataLockEventModel>, IEnumerable<DataLockEventModel>>? modifyLocks = null
+                                                           )
         {
+            var apprenticeships = BuildApprentices();
+
             var locks = BuildDataLocks();
             if (modifyLocks != null) locks = modifyLocks(locks);
-            return new CollectionPeriodReport(BuildApprentices().FirstOrDefault(), Earnings, locks.ToList());
+
+            return new CollectionPeriodReport(apprenticeships.FirstOrDefault(), Earnings, locks.ToList());
         }
     }
 
@@ -199,6 +222,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         public int TotalNegotiatedPrice4 { get; private set; } = 400;
         public DateTime StartDate { get; private set; } = new DateTime(2020, 03, 15);
         public DateTime? StoppedDate { get; private set; }
+        public int NumberOfEarningPeriods { get; private set; } = 3;
 
         internal ApprenticePriceEpisodeBuilder WithPrice(int tnp1, int tnp2, int tnp3, int tnp4)
             => this.With(x =>
@@ -214,6 +238,9 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
             {
                 x.StartDate = starting;
             });
+
+        internal ApprenticePriceEpisodeBuilder WithEarnings(int numMonths) =>
+            this.With(x => x.NumberOfEarningPeriods = numMonths);
 
         internal ApprenticePriceEpisodeBuilder Stopped(DateTime stopped) =>
             this.With(x =>

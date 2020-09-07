@@ -8,12 +8,18 @@
   <ItemGroup>
     <None Remove="TestData\Apprenticeship.json" />
     <None Remove="TestData\DataLocks.json" />
+    <None Remove="TestData\Dlock01_Apprenticeship.json" />
+    <None Remove="TestData\Dlock01_DataLocks.json" />
+    <None Remove="TestData\Dlock01_Earnings.json" />
     <None Remove="TestData\EarningEvents.json" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="TestData\Apprenticeship.json" />
     <EmbeddedResource Include="TestData\DataLocks.json" />
+    <EmbeddedResource Include="TestData\Dlock01_Apprenticeship.json" />
+    <EmbeddedResource Include="TestData\Dlock01_DataLocks.json" />
+    <EmbeddedResource Include="TestData\Dlock01_Earnings.json" />
     <EmbeddedResource Include="TestData\EarningEvents.json" />
   </ItemGroup>
 

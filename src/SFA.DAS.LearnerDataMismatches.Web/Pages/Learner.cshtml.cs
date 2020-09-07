@@ -23,6 +23,7 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
         public string ProviderName { get; private set; }
         public string ProviderId { get; private set; }
         public bool HasDataLocks { get; private set; }
+        // TODO - remove
         public IEnumerable<string> DataLockNames =>
             CurrentYearDataLocks
             .SelectMany (x => x.DataLocks)
@@ -69,8 +70,8 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Pages
             EmployerId = report.Employer.Id;
             if (report.HasDataLocks) 
             {
-                CurrentYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Current.ShortRepresentation);
-                PreviousYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Previous.ShortRepresentation);
+                CurrentYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Current);
+                PreviousYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Previous);
             }
         }
     }
