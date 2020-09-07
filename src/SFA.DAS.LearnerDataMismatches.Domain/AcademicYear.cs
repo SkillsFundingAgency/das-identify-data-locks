@@ -19,6 +19,21 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
             ShortRepresentation = ((tens * 100) + tens + 1);
         }
 
+        public AcademicYear(int shortRepresentation)
+        {
+            var firstYear = shortRepresentation / 100;
+            var secondYear = shortRepresentation % 100;
+
+            if (firstYear + 1 != secondYear)
+                throw new ArgumentException($"`{shortRepresentation}` does not represent two consecutive years.");
+
+            StartingDate = new DateTime(2000 + firstYear, 08, 01);
+            ShortRepresentation = shortRepresentation;
+        }
+
+        public static implicit operator AcademicYear(int shortRepresentation) =>
+            new AcademicYear(shortRepresentation);
+
         public static AcademicYear operator +(AcademicYear d, int years)
             => new AcademicYear(
                 new DateTime(

@@ -124,13 +124,13 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
 
         private List<EarningEventModel> BuildEarnings()
         {
-            return new[]
-            {
-                new EarningEventModel
+            return Enumerable.Range(0, Episodes.NumberOfEarningPeriods)
+                .Select(i => new EarningEventModel
                 {
                     EventId = Guid.NewGuid(),
                     Ukprn = LockedUkprn ?? Ukprn,
                     LearnerUln = IlrUln,
+                    AcademicYear = (short)new AcademicYear(Episodes.StartDate.AddMonths(i)),
                     LearningAimStandardCode = LockedProgramme?.standard ?? StandardCode,
                     LearningAimFrameworkCode = FrameworkCode,
                     LearningAimProgrammeType = ProgrammeType,
@@ -147,8 +147,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                             TotalNegotiatedPrice4 = Episodes.TotalNegotiatedPrice4,
                         }
                     }
-                }
-            }.ToList();
+                }).ToList();
         }
 
         private IEnumerable<DataLockEventModel> BuildDataLocks()
@@ -161,6 +160,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
                 {
                     Ukprn = Ukprn,
                     EarningEventId = earning?.EventId ?? Guid.Empty,
+                    AcademicYear = earning?.AcademicYear ?? default,
                     LearnerUln = IlrUln,
                     LearningAimStandardCode = StandardCode,
                     LearningAimFrameworkCode = FrameworkCode,
@@ -222,6 +222,7 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
         public int TotalNegotiatedPrice4 { get; private set; } = 400;
         public DateTime StartDate { get; private set; } = new DateTime(2020, 03, 15);
         public DateTime? StoppedDate { get; private set; }
+        public int NumberOfEarningPeriods { get; private set; } = 3;
 
         internal ApprenticePriceEpisodeBuilder WithPrice(int tnp1, int tnp2, int tnp3, int tnp4)
             => this.With(x =>
@@ -237,6 +238,9 @@ namespace SFA.DAS.LearnerDataMismatches.UnitTests
             {
                 x.StartDate = starting;
             });
+
+        internal ApprenticePriceEpisodeBuilder WithEarnings(int numMonths) =>
+            this.With(x => x.NumberOfEarningPeriods = numMonths);
 
         internal ApprenticePriceEpisodeBuilder Stopped(DateTime stopped) =>
             this.With(x =>

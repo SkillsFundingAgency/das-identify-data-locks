@@ -98,6 +98,11 @@ namespace SFA.DAS.LearnerDataMismatches.Domain
 
         public IEnumerable<CollectionPeriod> CollectionPeriods { get; }
 
+        public Dictionary<AcademicYear, List<CollectionPeriod>> CollectionPeriodsByYear =>
+            CollectionPeriods
+                .GroupBy(c => c.Period.Year)
+                .ToDictionary(g => (AcademicYear)g.Key, g => g.ToList());
+
         public bool HasDataLocks { get; }
     }
 }

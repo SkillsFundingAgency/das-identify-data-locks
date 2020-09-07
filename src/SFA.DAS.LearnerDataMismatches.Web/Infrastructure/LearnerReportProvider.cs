@@ -1,5 +1,4 @@
 using SFA.DAS.LearnerDataMismatches.Domain;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
@@ -26,25 +25,29 @@ namespace SFA.DAS.LearnerDataMismatches.Web.Infrastructure
         public async Task<LearnerReport> BuildLearnerReport(long uln, (AcademicYear current, AcademicYear previous) academicYears)
         {
             var activeApprenticeship = await dataLockService.GetActiveApprenticeship(uln);
-            if (activeApprenticeship == null) return new LearnerReport();
 
             var (earnings, dataLocks) = await dataLockService.GetLearnerData(activeApprenticeship.Uln, new int[] {academicYears.current.ShortRepresentation, academicYears.previous.ShortRepresentation});
-            var providerName = providerService.GetProviderName(activeApprenticeship.Ukprn);
-            var (employerName, employerId) = await employerService.GetEmployerName(activeApprenticeship.AccountId);
-            var learnerName = await commitmentsService.GetApprenticesName(uln.ToString(), activeApprenticeship.AccountId);
 
             var report = new CollectionPeriodReport(activeApprenticeship, earnings, dataLocks);
 
-            var dataLocksByAcademicYear = report.CollectionPeriods.GroupBy(c => c.Period.Year).ToDictionary(g => g.Key, g => g.ToList());
-
-            return new LearnerReport
+            var learnerReport = new LearnerReport
             {
-                DataLocks = dataLocksByAcademicYear,
-                Learner = (uln.ToString(), learnerName),
-                Employer = (employerId, employerName),
-                Provider = (activeApprenticeship.Ukprn.ToString(), providerName),
+                DataLocks = report.CollectionPeriodsByYear,
                 HasDataLocks = report.HasDataLocks
             };
+
+            if (activeApprenticeship != null)
+            {
+                var providerName = providerService.GetProviderName(activeApprenticeship.Ukprn);
+                var (employerName, employerId) = await employerService.GetEmployerName(activeApprenticeship.AccountId);
+                var learnerName = await commitmentsService.GetApprenticesName(uln.ToString(), activeApprenticeship.AccountId);
+
+                learnerReport.Learner = (uln.ToString(), learnerName);
+                learnerReport.Employer = (employerId, employerName);
+                learnerReport.Provider = (activeApprenticeship.Ukprn.ToString(), providerName);
+            }
+
+            return learnerReport;
         }
     }
 }
