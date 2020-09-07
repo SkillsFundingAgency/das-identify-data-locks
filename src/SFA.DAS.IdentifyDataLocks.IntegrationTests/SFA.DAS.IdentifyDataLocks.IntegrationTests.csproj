@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TestData\Apprenticeship.json" />
+    <None Remove="TestData\DataLocks.json" />
+    <None Remove="TestData\Dlock01_Apprenticeship.json" />
+    <None Remove="TestData\Dlock01_DataLocks.json" />
+    <None Remove="TestData\Dlock01_Earnings.json" />
+    <None Remove="TestData\EarningEvents.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TestData\Apprenticeship.json" />
+    <EmbeddedResource Include="TestData\DataLocks.json" />
+    <EmbeddedResource Include="TestData\Dlock01_Apprenticeship.json" />
+    <EmbeddedResource Include="TestData\Dlock01_DataLocks.json" />
+    <EmbeddedResource Include="TestData\Dlock01_Earnings.json" />
+    <EmbeddedResource Include="TestData\EarningEvents.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.6" />
+    <PackageReference Include="NSubstitute" Version="4.2.2" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Respawn" Version="3.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.IdentifyDataLocks.Web\SFA.DAS.IdentifyDataLocks.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

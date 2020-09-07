@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/SFA.DAS.LearnerDataMismatches.sln",
+                "${workspaceFolder}/SFA.DAS.IdentifyDataLocks.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/SFA.DAS.LearnerDataMismatches.Web/SFA.DAS.LearnerDataMismatches.Web.csproj",
+                "${workspaceFolder}/SFA.DAS.IdentifyDataLocks.Web/SFA.DAS.IdentifyDataLocks.Web.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/SFA.DAS.LearnerDataMismatches.Web/SFA.DAS.LearnerDataMismatches.Web.csproj",
+                "${workspaceFolder}/SFA.DAS.IdentifyDataLocks.Web/SFA.DAS.IdentifyDataLocks.Web.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
