@@ -28,7 +28,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             .AddCookie(options =>
             {
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);
-                options.Cookie.Name = "SFA.DAS.LearnerDataMismatches.Web.Auth";
+                options.Cookie.Name = "SFA.DAS.IdentifyDataLocks.Web.Auth";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.SlidingExpiration = true;
                 options.Cookie.SameSite = SameSiteMode.None;

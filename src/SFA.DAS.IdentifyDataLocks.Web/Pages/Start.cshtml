@@ -1,11 +1,14 @@
 ﻿@page
 @model StartModel
+@{
+    ViewData["Title"] = "Search learner";
+}
 
 @section BreadCrumbs {
     <div class="govuk-breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
-                <a asp-page="index" class="govuk-breadcrumbs__link">Data Unlocker</a>
+                <a asp-page="index" class="govuk-breadcrumbs__link">Identify data locks</a>
             </li>
             <li class="govuk-breadcrumbs__list-item" aria-current="page">
                 Search learner
