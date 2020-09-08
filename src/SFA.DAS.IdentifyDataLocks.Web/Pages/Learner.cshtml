@@ -33,9 +33,20 @@
                     Active Data lock(s)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @foreach (var l in Model.DataLockLinks)
+                    @if(Model.DataLockLinks.Count() == 1)
                     {
+                        var l = Model.DataLockLinks.First();
                         <span>@l.Name - <a href="@l.Url">@l.Description</a></span><br />
+
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var l in Model.DataLockLinks)
+                            {
+                                <li>@l.Name - <a href="@l.Url">@l.Description</a></li>
+                            }
+                        </ul>
                     }
                 </dd>
             </div>
