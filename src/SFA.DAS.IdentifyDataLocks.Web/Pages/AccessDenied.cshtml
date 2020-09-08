@@ -1,0 +1,22 @@
+@page
+@{
+    ViewBag.Title = "Access denied";
+    ViewBag.ShowNav = false;
+}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <header class="page-header group">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Access denied</h1>
+        </header>
+        <div class="article-container">
+            <article role="article" class="group">
+                <div class="inner">
+                    <p class="govuk-body">This page is not available to you. If you need access to this page, please ask your team leader</p>
+                    <p>
+                        <a asp-page="signedout" class="govuk-button">Sign out</a>
+                    </p>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>

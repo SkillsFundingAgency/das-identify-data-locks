@@ -1,4 +1,7 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +23,6 @@ namespace SFA.DAS.IdentifyDataLocks.Web
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -31,13 +33,19 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IPaymentsDataContext, PaymentsDataContext>();
 
-            services.AddRazorPages(options => {
+            services.AddRazorPages(options => 
+            {
                 options.Conventions.AllowAnonymousToPage("/index");
-                options.Conventions.AuthorizePage("/start");
-                options.Conventions.AuthorizePage("/learner");
+                options.Conventions.AuthorizePage("/accessdenied");
+                //This redirection is required as IDAMs is configured to return to this path for localhost. 
+                options.Conventions.AddPageRoute("/accessdenied", "account/accessdenied");
+                options.Conventions.AuthorizePage("/start", AuthorizationConfiguration.PolicyName);
+                options.Conventions.AuthorizePage("/learner", AuthorizationConfiguration.PolicyName);
             });
-            services.AddAuthentication(Configuration);
-            services.AddAuthorization();
+            var authorizationConfig = Configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
+            var authenticationConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            services.AddAuthentication(authenticationConfig);
+            services.AddAuthorization(authorizationConfig);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
             RegisterServices(services);
         }
@@ -55,6 +63,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
