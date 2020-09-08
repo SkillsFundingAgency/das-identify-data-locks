@@ -2,14 +2,13 @@ using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SFA.DAS.IdentifyDataLocks.Web
 {
-    public static class AuthenticationExtension
+    public static class ServiceExtension
     {
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAuthentication(this IServiceCollection services, AuthenticationConfiguration configuration)
         {
             services.AddAuthentication(options =>
             {
@@ -20,8 +19,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             })
             .AddWsFederation(options =>
             {
-                options.Wtrealm = configuration["Wtrealm"];
-                options.MetadataAddress = configuration["MetaDataAddress"];
+                options.Wtrealm = configuration.Wtrealm;
+                options.MetadataAddress = configuration.MetadataAddress;
                 options.UseTokenLifetime = false;
                 options.TokenValidationParameters.RoleClaimType = "TEST";
             })
@@ -34,6 +33,19 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                 options.Cookie.SameSite = SameSiteMode.None;
             });
 
+            return services;
+        }
+
+        public static IServiceCollection AddAuthorization(this IServiceCollection services, AuthorizationConfiguration configuration)
+        {
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy(AuthorizationConfiguration.PolicyName, policy => 
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(configuration.ClaimId, configuration.ClaimValue);
+                });
+            });
             return services;
         }
     }
