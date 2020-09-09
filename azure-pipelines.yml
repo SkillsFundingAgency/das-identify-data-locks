@@ -19,7 +19,7 @@ variables:
 pool:
   name: "DAS - Continuous Integration"
   demands:
-    - Agent.OS -equals Linux
+    - Agent.OS -equals Windows_NT
 
 resources:
   repositories:
@@ -39,8 +39,6 @@ steps:
     inputs:
       command: restore
       projects: 'src/**/*.csproj'
-      feedsToUse: Config
-      nugetConfigPath: src\Nuget.Config
       noCache: true
 
   - task: DotNetCoreCLI@2
