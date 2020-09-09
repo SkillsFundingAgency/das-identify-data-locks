@@ -34,6 +34,17 @@ steps:
     inputs:
       versionSpec: 5.x
 
+  - task: NuGetToolInstaller@0
+    displayName: 'Use NuGet'
+    inputs:
+      versionSpec: 4.x
+
+  - task: NuGetCommand@2
+    displayName: 'NuGet restore'
+    inputs:      
+      nugetConfigPath: 'src/NuGet.config'
+      
+
   - task: DotNetCoreCLI@2
     displayName: Restore
     inputs:
