@@ -27,7 +27,7 @@
             "type": "string",
             "defaultValue": ""
         },
-        "certificateName": {
+        "keyvaultCertificateName": {
             "type": "string"
         },
         "sharedKeyVaultName": {
@@ -89,7 +89,7 @@
                 },
                 "parameters": {
                     "keyVaultCertificateName": {
-                        "value": "[parameters('certificateName')]"
+                        "value": "[parameters('keyvaultCertificateName')]"
                     },
                     "keyVaultName": {
                         "value": "[parameters('sharedKeyVaultName')]"
