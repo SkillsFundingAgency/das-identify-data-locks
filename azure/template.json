@@ -1,0 +1,174 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceEnvironmentName": {
+            "type": "string"
+        },
+        "environmentName": {
+            "type": "string"
+        },
+        "sharedFrontendAppServicePlanName": {
+            "type": "string"
+        },
+        "sharedAppServicePlanResourceGroup": {
+            "type": "string"
+        },
+        "configurationStorageConnectionString": {
+            "type": "securestring"
+        },
+        "loggingRedisConnectionString": {
+            "type": "securestring"
+        },
+        "serviceName": {
+            "type": "string"
+        },
+        "customHostname": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "certificateName": {
+            "type": "string"
+        },
+        "sharedKeyVaultName": {
+            "type": "string"
+        },
+        "sharedManagementResourceGroup": {
+            "type": "string"
+        },
+        "appServiceAllowedIPs": {
+            "type": "array",
+            "defaultValue": []
+        },
+        "configNames": {
+            "type": "string",
+            "defaultValue": "SFA.DAS.IdentifyDataLocks.Web"
+        },
+        "version": {
+            "type": "string",
+            "defaultValue": "1.0"
+        }
+    },
+    "variables": {
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+        "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "app-insights",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('appServiceName')]"
+                    },
+                    "attachedService": {
+                        "value": "[variables('appServiceName')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[greater(length(parameters('customHostName')), 0)]",
+            "apiVersion": "2017-05-10",
+            "name": "app-service-certificate",
+            "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "keyVaultCertificateName": {
+                        "value": "[parameters('certificateName')]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('sharedKeyVaultName')]"
+                    },
+                    "keyVaultResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "app-service",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('appServiceName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[parameters('sharedFrontendAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[parameters('sharedAppServicePlanResourceGroup')]"
+                    },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "ConfigurationStorageConnectionString",
+                                "value": "[parameters('configurationStorageConnectionString')]"
+                            },
+                            {
+                                "name": "EnvironmentName",
+                                "value": "[parameters('environmentName')]"
+                            },
+                            {
+                                "name": "LoggingRedisConnectionString",
+                                "value": "[parameters('loggingRedisConnectionString')]"
+                            },
+                            {
+                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference('app-insights').outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "ConfigNames",
+                                "value": "[parameters('configNames')]"
+                            },
+                            {
+                                "name": "Version",
+                                "value": "[parameters('version')]"
+                            }
+                        ]
+                    },
+                    "customHostName": {
+                        "value": "[parameters('customHostname')]"
+                    },
+                    "certificateThumbprint": {
+                        "value": "[reference('app-service-certificate').outputs.certificateThumbprint.value]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('appServiceAllowedIPs')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "app-insights",
+                "app-service-certificate"
+            ]
+        }
+    ],
+    "outputs": {
+        "AppServiceName": {
+            "type": "string",
+            "value": "[variables('appServiceName')]"
+        }
+    }
+}
