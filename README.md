@@ -24,7 +24,9 @@ The prototype directly access the Payments database tables to retrieve its data,
 
 ![Entity Relationships](docs/entity_relationships.png)
 
- 
+## Authentication and authorization
+The website will use STAFF IDAMs for authentication. The authenticated users will have to belong to role `Apprenticeship Service – Data Locks`.
+
 ## External dependencies
 
 ### EAS API
