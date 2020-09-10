@@ -26,10 +26,16 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
 
             var providerEarnings = Filter(activeApprenticeship, earnings);
 
-            CollectionPeriods = providerEarnings
+            var periods = providerEarnings
                 .Select(earning => earning.ToCollectionPeriod(activeApprenticeship, locks))
                 .GroupBy(x => x.Period)
+                ;
+
+            var firstEarningInPeriods = periods
                 .Select(x => x.First())
+                ;
+
+            CollectionPeriods = firstEarningInPeriods
                 .OrderByDescending(x => x)
                 .ToList();
         }
@@ -38,10 +44,13 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
             ApprenticeshipModel activeApprenticeship,
             IEnumerable<EarningEventModel> earnings)
         {
-            var predicate = AllEarningsAreForSameProvider(earnings)
+            var filterProviders = AllEarningsAreForSameProvider(earnings)
                 ? IncludeEverythingPredicate
                 : IncludeApprenticeshipPredicate(activeApprenticeship);
-            return earnings.Where(predicate);
+
+            return earnings
+                .Where(FilterInMainAim)
+                .Where(filterProviders);
         }
 
         private static bool AllEarningsAreForSameProvider(IEnumerable<EarningEventModel> earnings) =>
@@ -51,5 +60,8 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
             => earning => earning.Ukprn == apprenticeship?.Ukprn;
 
         private static bool IncludeEverythingPredicate(EarningEventModel _) => true;
+
+        private static bool FilterInMainAim(EarningEventModel e) =>
+            e.LearningAimReference == "ZPROG001";
     }
 }
