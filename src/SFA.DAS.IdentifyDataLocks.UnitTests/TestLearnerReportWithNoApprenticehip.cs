@@ -25,5 +25,21 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
                    DataLocks = new[] { DataLock.Dlock02 },
                });
         }
+
+        [Test]
+        public void Finds_datalocks2_when_provider_has_multiple_earnings()
+        {
+            var a = new ApprenticeshipBuilder()
+                .ForProgramme(episodes: e => e.WithPrice(10, 10, 10, 10))
+                .WithFunctionalSkills();
+
+            var sut = a.CreateLearnerReport();
+
+            sut.CollectionPeriods.First()
+               .Should().BeEquivalentTo(new
+               {
+                   Ilr = new { Cost = 40 },
+               });
+        }
     }
 }

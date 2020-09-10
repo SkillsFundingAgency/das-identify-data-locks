@@ -19,11 +19,14 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
         public int FrameworkCode { get; private set; } = 25;
         public int ProgrammeType { get; private set; } = 12;
         public int PathwayCode { get; private set; } = 11;
+        public bool IncludeFunctionalSkills { get; private set; }
+
 
         public ApprenticePriceEpisodeBuilder Episodes { get; private set; }
             = new ApprenticePriceEpisodeBuilder();
 
         public int Ukprn { get; private set; } = 111222333;
+
         public string ProviderName { get; private set; } = "Cambridge College";
 
         private int? LockedUkprn { get; set; }
@@ -85,6 +88,9 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                 x.Episodes = x.Episodes.Copy().Configure(episodes);
             });
 
+        internal ApprenticeshipBuilder WithFunctionalSkills() =>
+            this.With(x => x.IncludeFunctionalSkills = true);
+
         internal IEnumerable<ApprenticeshipModel> BuildApprentices()
         {
             if (ApprenticeshipUln == null)
@@ -125,12 +131,29 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
         private List<EarningEventModel> BuildEarnings()
         {
             return Enumerable.Range(0, Episodes.NumberOfEarningPeriods)
-                .Select(i => new EarningEventModel
+                .SelectMany(MakeEarnings).ToList();
+
+            IEnumerable<EarningEventModel> MakeEarnings(int month)
+            {
+                if (IncludeFunctionalSkills)
+                {
+                    var earning = MakeEarning(month, "SomeOtherFunctionalAim");
+                    earning.PriceEpisodes.Clear();
+                    yield return earning;
+                }
+
+                yield return MakeEarning(month, "ZPROG001");
+            }
+
+            EarningEventModel MakeEarning(int month, string aimReference)
+            {
+                return new EarningEventModel
                 {
                     EventId = Guid.NewGuid(),
                     Ukprn = LockedUkprn ?? Ukprn,
                     LearnerUln = IlrUln,
-                    AcademicYear = (short)new AcademicYear(Episodes.StartDate.AddMonths(i)),
+                    AcademicYear = (short)new AcademicYear(Episodes.StartDate.AddMonths(month)),
+                    LearningAimReference = aimReference,
                     LearningAimStandardCode = LockedProgramme?.standard ?? StandardCode,
                     LearningAimFrameworkCode = FrameworkCode,
                     LearningAimProgrammeType = ProgrammeType,
@@ -147,7 +170,8 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                             TotalNegotiatedPrice4 = Episodes.TotalNegotiatedPrice4,
                         }
                     }
-                }).ToList();
+                };
+            }
         }
 
         private IEnumerable<DataLockEventModel> BuildDataLocks()
