@@ -17,15 +17,17 @@
 
                     <details class="govuk-details flag" data-module="govuk-details">
                         <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text" style="color: #d4351c;">
-                                View data mismatches
+                            <span asp-show="period.DataLocks.Any()" class="govuk-details__summary-text" style="color: #d4351c;">
+                                View data mismatches 
+                            </span>
+                            <span asp-hide="period.DataLocks.Any()" class="govuk-details__summary-text" style="color: #d4351c;">
+                                View submission details
                             </span>
                         </summary>
                         <div class="">
                             <table class="govuk-table govuk-!-margin-top-7">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
-
                                         <th scope="col" class="govuk-table__header"></th>
                                         <th scope="col" class="govuk-table__header">Apprenticeship Service</th>
                                         <th scope="col" class="govuk-table__header">ILR submission</th>
