@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Configuration.AzureTableStorage;
@@ -9,6 +10,11 @@ namespace SFA.DAS.IdentifyDataLocks.Web
     {
         public static void Main(string[] args)
         {
+            var cultureInfo = new CultureInfo("en-GB");
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+            
             CreateHostBuilder(args).Build().Run();
         }
 
