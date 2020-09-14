@@ -1,0 +1,31 @@
+[{
+        "Id": 0,
+        "AccountId": 23843,
+        "AgreementId": "X8NEG6",
+        "AgreedOnDate": "0001-01-01T00:00:00",
+        "Uln": 1003528448,
+        "Ukprn": 10018916,
+        "EstimatedStartDate": "2020-03-01T00:00:00",
+        "EstimatedEndDate": "2021-06-01T00:00:00",
+        "StandardCode": 118,
+        "ProgrammeType": 25,
+        "FrameworkCode": 0,
+        "PathwayCode": 0,
+        "LegalEntityName": "LARCHWOOD CARE HOMES (SOUTH) LIMITED",
+        "TransferSendingEmployerAccountId": null,
+        "StopDate": null,
+        "Priority": 0,
+        "Status": 1,
+        "IsLevyPayer": true,
+        "ApprenticeshipPriceEpisodes": [{
+                "Id": 0,
+                "ApprenticeshipId": 827894,
+                "StartDate": "2020-03-01T00:00:00",
+                "EndDate": null,
+                "Cost": 3000.00000,
+                "Removed": false
+            }
+        ],
+        "ApprenticeshipEmployerType": 1
+    }
+]

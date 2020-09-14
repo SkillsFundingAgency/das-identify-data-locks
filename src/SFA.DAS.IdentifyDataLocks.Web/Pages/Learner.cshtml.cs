@@ -68,11 +68,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             ProviderId = report.Provider.Id;
             EmployerName = report.Employer.Name;
             EmployerId = report.Employer.Id;
-            if (report.HasDataLocks)
-            {
-                CurrentYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Current);
-                PreviousYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Previous);
-            }
+            CurrentYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Current);
+            PreviousYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Previous);
         }
     }
 }

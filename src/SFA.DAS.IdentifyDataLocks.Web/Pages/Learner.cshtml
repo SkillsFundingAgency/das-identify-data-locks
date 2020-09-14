@@ -93,11 +93,6 @@
                         </a>
                     </li>
                     <li>
-                        <a class="govuk-link" target="_blank" href="https://hub.fasst.org.uk/Pages/default.aspx">
-                            Hub
-                        </a>
-                    </li>
-                    <li>
                         <a class="govuk-link" target="_blank" href="https://console.apprenticeships.education.gov.uk/">
                             Support Console
                         </a>
@@ -141,143 +136,9 @@
             <div asp-hide="Model.HasDataLocks" class="funding-year">
                 <p class="">There are currently no active data locks for this learner</p>
             </div>
-            <div asp-show="Model.HasDataLocks" class="funding-year">
-                <h2 class="govuk-heading-m">@Model.AcademicYears.Current.ToString() funding year</h2>
-                <p asp-hide="Model.HasDataLocksInCurrentYear">There are currently no submissions for this period</p>
-                <div asp-show="Model.HasDataLocksInCurrentYear" class="returns">
-                    @foreach (var period in Model.CurrentYearDataLocks)
-                    {
-                        <div class="entry">
-                            <div class="rnumb govuk-heading-m">@period.Period</div>
-                            <div class="rcontent">
-                                @foreach (var dlock in period.DataLocks)
-                                {
-                                    <p class="govuk-body govuk-!-font-weight-bold thelock">@dlock</p>
-                                }
-
-                                <details class="govuk-details flag" data-module="govuk-details">
-                                    <summary class="govuk-details__summary">
-                                        <span class="govuk-details__summary-text" style="color: #d4351c;">
-                                            View data mismatches
-                                        </span>
-                                    </summary>
-                                    <div class="">
-                                        <table class="govuk-table govuk-!-margin-top-7">
-                                            <thead class="govuk-table__head">
-                                                <tr class="govuk-table__row">
-
-                                                    <th scope="col" class="govuk-table__header"></th>
-                                                    <th scope="col" class="govuk-table__header">Apprenticeship Service</th>
-                                                    <th scope="col" class="govuk-table__header">ILR submission</th>
-                                                    <th scope="col" class="govuk-table__header">Data lock</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="govuk-table__body">
-
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock01, "UKPRN", x => x.Ukprn)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock02, "ULN", x => x.Uln)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock03, "Standard code", x => x.Standard)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock04, "Framework code", x => x.Framework)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock05, "Program type", x => x.Program)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock06, "Pathway code", x => x.Pathway)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock07, "Cost", x => x.Cost)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock09, "Start date", x => x.PriceStart)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock12, "Pause date", x => x.PausedOn)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock10, "Stop date" , x=> x.StoppedOn)' />
-
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "Planned completion date", x => x.PlannedCompletion)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "Completion status", x => x.CompletionStatus)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "TNP 1", x => x.Tnp1)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "TNP 2", x => x.Tnp2)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "TNP 3", x => x.Tnp3)' />
-                                                <partial name="_DataLockRow" model=' new DataLockRowModel(period, "TNP 4" , x=> x.Tnp4)' />
-
-                                                <tr class="govuk-table__row">
-                                                    <th scope="row" class="govuk-table__header">No. of View submission details per return</th>
-                                                    <td class="govuk-table__cell">2</td>
-                                                    <td class="govuk-table__cell">2</td>
-                                                    <td class="govuk-table__cell">-</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                </details>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-            <div asp-show="Model.HasDataLocks" class="funding-year">
-                <h2 class="govuk-heading-m">@Model.AcademicYears.Previous.ToString() funding year</h2>
-                <p asp-hide="Model.HasDataLocksInPreviousYear">There are currently no submissions for this period</p>
-                <div asp-show="Model.HasDataLocksInPreviousYear" class="returns">
-                    @foreach (var period in Model.PreviousYearDataLocks)
-                    {
-                        <div class="entry">
-                            <div class="rnumb govuk-heading-m">@period.Period</div>
-                            <div class="rcontent">
-                                @foreach (var dlock in period.DataLocks)
-                                {
-                                    <p class="govuk-body govuk-!-font-weight-bold thelock">@dlock</p>
-                                }
-
-                                <details class="govuk-details flag" data-module="govuk-details">
-                                    <summary class="govuk-details__summary">
-                                        <span class="govuk-details__summary-text" style="color: #d4351c;">
-                                            View data mismatches
-                                        </span>
-                                    </summary>
-                                    <div class="">
-
-
-                                        <table class="govuk-table govuk-!-margin-top-7">
-                                            <thead class="govuk-table__head">
-                                                <tr class="govuk-table__row">
-
-                                                    <th scope="col" class="govuk-table__header"></th>
-                                                    <th scope="col" class="govuk-table__header">Apprenticeship Service</th>
-                                                    <th scope="col" class="govuk-table__header">ILR submission</th>
-                                                    <th scope="col" class="govuk-table__header">Data lock</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="govuk-table__body">
-
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock01, "UKPRN", x => x.Ukprn)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock01, "UKPRN", x => x.Ukprn)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock02, "ULN", x => x.Uln)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock03, "Standard code", x => x.Standard)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock04, "Framework code", x => x.Framework)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock05, "Program type", x => x.Program)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock06, "Pathway code", x => x.Pathway)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock07, "Cost", x => x.Cost)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock09, "Start date", x => x.PriceStart)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock12, "Pause date", x => x.PausedOn)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock10, "Stop date" , x=> x.StoppedOn)' />
-
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "Planned completion date", x => x.PlannedCompletion)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "Completion status", x => x.CompletionStatus)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "TNP 1", x => x.Tnp1)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "TNP 2", x => x.Tnp2)' />
-                                                <partial name="_DataLockRow" model='new DataLockRowModel(period, "TNP 3", x => x.Tnp3)' />
-                                                <partial name="_DataLockRow" model=' new DataLockRowModel(period, "TNP 4" , x=> x.Tnp4)' />
-
-
-                                                <tr class="govuk-table__row">
-                                                    <th scope="row" class="govuk-table__header">No. of View submission details per return</th>
-                                                    <td class="govuk-table__cell">2</td>
-                                                    <td class="govuk-table__cell">2</td>
-                                                    <td class="govuk-table__cell">-</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                </details>
-                            </div>
-                        </div>
-                    }
-                </div>
+            <div asp-show="Model.HasDataLocks" >
+                <partial name="_CollectionPeriods" model='(Model.AcademicYears.Current, Model.CurrentYearDataLocks, Model.HasDataLocksInCurrentYear)'/>
+                <partial name="_CollectionPeriods" model='(Model.AcademicYears.Previous, Model.PreviousYearDataLocks, Model.HasDataLocksInPreviousYear)'/>
             </div>
         </div>
     </div>

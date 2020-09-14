@@ -12,6 +12,8 @@
     <None Remove="TestData\Dlock01_DataLocks.json" />
     <None Remove="TestData\Dlock01_Earnings.json" />
     <None Remove="TestData\EarningEvents.json" />
+    <None Remove="TestData\Missing_ILR_Cost_Apprenticeship.json" />
+    <None Remove="TestData\Missing_ILR_Cost_Earnings.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +23,8 @@
     <EmbeddedResource Include="TestData\Dlock01_DataLocks.json" />
     <EmbeddedResource Include="TestData\Dlock01_Earnings.json" />
     <EmbeddedResource Include="TestData\EarningEvents.json" />
+    <EmbeddedResource Include="TestData\Missing_ILR_Cost_Apprenticeship.json" />
+    <EmbeddedResource Include="TestData\Missing_ILR_Cost_Earnings.json" />
   </ItemGroup>
 
   <ItemGroup>

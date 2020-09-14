@@ -1,7 +1,4 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
@@ -14,22 +11,35 @@ using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Providers.Api.Client;
+using SFA.DAS.Configuration.AzureTableStorage;
+using System.Reflection;
 
 namespace SFA.DAS.IdentifyDataLocks.Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var assemblyName = Assembly.GetEntryAssembly().GetName().Name;
+            Configuration = new ConfigurationBuilder()
+                .AddConfiguration(configuration)
+                .AddAzureTableStorage(options =>
+                    {
+                        options.ConfigurationKeys = new[] { assemblyName };
+                        options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
+                        options.EnvironmentName = configuration["Environment"];
+                        options.PreFixConfigurationKeys = false;
+                    })
+                .Build();
         }
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PaymentsDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("PaymentsDatabase"))
+                options.UseSqlServer(Configuration.GetConnectionString("PaymentsSqlConnectionString"))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IPaymentsDataContext, PaymentsDataContext>();
 
@@ -63,7 +73,6 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
