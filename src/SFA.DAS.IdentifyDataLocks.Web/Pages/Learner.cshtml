@@ -136,6 +136,9 @@
             <div asp-hide="Model.HasDataLocks" class="funding-year">
                 <p class="">There are currently no active data locks for this learner</p>
             </div>
+            <div asp-show="Model.HasMultipleProviders">
+                <div class="govuk-inset-text">This tool only shows data locks for the learner's current provider. If you are looking for data locks for a previous provider, try checking <a href="https://submitlearnerdatabeta.fasst.org.uk/" target="_blank">submit learner data</a>.</div>
+            </div>
             <div asp-show="Model.HasDataLocks" >
                 <partial name="_CollectionPeriods" model='(Model.AcademicYears.Current, Model.CurrentYearDataLocks, Model.HasDataLocksInCurrentYear)'/>
                 <partial name="_CollectionPeriods" model='(Model.AcademicYears.Previous, Model.PreviousYearDataLocks, Model.HasDataLocksInPreviousYear)'/>

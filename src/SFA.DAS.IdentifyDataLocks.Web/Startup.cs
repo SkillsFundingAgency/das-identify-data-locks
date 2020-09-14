@@ -22,7 +22,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
 
         public Startup(IConfiguration configuration)
         {
-            var assemblyName = Assembly.GetEntryAssembly().GetName().Name;
+            var assemblyName =  Assembly.GetAssembly(typeof(Startup)).GetName().Name;
             Configuration = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .AddAzureTableStorage(options =>

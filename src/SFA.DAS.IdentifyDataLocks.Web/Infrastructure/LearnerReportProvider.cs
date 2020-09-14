@@ -1,4 +1,5 @@
 using SFA.DAS.IdentifyDataLocks.Domain;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
@@ -35,7 +36,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
             var learnerReport = new LearnerReport
             {
                 DataLocks = report.CollectionPeriodsByYear,
-                HasDataLocks = report.HasDataLocks
+                HasDataLocks = report.HasDataLocks,
+                HasMultipleProviders = earnings.Any(e => e.Ukprn != activeApprenticeship.Ukprn)
             };
 
             if (activeApprenticeship != null)
