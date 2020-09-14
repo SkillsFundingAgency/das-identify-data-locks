@@ -29,7 +29,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                     {
                         options.ConfigurationKeys = new[] { assemblyName };
                         options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-                        options.EnvironmentName = configuration["Environment"];
+                        options.EnvironmentName = configuration["EnvironmentName"];
                         options.PreFixConfigurationKeys = false;
                     })
                 .Build();
