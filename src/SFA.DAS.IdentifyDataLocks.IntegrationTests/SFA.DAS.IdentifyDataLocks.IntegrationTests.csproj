@@ -14,6 +14,8 @@
     <None Remove="TestData\EarningEvents.json" />
     <None Remove="TestData\Missing_ILR_Cost_Apprenticeship.json" />
     <None Remove="TestData\Missing_ILR_Cost_Earnings.json" />
+    <None Remove="TestData\LearnerWithMultipleProviders\Apprenticeship.json" />
+    <None Remove="TestData\LearnerWithMultipleProviders\EarningEvents.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +27,8 @@
     <EmbeddedResource Include="TestData\EarningEvents.json" />
     <EmbeddedResource Include="TestData\Missing_ILR_Cost_Apprenticeship.json" />
     <EmbeddedResource Include="TestData\Missing_ILR_Cost_Earnings.json" />
+    <EmbeddedResource Include="TestData\LearnerWithMultipleProviders\Apprenticeship.json" />
+    <EmbeddedResource Include="TestData\LearnerWithMultipleProviders\EarningEvents.json" />
   </ItemGroup>
 
   <ItemGroup>

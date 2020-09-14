@@ -1,0 +1,64 @@
+[
+    {
+        "Id": 0,
+        "AccountId": 262,
+        "AgreementId": "7F1FGZ",
+        "AgreedOnDate": "2017-10-11T00:00:00",
+        "Uln": 1111064031,
+        "Ukprn": 10000610,
+        "EstimatedStartDate": "2017-09-01T00:00:00",
+        "EstimatedEndDate": "2019-03-01T00:00:00",
+        "StandardCode": 0,
+        "ProgrammeType": 2,
+        "FrameworkCode": 521,
+        "PathwayCode": 1,
+        "LegalEntityName": "Well Done Ltd",
+        "TransferSendingEmployerAccountId": null,
+        "StopDate": null,
+        "Priority": 14,
+        "Status": 4,
+        "IsLevyPayer": true,
+        "ApprenticeshipPriceEpisodes": [
+            {
+                "Id": 0,
+                "ApprenticeshipId": 90695,
+                "StartDate": "2017-09-01T00:00:00",
+                "EndDate": null,
+                "Cost": 6000.00000,
+                "Removed": false
+            }
+        ],
+        "ApprenticeshipEmployerType": 1
+    },
+    {
+        "Id": 0,
+        "AccountId": 262,
+        "AgreementId": "7F1FGZ",
+        "AgreedOnDate": "2019-10-22T00:00:00",
+        "Uln": 1111064031,
+        "Ukprn": 10003678,
+        "EstimatedStartDate": "2019-09-01T00:00:00",
+        "EstimatedEndDate": "2024-04-01T00:00:00",
+        "StandardCode": 200,
+        "ProgrammeType": 25,
+        "FrameworkCode": 0,
+        "PathwayCode": 0,
+        "LegalEntityName": "Well Done Ltd",
+        "TransferSendingEmployerAccountId": null,
+        "StopDate": null,
+        "Priority": 57,
+        "Status": 1,
+        "IsLevyPayer": true,
+        "ApprenticeshipPriceEpisodes": [
+            {
+                "Id": 0,
+                "ApprenticeshipId": 674191,
+                "StartDate": "2019-09-01T00:00:00",
+                "EndDate": null,
+                "Cost": 27000.00000,
+                "Removed": false
+            }
+        ],
+        "ApprenticeshipEmployerType": 1
+    }
+]

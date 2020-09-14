@@ -8,6 +8,7 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
         public (string Id, string Name) Employer { get; set; }
         public (string Id, string Name) Provider { get; set; }
         public bool HasDataLocks { get; set; }
+        public bool HasMultipleProviders { get; set; }
         public Dictionary<AcademicYear, List<CollectionPeriod>> DataLocks { get; set; }
     }
 }
