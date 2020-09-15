@@ -44,6 +44,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             services.AddAuthorization(authorizationConfig);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
             RegisterServices(services);
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +72,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapHealthChecks("/ping");
             });
         }
 
