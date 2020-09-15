@@ -23,7 +23,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public string ProviderName { get; private set; }
         public string ProviderId { get; private set; }
         public bool HasDataLocks { get; private set; }
-        // TODO - remove
+        public bool HasMultipleProviders { get; set; }
+        
         public IEnumerable<string> DataLockNames =>
             CurrentYearDataLocks
             .SelectMany(x => x.DataLocks)
@@ -63,6 +64,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
                 (year) => report.DataLocks.ContainsKey(year) ? report.DataLocks[year] : Enumerable.Empty<CollectionPeriod>();
 
             HasDataLocks = report.HasDataLocks;
+            HasMultipleProviders = report.HasMultipleProviders;
             LearnerName = report.Learner.Name;
             ProviderName = report.Provider.Name;
             ProviderId = report.Provider.Id;

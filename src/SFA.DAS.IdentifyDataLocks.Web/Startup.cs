@@ -11,8 +11,6 @@ using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Providers.Api.Client;
-using SFA.DAS.Configuration.AzureTableStorage;
-using System.Reflection;
 
 namespace SFA.DAS.IdentifyDataLocks.Web
 {
@@ -20,20 +18,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web
     {
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
-        {
-            var assemblyName = Assembly.GetEntryAssembly().GetName().Name;
-            Configuration = new ConfigurationBuilder()
-                .AddConfiguration(configuration)
-                .AddAzureTableStorage(options =>
-                    {
-                        options.ConfigurationKeys = new[] { assemblyName };
-                        options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
-                        options.EnvironmentName = configuration["EnvironmentName"];
-                        options.PreFixConfigurationKeys = false;
-                    })
-                .Build();
-        }
+        public Startup(IConfiguration configuration) =>
+            Configuration = configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
