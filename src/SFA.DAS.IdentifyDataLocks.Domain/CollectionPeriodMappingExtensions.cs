@@ -40,12 +40,12 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
         
         private static DateTime? GetPausedOnDate(ApprenticeshipModel apprenticeship)
         {
-            return apprenticeship.ApprenticeshipPauses.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.PauseDate;
+            return apprenticeship.ApprenticeshipPauses?.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.PauseDate;
         }
 
         private static DateTime? GetResumedOnDate(ApprenticeshipModel apprenticeship)
         {
-            return apprenticeship.ApprenticeshipPauses.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.ResumeDate;
+            return apprenticeship.ApprenticeshipPauses?.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.ResumeDate;
         }
 
         private static DataMatch ToDataMatch(this EarningEventModel earning) =>
