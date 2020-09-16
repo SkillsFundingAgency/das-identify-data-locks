@@ -1,0 +1,46 @@
+[{
+        "Id": 0,
+        "AccountId": 13947,
+        "AgreementId": "123ABC",
+        "AgreedOnDate": "2019-02-05T00:00:00",
+        "Uln": 3123456789,
+        "Ukprn": 10004000,
+        "EstimatedStartDate": "2018-09-01T00:00:00",
+        "EstimatedEndDate": "2020-09-01T00:00:00",
+        "StandardCode": 0,
+        "ProgrammeType": 2,
+        "FrameworkCode": 531,
+        "PathwayCode": 1,
+        "LegalEntityName": "Test Provider Ltd",
+        "TransferSendingEmployerAccountId": null,
+        "StopDate": null,
+        "Priority": 9,
+        "Status": 1,
+        "IsLevyPayer": true,
+        "ApprenticeshipPriceEpisodes": [
+            {
+                "Id": 0,
+                "ApprenticeshipId": 456789,
+                "StartDate": "2018-09-01T00:00:00",
+                "EndDate": null,
+                "Cost": 1500.00000,
+                "Removed": false
+            }
+        ],
+        "ApprenticeshipPauses":[
+            {
+                "Id": 0,
+                "ApprenticeshipId": 456789,
+                "PauseDate": "2018-10-01T00:00:00",
+                "ResumeDate": "2018-11-01T00:00:00"
+            },
+            {
+                "Id": 0,
+                "ApprenticeshipId": 456789,
+                "PauseDate": "2019-01-01T00:00:00",
+                "ResumeDate": "2019-03-01T00:00:00"
+            }
+        ],
+        "ApprenticeshipEmployerType": 1
+    }
+]

@@ -28,12 +28,10 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
 
             var periods = providerEarnings
                 .Select(earning => earning.ToCollectionPeriod(activeApprenticeship, locks))
-                .GroupBy(x => x.Period)
-                ;
+                .GroupBy(x => x.Period);
 
             var firstEarningInPeriods = periods
-                .Select(x => x.First())
-                ;
+                .Select(x => x.First());
 
             CollectionPeriods = firstEarningInPeriods
                 .OrderByDescending(x => x)

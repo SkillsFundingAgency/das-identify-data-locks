@@ -18,19 +18,19 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public bool IsLocked { get; }
 
         private readonly CollectionPeriod period;
-        private readonly Func<DataMatch, object> valueExtractor;
+        internal Func<DataMatch, object> valueExtractor;
 
         public DataLockRowModel(
             CollectionPeriod period,
-            DataLock data,
+            DataLock dataLock,
             string heading,
             Func<DataMatch, object> value)
         {
             Heading = heading;
             this.period = period;
             valueExtractor = value;
-            IsLocked = this.period.DataLocks.Contains(data);
-            ActiveDataLock = IsLocked ? data.ToString() : "-";
+            IsLocked = this.period.DataLocks.Contains(dataLock);
+            ActiveDataLock = IsLocked ? dataLock.ToString() : "-";
         }
 
         public DataLockRowModel(
@@ -39,5 +39,17 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             Func<DataMatch, object> value)
             : this(period, 0, heading, value)
         { }
+
+        public DataLockRowModel(
+            CollectionPeriod period,
+            DataLock dataLock,
+            string heading)
+        {
+            Heading = heading;
+            this.period = period;
+            IsLocked = this.period.DataLocks.Contains(dataLock);
+            ActiveDataLock = IsLocked ? dataLock.ToString() : "-";
+        }
+
     }
 }

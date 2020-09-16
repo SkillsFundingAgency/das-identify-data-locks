@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public bool IsLevyPayer { get; set; }
         public List<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisodes { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public List<ApprenticeshipPauseModel> ApprenticeshipPauses { get; set; }
         public ApprenticeshipModel()
         {
             ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();

@@ -111,7 +111,7 @@ public static class Testing
 
     internal static async Task Reset()
     {
-        await checkpoint.Reset(configuration.GetConnectionString("PaymentsDatabase"));
+        await checkpoint.Reset(configuration.GetConnectionString("PaymentsSqlConnectionString"));
         CommitmentsApi = Substitute.For<ICommitmentsApiClient>();
         ProviderApi = Substitute.For<IProviderApiClient>();
         AccountsApi = Substitute.For<IAccountApiClient>();

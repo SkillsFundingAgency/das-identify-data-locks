@@ -14,6 +14,7 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
         public DateTime? PriceStart { get; set; }
         public short AimSequenceNumber { get; set; }
         public DateTime? PausedOn { get; set; }
+        public DateTime? ResumedOn { get; set; }
         public DateTime? StoppedOn { get; set; }
         public DateTime? PlannedCompletion { get; set; }
         public ApprenticeshipStatus CompletionStatus { get; set; }
