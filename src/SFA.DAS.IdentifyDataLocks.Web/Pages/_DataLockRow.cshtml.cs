@@ -10,10 +10,10 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public string ActiveDataLock { get; }
 
         public string ApprenticeValue =>
-            valueExtractor?.Invoke(period.Apprenticeship)?.ToString();
+            Extract(period.Apprenticeship);
 
         public string IlrValue =>
-            valueExtractor?.Invoke(period.Ilr)?.ToString();
+            Extract(period.Apprenticeship);
 
         public bool IsLocked { get; }
 
@@ -39,5 +39,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             Func<DataMatch, object?> value)
             : this(period, 0, heading, value)
         { }
+
+        private string Extract(DataMatch data) =>
+            data.InvokeWith(valueExtractor)?.ToString() ?? "";
     }
 }
