@@ -17,11 +17,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 
         public async Task<ApprenticeshipModel> GetActiveApprenticeship(long uln)
         {
+            var statuses = new [] {ApprenticeshipStatus.Active, ApprenticeshipStatus.Paused};
             return await context.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
+                .Include(x => x.ApprenticeshipPauses)
                 .Where(x => x.Uln == uln)
                 .FirstOrDefaultAsync(a =>
-                    a.Status == ApprenticeshipStatus.Active);
+                    statuses.Contains(a.Status));
         }
 
         public async Task<(IEnumerable<EarningEventModel>, IEnumerable<DataLockEventModel>)> GetLearnerData(long uln, int[] academicYears)

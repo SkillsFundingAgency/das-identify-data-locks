@@ -16,6 +16,13 @@
     <None Remove="TestData\Missing_ILR_Cost_Earnings.json" />
     <None Remove="TestData\LearnerWithMultipleProviders\Apprenticeship.json" />
     <None Remove="TestData\LearnerWithMultipleProviders\EarningEvents.json" />
+    <None Remove="TestData\ApprenticeshipsWithPausedDates\Active_Apprenticeship_With_Multiple_Pause_Dates.json" />
+    <None Remove="TestData\ApprenticeshipsWithPausedDates\Active_Apprenticeship_With_No_Pause_Dates.json" />
+    <None Remove="TestData\ApprenticeshipsWithPausedDates\Active_Apprenticeship_With_Single_Pause_Record.json" />
+    <None Remove="TestData\ApprenticeshipsWithPausedDates\Paused_Apprenticeship.json" />
+    <None Remove="TestData\ApprenticeshipsWithPausedDates\Dlock12_DataLocks.json" />
+    <None Remove="TestData\ApprenticeshipsWithPausedDates\Dlock06_DataLocks.json" />
+    <None Remove="TestData\ApprenticeshipsWithPausedDates\EarningEvents.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +36,13 @@
     <EmbeddedResource Include="TestData\Missing_ILR_Cost_Earnings.json" />
     <EmbeddedResource Include="TestData\LearnerWithMultipleProviders\Apprenticeship.json" />
     <EmbeddedResource Include="TestData\LearnerWithMultipleProviders\EarningEvents.json" />
+    <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\Active_Apprenticeship_With_Multiple_Pause_Dates.json" />
+    <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\Active_Apprenticeship_With_No_Pause_Dates.json" />
+    <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\Active_Apprenticeship_With_Single_Pause_Record.json" />
+    <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\Paused_Apprenticeship.json" />
+    <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\Dlock12_DataLocks.json" />
+    <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\Dlock06_DataLocks.json" />
+    <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\EarningEvents.json" />
   </ItemGroup>
 
   <ItemGroup>

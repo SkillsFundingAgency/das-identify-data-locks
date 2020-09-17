@@ -25,7 +25,6 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
             if (apps.Length == 0) throw new Exception("There must be an apprenticeship to run these tests.");
 
             apprenticeship = apps.FirstOrDefault(x => x.Status == PaymentsApprenticeshipStatus.Active);
-            var appid = apprenticeship.Id;
 
             await Testing.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.LearnerWithMultipleProviders.EarningEvents.json");
         }

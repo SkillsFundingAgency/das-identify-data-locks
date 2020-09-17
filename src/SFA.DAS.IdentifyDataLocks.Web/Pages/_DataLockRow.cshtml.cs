@@ -22,15 +22,15 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 
         public DataLockRowModel(
             CollectionPeriod period,
-            DataLock data,
+            DataLock dataLock,
             string heading,
             Func<DataMatch, object> value)
         {
             Heading = heading;
             this.period = period;
             valueExtractor = value;
-            IsLocked = this.period.DataLocks.Contains(data);
-            ActiveDataLock = IsLocked ? data.ToString() : "-";
+            IsLocked = this.period.DataLocks.Contains(dataLock);
+            ActiveDataLock = IsLocked ? dataLock.ToString() : "-";
         }
 
         public DataLockRowModel(

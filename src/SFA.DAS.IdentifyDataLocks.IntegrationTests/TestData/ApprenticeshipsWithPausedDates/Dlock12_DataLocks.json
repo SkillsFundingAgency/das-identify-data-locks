@@ -1,0 +1,79 @@
+[
+	{
+		"Id": 0,
+		"EarningEventId": "4c28bab9-e596-4af4-ad81-b29a42c09613",
+		"ContractType": 1,
+		"AgreementId": "None",
+		"LearningAimSequenceNumber": null,
+		"NonPayablePeriods": [
+			{
+				"Id": 0,
+				"DataLockEventId": "774570eb-2e96-4fff-be74-10d866a1393a",
+				"DataLockEventNonPayablePeriodId": "6cf776f0-a2ec-4ac1-83b2-73242085daa0",
+				"PriceEpisodeIdentifier": "25-118-01/08/2019",
+				"TransactionType": 1,
+				"DeliveryPeriod": 2,
+				"Amount": 112.5,
+				"SfaContributionPercentage": 0.9,
+				"LearningStartDate": "2019-07-17T00:00:00",
+				"DataLockEventNonPayablePeriodFailures": [
+					{
+						"Id": 0,
+						"DataLockEventNonPayablePeriodId": "6cf776f0-a2ec-4ac1-83b2-73242085daa0",
+						"DataLockFailure": 12,
+						"Apprenticeship": null,
+						"ApprenticeshipId": 86819
+					}
+				]
+			},
+			{
+				"Id": 0,
+				"DataLockEventId": "774570eb-2e96-4fff-be74-10d866a1393a",
+				"DataLockEventNonPayablePeriodId": "a83d0a3e-9a15-4390-9f58-da868647b65e",
+				"PriceEpisodeIdentifier": "25-118-01/08/2019",
+				"TransactionType": 1,
+				"DeliveryPeriod": 1,
+				"Amount": 112.5,
+				"SfaContributionPercentage": 0.9,
+				"LearningStartDate": "2019-07-17T00:00:00",
+				"DataLockEventNonPayablePeriodFailures": [
+					{
+						"Id": 0,
+						"DataLockEventNonPayablePeriodId": "a83d0a3e-9a15-4390-9f58-da868647b65e",
+						"DataLockFailure": 12,
+						"Apprenticeship": null,
+						"ApprenticeshipId": 86819
+					}
+				]
+			}
+		],
+		"IlrFileName": null,
+		"SfaContributionPercentage": null,
+		"EventType": null,
+		"IsPayable": false,
+		"DataLockSource": 1,
+		"EventId": "774570eb-2e96-4fff-be74-10d866a1393a",
+		"AcademicYear": 1920,
+		"StartDate": "0001-01-01T00:00:00",
+		"PlannedEndDate": null,
+		"ActualEndDate": null,
+		"CompletionStatus": 0,
+		"CompletionAmount": 0.0,
+		"InstalmentAmount": 0.0,
+		"NumberOfInstalments": 0,
+		"LearningStartDate": "2019-07-17T00:00:00",
+		"CollectionPeriod": 2,
+		"LearnerReferenceNumber": "ABCD1234EFGH",
+		"LearnerUln": 3123456789,
+		"LearningAimReference": "ZPROG001",
+		"LearningAimProgrammeType": 25,
+		"LearningAimStandardCode": 118,
+		"LearningAimFrameworkCode": 0,
+		"LearningAimPathwayCode": 0,
+		"LearningAimFundingLineType": "19+ Apprenticeship (Employer on App Service)",
+		"Ukprn": 10004000,
+		"IlrSubmissionDateTime": "2019-10-04T19:01:45.003",
+		"JobId": 52330,
+		"EventTime": "2019-10-04T19:01:58.1841965+00:00"
+	}
+]

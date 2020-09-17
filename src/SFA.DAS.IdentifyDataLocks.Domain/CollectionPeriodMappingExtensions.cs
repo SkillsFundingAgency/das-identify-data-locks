@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,7 +34,19 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 PriceStart = apprenticeship.ApprenticeshipPriceEpisodes.FirstOrDefault()?.StartDate,
                 StoppedOn = apprenticeship.StopDate,
                 CompletionStatus = (ApprenticeshipStatus)apprenticeship.Status,
+                PausedOn = GetPausedOnDate(apprenticeship),
+                ResumedOn = GetResumedOnDate(apprenticeship)
             };
+        
+        private static DateTime? GetPausedOnDate(ApprenticeshipModel apprenticeship)
+        {
+            return apprenticeship.ApprenticeshipPauses?.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.PauseDate;
+        }
+
+        private static DateTime? GetResumedOnDate(ApprenticeshipModel apprenticeship)
+        {
+            return apprenticeship.ApprenticeshipPauses?.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.ResumeDate;
+        }
 
         private static DataMatch ToDataMatch(this EarningEventModel earning) =>
             new DataMatch

@@ -1,0 +1,41 @@
+[
+	{
+		"Id": 0,
+		"AccountId": 19064,
+		"AgreementId": "ABC123",
+		"AgreedOnDate": "2017-10-05T00:00:00",
+		"Uln": 3123456789,
+		"Ukprn": 10004000,
+		"EstimatedStartDate": "2017-09-01T00:00:00",
+		"EstimatedEndDate": "2019-03-01T00:00:00",
+		"StandardCode": 118,
+		"ProgrammeType": 25,
+		"FrameworkCode": 0,
+		"PathwayCode": 0,
+		"LegalEntityName": "ABC Limited",
+		"TransferSendingEmployerAccountId": null,
+		"StopDate": null,
+		"Priority": 70,
+		"Status": 2,
+		"IsLevyPayer": true,
+		"ApprenticeshipPauses": [
+			{
+				"Id": 0,
+				"ApprenticeshipId": 0,
+				"PauseDate": "2018-06-07T00:00:00",
+				"ResumeDate": null
+			}
+		],
+		"ApprenticeshipPriceEpisodes": [
+			{
+				"Id": 0,
+				"ApprenticeshipId": 0,
+				"StartDate": "2017-09-01T00:00:00",
+				"EndDate": null,
+				"Cost": 2700.0,
+				"Removed": false
+			}
+		],
+		"ApprenticeshipEmployerType": 1
+	}
+]
