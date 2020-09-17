@@ -39,17 +39,5 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             Func<DataMatch, object> value)
             : this(period, 0, heading, value)
         { }
-
-        public DataLockRowModel(
-            CollectionPeriod period,
-            DataLock dataLock,
-            string heading)
-        {
-            Heading = heading;
-            this.period = period;
-            IsLocked = this.period.DataLocks.Contains(dataLock);
-            ActiveDataLock = IsLocked ? dataLock.ToString() : "-";
-        }
-
     }
 }
