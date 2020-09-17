@@ -19,7 +19,9 @@ variables:
   - group: "Prod Management Resources"
 
 pool:
-  name: "DAS - Continuous Integration"    
+  name: "DAS - Continuous Integration"
+  demands:
+    - Agent.OS -equals Windows_NT
 
 resources:
   repositories:
