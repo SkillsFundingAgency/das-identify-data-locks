@@ -43,6 +43,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             services.AddAuthentication(authenticationConfig);
             services.AddAuthorization(authorizationConfig);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             RegisterServices(services);
             services.AddHealthChecks();
         }
