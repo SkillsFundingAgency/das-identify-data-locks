@@ -18,13 +18,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public bool IsLocked { get; }
 
         private readonly CollectionPeriod period;
-        private readonly Func<DataMatch, object> valueExtractor;
+        private readonly Func<DataMatch, object?> valueExtractor;
 
         public DataLockRowModel(
             CollectionPeriod period,
             DataLock dataLock,
             string heading,
-            Func<DataMatch, object> value)
+            Func<DataMatch, object?> value)
         {
             Heading = heading;
             this.period = period;
@@ -36,7 +36,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public DataLockRowModel(
             CollectionPeriod period,
             string heading,
-            Func<DataMatch, object> value)
+            Func<DataMatch, object?> value)
             : this(period, 0, heading, value)
         { }
     }

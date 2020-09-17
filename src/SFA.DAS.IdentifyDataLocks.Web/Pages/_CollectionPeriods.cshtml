@@ -43,7 +43,7 @@
                                     <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock06, "Pathway code", x => x.Pathway)' />
                                     <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock07, "Cost", x => x.Cost.ToString("C"))' />
                                     <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock09, "Start date", x => x.PriceStart?.ToShortDateString())' />
-                                    <partial name="_PauseDateDataLockRow" model='new PauseDateDataLockRowModel(period, Domain.DataLock.Dlock12, "Pause date", x => (x.PausedOn, x.ResumedOn)) ' />
+                                    <partial name="_PauseDateDataLockRow" model='new PauseDateDataLockRowModel(period, Domain.DataLock.Dlock12, "Pause date")' />
                                     <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock10, "Stop date" , x=> x.StoppedOn?.ToShortDateString())' />
                                     <partial name="_DataLockRow" model='new DataLockRowModel(period, "Planned completion date", x => x.PlannedCompletion)' />
                                     <partial name="_DataLockRow" model='new DataLockRowModel(period, "Completion status", x => x.CompletionStatus)' />
