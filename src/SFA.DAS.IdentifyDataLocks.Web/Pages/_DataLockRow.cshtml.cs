@@ -18,7 +18,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public bool IsLocked { get; }
 
         private readonly CollectionPeriod period;
-        internal Func<DataMatch, object> valueExtractor;
+        private readonly Func<DataMatch, object> valueExtractor;
 
         public DataLockRowModel(
             CollectionPeriod period,
