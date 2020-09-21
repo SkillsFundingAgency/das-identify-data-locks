@@ -15,7 +15,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
         public DataLockService(IPaymentsDataContext context) =>
             this.context = context;
 
-        public async Task<ApprenticeshipModel> GetActiveApprenticeship(long uln)
+        public async Task<ApprenticeshipModel?> GetActiveApprenticeship(long uln)
         {
             var statuses = new [] {ApprenticeshipStatus.Active, ApprenticeshipStatus.Paused};
             return await context.Apprenticeship

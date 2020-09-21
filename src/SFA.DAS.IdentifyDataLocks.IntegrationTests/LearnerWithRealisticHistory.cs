@@ -27,13 +27,13 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Testing.Reset();
 
-            var apps = await Testing.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Apprenticeship.json");
+            var apps = await Testing.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Apprenticeship.json");
             if (apps.Length == 0) throw new Exception("There must be an apprenticeship to run these tests.");
 
             apprenticeship = apps.FirstOrDefault(x => x.Status == PaymentsApprenticeshipStatus.Active);
             var appid = apprenticeship.Id;
 
-            await Testing.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.EarningEvents.json");
+            await Testing.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.EarningEvents.json");
 
             var dlocks = JsonConvert.DeserializeObject<DataLockEventModel[]>(
                 Resources.LoadAsString("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.DataLocks.json"));
@@ -44,7 +44,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
                 l.ApprenticeshipId = appid;
             }
 
-            await Testing.AddEntities(dlocks);
+            await Testing.Context.AddEntities(dlocks);
 
             Testing.TimeProvider.Today.Returns(new DateTime(2019, 8, 1));
         }

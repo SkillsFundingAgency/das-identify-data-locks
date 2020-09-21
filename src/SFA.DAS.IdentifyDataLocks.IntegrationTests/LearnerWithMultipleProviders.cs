@@ -21,12 +21,12 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Testing.Reset();
 
-            var apps = await Testing.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.LearnerWithMultipleProviders.Apprenticeship.json");
+            var apps = await Testing.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.LearnerWithMultipleProviders.Apprenticeship.json");
             if (apps.Length == 0) throw new Exception("There must be an apprenticeship to run these tests.");
 
             apprenticeship = apps.FirstOrDefault(x => x.Status == PaymentsApprenticeshipStatus.Active);
 
-            await Testing.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.LearnerWithMultipleProviders.EarningEvents.json");
+            await Testing.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.LearnerWithMultipleProviders.EarningEvents.json");
         }
 
         [Test]
