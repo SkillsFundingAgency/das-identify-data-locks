@@ -29,14 +29,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IPaymentsDataContext, PaymentsDataContext>();
 
-            services.AddRazorPages(options => 
+            services.AddRazorPages(options =>
             {
-                options.Conventions.AllowAnonymousToPage("/index");
-                options.Conventions.AuthorizePage("/accessdenied");
-                //This redirection is required as IDAMs is configured to return to this path for localhost. 
+                options.Conventions
+                    .AuthorizeFolder("/")
+                    .AllowAnonymousToPage("/index");
+                //This redirection is required as IDAMs is configured to return to this path for localhost.
                 options.Conventions.AddPageRoute("/accessdenied", "account/accessdenied");
-                options.Conventions.AuthorizePage("/start", AuthorizationConfiguration.PolicyName);
-                options.Conventions.AuthorizePage("/learner", AuthorizationConfiguration.PolicyName);
             });
             var authorizationConfig = Configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
             var authenticationConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
