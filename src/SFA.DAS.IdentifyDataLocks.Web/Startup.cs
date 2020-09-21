@@ -24,11 +24,26 @@ namespace SFA.DAS.IdentifyDataLocks.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureCoreServices(services);
+
+            ConfigureOperationalServices(services);
+        }
+
+        protected virtual void ConfigureCoreServices(IServiceCollection services)
+        {
             services.AddDbContext<PaymentsDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("PaymentsSqlConnectionString"))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IPaymentsDataContext, PaymentsDataContext>();
 
+            services.AddRazorPages();
+
+            RegisterServices(services);
+            services.AddHealthChecks();
+        }
+
+        protected virtual void ConfigureOperationalServices(IServiceCollection services)
+        {
             services.AddRazorPages(options =>
             {
                 options.Conventions
@@ -39,12 +54,11 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             });
             var authorizationConfig = Configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
             var authenticationConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+
             services.AddAuthentication(authenticationConfig);
             services.AddAuthorization(authorizationConfig);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-            RegisterServices(services);
-            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

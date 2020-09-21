@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -32,6 +32,9 @@
     <EmbeddedResource Include="TestData\Dlock01_DataLocks.json" />
     <EmbeddedResource Include="TestData\Dlock01_Earnings.json" />
     <EmbeddedResource Include="TestData\EarningEvents.json" />
+    <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\Apprenticeships.json" />
+    <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\Datalocks.json" />
+    <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\EarningEvents.json" />
     <EmbeddedResource Include="TestData\Missing_ILR_Cost_Apprenticeship.json" />
     <EmbeddedResource Include="TestData\Missing_ILR_Cost_Earnings.json" />
     <EmbeddedResource Include="TestData\LearnerWithMultipleProviders\Apprenticeship.json" />
@@ -47,6 +50,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.6" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="NUnit" Version="3.12.0" />

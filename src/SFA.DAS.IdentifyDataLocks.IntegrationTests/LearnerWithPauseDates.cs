@@ -20,11 +20,11 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Testing.Reset();
 
-            var apps = await Testing.AddEntitiesFromJsonResource<ApprenticeshipModel>(apprenticeshipResourceName);
+            var apps = await Testing.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>(apprenticeshipResourceName);
 
             apprenticeship = apps.FirstOrDefault();
 
-            await Testing.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.EarningEvents.json");
+            await Testing.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.EarningEvents.json");
 
             
             if(loadDataLocks)
@@ -49,7 +49,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
             {
                 l.ApprenticeshipId = apprenticeship.Id;
             }
-            await Testing.AddEntities(dataLocks);
+            await Testing.Context.AddEntities(dataLocks);
         }
 
         [Test]

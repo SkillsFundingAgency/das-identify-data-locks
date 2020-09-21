@@ -12,8 +12,8 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
             services.AddScoped<LearnerModel>();
         }
 
-        public static ServiceCollection ConfigureMockService<T>(
-            this ServiceCollection services,
+        public static IServiceCollection ConfigureMockService<T>(
+            this IServiceCollection services,
             Func<IServiceProvider, T> service)
             where T : class
         {
