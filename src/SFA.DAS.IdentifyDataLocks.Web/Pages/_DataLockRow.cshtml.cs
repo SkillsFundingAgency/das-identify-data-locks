@@ -13,7 +13,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             Extract(period.Apprenticeship);
 
         public string IlrValue =>
-            Extract(period.Apprenticeship);
+            Extract(period.Ilr);
 
         public bool IsLocked { get; }
 
@@ -24,11 +24,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             CollectionPeriod period,
             DataLock dataLock,
             string heading,
-            Func<DataMatch, object?> value)
+            Func<DataMatch, object?> valueExtractor)
         {
             Heading = heading;
-            this.period = period;
-            valueExtractor = value;
+            this.period = period
+                ?? throw new ArgumentNullException(nameof(period));
+            this.valueExtractor = valueExtractor
+                ?? throw new ArgumentNullException(nameof(valueExtractor));
             IsLocked = this.period.DataLocks.Contains(dataLock);
             ActiveDataLock = IsLocked ? dataLock.ToString() : "-";
         }
@@ -40,7 +42,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             : this(period, 0, heading, value)
         { }
 
-        private string Extract(DataMatch data) =>
-            data.InvokeWith(valueExtractor)?.ToString() ?? "";
+        private string Extract(DataMatch? data) =>
+            data != null ? valueExtractor(data)?.ToString() ?? "" : "";
     }
 }
