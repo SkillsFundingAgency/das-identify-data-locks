@@ -45,10 +45,22 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
                     new { Pathway = 12 });
 
                 yield return (
-                    "Cost",
+                    "Cost from TNP1/2",
                     () => builder().ForProgramme(episodes: episodes =>
-                                                 episodes.WithPrice(1, 2, 3, 4)),
-                    new { Cost = 10 });
+                                                 episodes.WithPriceFromTnp1And2(1, 2)),
+                    new { Cost = 3 });
+
+                yield return (
+                    "Cost from TNP3/4",
+                    () => builder().ForProgramme(episodes: episodes =>
+                                                 episodes.WithPriceFromTnp3And4(3, 4)),
+                    new { Cost = 7 });
+
+                yield return (
+                    "Cost from TNP3/4 (ignores TNP1/2)",
+                    () => builder().ForProgramme(episodes: episodes =>
+                                                 episodes.WithPriceFromTnp(1, 2, 3, 4)),
+                    new { Cost = 7 });
 
                 yield return (
                     "Starting",
