@@ -45,3 +45,8 @@
 .dunlocker .returns .entry .flag .govuk-details__summary:before {
     color: #d4351c;
 }
+
+.dunlocker .returns .subHeader {
+    font-size: 14px;
+    font-weight: lighter;
+}
