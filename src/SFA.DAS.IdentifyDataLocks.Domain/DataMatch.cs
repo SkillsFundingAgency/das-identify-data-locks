@@ -22,5 +22,6 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
         public decimal Tnp2 { get; set; }
         public decimal Tnp3 { get; set; }
         public decimal Tnp4 { get; set; }
+        public DateTime IlrSubmissionDate { get; set; }
     }
 }

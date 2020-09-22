@@ -64,7 +64,7 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                     e.TotalNegotiatedPrice4),
                 PriceStart = earning.PriceEpisodes.FirstOrDefault()?.StartDate,
                 StoppedOn = earning.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
-                //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
+                IlrSubmissionDate = earning.IlrSubmissionDateTime
             };
 
         private static List<DataLock> ToDataLocks(this IEnumerable<DataLockEventModel> locks, EarningEventModel earning) =>
