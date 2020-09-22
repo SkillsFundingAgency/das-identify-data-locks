@@ -1,6 +1,6 @@
 @using SFA.DAS.IdentifyDataLocks.Domain;
 @model (AcademicYear AcademicYear, IEnumerable<CollectionPeriod> CollectionPeriods, bool HasDataLocks)
-
+@{ var subHeaderStyle = "font-size: 14px;font-weight: lighter;"; }
 <div class="funding-year">
     <h2 class="govuk-heading-m">@Model.AcademicYear.ToString() funding year</h2>
     <p asp-hide="Model.HasDataLocks">There are currently no submissions for this period</p>
@@ -29,8 +29,8 @@
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
                                         <th scope="col" class="govuk-table__header"></th>
-                                        <th scope="col" class="govuk-table__header">Apprenticeship Service</th>
-                                        <th scope="col" class="govuk-table__header">ILR submission</th>
+                                        <th scope="col" class="govuk-table__header">Apprenticeship Service<br><div style="@subHeaderStyle">Current/Live</div></th>
+                                        <th scope="col" class="govuk-table__header">ILR submission<br><div style="@subHeaderStyle">@period.Ilr.IlrSubmissionDate.ToString("dd/MM/yyyy HH:mm")</div></th>
                                         <th scope="col" class="govuk-table__header">Data lock</th>
                                     </tr>
                                 </thead>
