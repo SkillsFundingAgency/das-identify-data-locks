@@ -8,6 +8,7 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
 {
     public static class CollectionPeriodMappingExtensions
     {
+        const string NotApplicable = "n/a";
         public static CollectionPeriod ToCollectionPeriod(
             this EarningEventModel earning,
             ApprenticeshipModel apprenticeship,
@@ -35,9 +36,13 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 StoppedOn = apprenticeship.StopDate,
                 CompletionStatus = (ApprenticeshipStatus)apprenticeship.Status,
                 PausedOn = GetPausedOnDate(apprenticeship),
-                ResumedOn = GetResumedOnDate(apprenticeship)
+                ResumedOn = GetResumedOnDate(apprenticeship),
+                Tnp1 = NotApplicable,
+                Tnp2 = NotApplicable,
+                Tnp3 = NotApplicable,
+                Tnp4 = NotApplicable
             };
-        
+
         private static DateTime? GetPausedOnDate(ApprenticeshipModel apprenticeship)
         {
             return apprenticeship.ApprenticeshipPauses?.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.PauseDate;
@@ -57,15 +62,29 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 Framework = (short)earning.LearningAimFrameworkCode,
                 Program = (short)earning.LearningAimProgrammeType,
                 Pathway = (short)earning.LearningAimPathwayCode,
-                Cost = earning.PriceEpisodes.Sum(e =>
-                    e.TotalNegotiatedPrice1 +
-                    e.TotalNegotiatedPrice2 +
-                    e.TotalNegotiatedPrice3 +
-                    e.TotalNegotiatedPrice4),
+                Cost = earning.CalculateCost(),
                 PriceStart = earning.PriceEpisodes.FirstOrDefault()?.StartDate,
                 StoppedOn = earning.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
-                //CompletionStatus = (Domain.ApprenticeshipStatus)x.Status,
+                IlrSubmissionDate = earning.IlrSubmissionDateTime,
+                Tnp1 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice1),
+                Tnp2 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice2),
+                Tnp3 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice3),
+                Tnp4 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice4)
             };
+
+        private static string GetTnpValue(decimal? tnp) => 
+            tnp?.ToString("c") ?? "-";
+
+        private static decimal CalculateCost(this EarningEventModel earning)
+        {
+            var tnp1and2 = earning.PriceEpisodes.Sum(e =>
+                e.TotalNegotiatedPrice1 + e.TotalNegotiatedPrice2);
+
+            var tnp3and4 = earning.PriceEpisodes.Sum(e =>
+                e.TotalNegotiatedPrice3 + e.TotalNegotiatedPrice4);
+
+            return tnp3and4 > 0 ? tnp3and4 : tnp1and2;
+        }
 
         private static List<DataLock> ToDataLocks(this IEnumerable<DataLockEventModel> locks, EarningEventModel earning) =>
             locks

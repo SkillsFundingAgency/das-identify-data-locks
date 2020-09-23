@@ -22,13 +22,13 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Testing.Reset();
 
-            var apps = await Testing.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Missing_ILR_Cost_Apprenticeship.json");
+            var apps = await Testing.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Missing_ILR_Cost_Apprenticeship.json");
             if (apps.Length == 0) throw new Exception("There must be an apprenticeship to run these tests.");
 
             apprenticeship = apps.FirstOrDefault(x => x.Status == PaymentsApprenticeshipStatus.Active);
             var appid = apprenticeship.Id;
 
-            await Testing.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Missing_ILR_Cost_Earnings.json");
+            await Testing.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Missing_ILR_Cost_Earnings.json");
 
             var dlocks = JsonConvert.DeserializeObject<DataLockEventModel[]>(
                 Resources.LoadAsString("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Dlock01_DataLocks.json"));
@@ -39,7 +39,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
                 l.ApprenticeshipId = appid;
             }
 
-            await Testing.AddEntities(dlocks);
+            await Testing.Context.AddEntities(dlocks);
         }
 
         private ApprenticeshipModel apprenticeship;

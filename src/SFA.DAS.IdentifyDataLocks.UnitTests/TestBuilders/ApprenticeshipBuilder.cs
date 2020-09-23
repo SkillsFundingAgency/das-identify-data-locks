@@ -21,7 +21,6 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
         public int PathwayCode { get; private set; } = 11;
         public bool IncludeFunctionalSkills { get; private set; }
 
-
         public ApprenticePriceEpisodeBuilder Episodes { get; private set; }
             = new ApprenticePriceEpisodeBuilder();
 
@@ -114,10 +113,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                         {
                             StartDate = Episodes.StartDate,
                             EndDate = Episodes.StoppedDate,
-                            Cost = Episodes.TotalNegotiatedPrice1 +
-                                   Episodes.TotalNegotiatedPrice2 +
-                                   Episodes.TotalNegotiatedPrice3 +
-                                   Episodes.TotalNegotiatedPrice4,
+                            Cost = Episodes.Cost,
                         }
                     }
                 }
@@ -247,15 +243,30 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
         public DateTime StartDate { get; private set; } = new DateTime(2020, 03, 15);
         public DateTime? StoppedDate { get; private set; }
         public int NumberOfEarningPeriods { get; private set; } = 3;
+        public decimal Cost { get; private set; }
 
-        internal ApprenticePriceEpisodeBuilder WithPrice(int tnp1, int tnp2, int tnp3, int tnp4)
+        internal ApprenticePriceEpisodeBuilder WithPriceFromTnp(int tnp1, int tnp2, int tnp3, int tnp4)
             => this.With(x =>
             {
                 x.TotalNegotiatedPrice1 = tnp1;
                 x.TotalNegotiatedPrice2 = tnp2;
                 x.TotalNegotiatedPrice3 = tnp3;
                 x.TotalNegotiatedPrice4 = tnp4;
+                x.Cost = tnp3 + tnp4;
             });
+
+        internal ApprenticePriceEpisodeBuilder WithPriceFromTnp1And2(int tnp1, int tnp2)
+            => this.With(x =>
+            {
+                x.TotalNegotiatedPrice1 = tnp1;
+                x.TotalNegotiatedPrice2 = tnp2;
+                x.TotalNegotiatedPrice3 = 0;
+                x.TotalNegotiatedPrice4 = 0;
+                x.Cost = tnp1 + tnp2;
+            });
+
+        internal ApprenticePriceEpisodeBuilder WithPriceFromTnp3And4(int tnp3, int tnp4)
+            => WithPriceFromTnp(0, 0, tnp3, tnp4);
 
         internal ApprenticePriceEpisodeBuilder Starting(DateTime starting) =>
             this.With(x =>

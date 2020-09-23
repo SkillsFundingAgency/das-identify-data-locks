@@ -24,28 +24,41 @@ namespace SFA.DAS.IdentifyDataLocks.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureCoreServices(services);
+
+            ConfigureOperationalServices(services);
+        }
+
+        protected virtual void ConfigureCoreServices(IServiceCollection services)
+        {
             services.AddDbContext<PaymentsDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("PaymentsSqlConnectionString"))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IPaymentsDataContext, PaymentsDataContext>();
 
-            services.AddRazorPages(options => 
+            services.AddRazorPages();
+
+            RegisterServices(services);
+            services.AddHealthChecks();
+        }
+
+        protected virtual void ConfigureOperationalServices(IServiceCollection services)
+        {
+            services.AddRazorPages(options =>
             {
-                options.Conventions.AllowAnonymousToPage("/index");
-                options.Conventions.AuthorizePage("/accessdenied");
-                //This redirection is required as IDAMs is configured to return to this path for localhost. 
+                options.Conventions
+                    .AuthorizeFolder("/")
+                    .AllowAnonymousToPage("/index");
+                //This redirection is required as IDAMs is configured to return to this path for localhost.
                 options.Conventions.AddPageRoute("/accessdenied", "account/accessdenied");
-                options.Conventions.AuthorizePage("/start", AuthorizationConfiguration.PolicyName);
-                options.Conventions.AuthorizePage("/learner", AuthorizationConfiguration.PolicyName);
             });
             var authorizationConfig = Configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
             var authenticationConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+
             services.AddAuthentication(authenticationConfig);
             services.AddAuthorization(authorizationConfig);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-            RegisterServices(services);
-            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

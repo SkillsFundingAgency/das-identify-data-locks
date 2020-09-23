@@ -37,7 +37,6 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
             {
                 DataLocks = report.CollectionPeriodsByYear,
                 HasDataLocks = report.HasDataLocks,
-                HasMultipleProviders = earnings.Any(e => e.Ukprn != activeApprenticeship.Ukprn)
             };
 
             if (activeApprenticeship != null)
@@ -49,6 +48,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
                 learnerReport.Learner = (uln.ToString(), learnerName);
                 learnerReport.Employer = (employerId, employerName);
                 learnerReport.Provider = (activeApprenticeship.Ukprn.ToString(), providerName);
+                learnerReport.HasMultipleProviders = earnings.Any(e => e.Ukprn != activeApprenticeship.Ukprn);
             }
 
             return learnerReport;

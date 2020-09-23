@@ -38,9 +38,9 @@ namespace SFA.DAS.IdentifyDataLocks.Web
 
         public static IServiceCollection AddAuthorization(this IServiceCollection services, AuthorizationConfiguration configuration)
         {
-            services.AddAuthorization(options => 
+            services.AddAuthorization(options =>
             {
-                options.AddPolicy(AuthorizationConfiguration.PolicyName, policy => 
+                options.AddPolicy(AuthorizationConfiguration.PolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(configuration.ClaimId, configuration.ClaimValue);

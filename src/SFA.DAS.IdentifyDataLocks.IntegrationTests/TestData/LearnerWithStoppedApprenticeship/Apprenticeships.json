@@ -1,0 +1,32 @@
+[{
+        "Id": 0,
+        "AccountId": 20111,
+        "AgreementId": "5ZM4EG",
+        "AgreedOnDate": "2017-12-04T00:00:00",
+        "Uln": 6111511121,
+        "Ukprn": 10010010,
+        "EstimatedStartDate": "2017-11-01T00:00:00",
+        "EstimatedEndDate": "2018-12-01T00:00:00",
+        "StandardCode": 138,
+        "ProgrammeType": 25,
+        "FrameworkCode": 0,
+        "PathwayCode": 0,
+        "LegalEntityName": "THE AMAZING GROUP LIMITED",
+        "TransferSendingEmployerAccountId": null,
+        "StopDate": "2019-02-21T00:00:00",
+        "Priority": 4,
+        "Status": 3,
+        "IsLevyPayer": true,
+        "ApprenticeshipPriceEpisodes": [{
+                "Id": 0,
+                "ApprenticeshipId": 137137,
+                "StartDate": "2017-11-01T00:00:00",
+                "EndDate": null,
+                "Cost": 5000.00000,
+                "Removed": false
+            }
+        ],
+        "ApprenticeshipEmployerType": 1,
+        "ApprenticeshipPauses": null
+    }
+]
