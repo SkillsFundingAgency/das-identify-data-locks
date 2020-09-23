@@ -8,6 +8,7 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
 {
     public static class CollectionPeriodMappingExtensions
     {
+        const string NotApplicable = "n/a";
         public static CollectionPeriod ToCollectionPeriod(
             this EarningEventModel earning,
             ApprenticeshipModel apprenticeship,
@@ -35,7 +36,11 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 StoppedOn = apprenticeship.StopDate,
                 CompletionStatus = (ApprenticeshipStatus)apprenticeship.Status,
                 PausedOn = GetPausedOnDate(apprenticeship),
-                ResumedOn = GetResumedOnDate(apprenticeship)
+                ResumedOn = GetResumedOnDate(apprenticeship),
+                Tnp1 = NotApplicable,
+                Tnp2 = NotApplicable,
+                Tnp3 = NotApplicable,
+                Tnp4 = NotApplicable
             };
 
         private static DateTime? GetPausedOnDate(ApprenticeshipModel apprenticeship)
@@ -60,8 +65,15 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 Cost = earning.CalculateCost(),
                 PriceStart = earning.PriceEpisodes.FirstOrDefault()?.StartDate,
                 StoppedOn = earning.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
-                IlrSubmissionDate = earning.IlrSubmissionDateTime
+                IlrSubmissionDate = earning.IlrSubmissionDateTime,
+                Tnp1 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice1),
+                Tnp2 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice2),
+                Tnp3 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice3),
+                Tnp4 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice4)
             };
+
+        private static string GetTnpValue(decimal? tnp) => 
+            tnp?.ToString("c") ?? "-";
 
         private static decimal CalculateCost(this EarningEventModel earning)
         {
