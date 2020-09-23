@@ -73,7 +73,7 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
             };
 
         private static string GetTnpValue(decimal? tnp) => 
-            tnp.GetValueOrDefault() > 0 ? tnp.Value.ToString("c") : "";
+            tnp?.ToString("c") ?? "-";
 
         private static decimal CalculateCost(this EarningEventModel earning)
         {
