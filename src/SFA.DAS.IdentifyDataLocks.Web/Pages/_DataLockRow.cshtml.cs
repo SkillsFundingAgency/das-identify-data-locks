@@ -43,6 +43,6 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         { }
 
         private string Extract(DataMatch? data) =>
-            data != null ? valueExtractor(data)?.ToString() ?? "" : "";
+            data != null ? valueExtractor(data)?.ToString() ?? "-" : "-";
     }
 }
