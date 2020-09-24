@@ -26,7 +26,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
 
             var sut = new DataLockRowModel(period, "", m => m.Cost);
 
-            sut.ApprenticeValue.Should().Be("");
+            sut.ApprenticeValue.Should().Be("-");
         }
 
         [Test, AutoData]
@@ -37,8 +37,8 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
 
             var sut = new DataLockRowModel(period, "", m => m.Standard);
 
-            sut.ApprenticeValue.Should().Be("");
-            sut.IlrValue.Should().Be("");
+            sut.ApprenticeValue.Should().Be("-");
+            sut.IlrValue.Should().Be("-");
         }
 
         [Test, AutoData]
@@ -49,8 +49,8 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
 
             var sut = new DataLockRowModel(period, "", _ => null);
 
-            sut.ApprenticeValue.Should().Be("");
-            sut.IlrValue.Should().Be("");
+            sut.ApprenticeValue.Should().Be("-");
+            sut.IlrValue.Should().Be("-");
         }
 
         [Test, AutoData]
