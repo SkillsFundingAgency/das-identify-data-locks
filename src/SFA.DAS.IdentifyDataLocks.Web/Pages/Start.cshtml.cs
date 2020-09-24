@@ -35,16 +35,6 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             {
                 ModelState.AddModelError(nameof(Uln), "Enter a valid ULN");
             }
-            else
-            {
-                var apprenticeship = await _context.Apprenticeship.FirstOrDefaultAsync(x => x.Uln == uln);
-
-                if (apprenticeship == null)
-                {
-                    ModelState.AddModelError(nameof(Uln), "ULN not found");
-                }
-            }
-
         }
     }
 }
