@@ -8,7 +8,7 @@
     <th scope="row" class="govuk-table__header">@Model.Heading</th>
     <td class="govuk-table__cell">
         <div asp-show="Model.HasPausedDate">From: @Model.PausedOnDate<br>To: @Model.ResumedOnDate</div>
-        <div asp-hide="Model.HasPausedDate"> - </div>
+        <div asp-hide="Model.HasPausedDate">-</div>
     </td>
     <td class="govuk-table__cell">n/a</td>
     <td class="govuk-table__cell">@Model.ActiveDataLock</td>
