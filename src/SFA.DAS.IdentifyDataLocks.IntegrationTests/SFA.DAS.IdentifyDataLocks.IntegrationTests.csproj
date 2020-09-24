@@ -46,6 +46,8 @@
     <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\Dlock12_DataLocks.json" />
     <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\Dlock06_DataLocks.json" />
     <EmbeddedResource Include="TestData\ApprenticeshipsWithPausedDates\EarningEvents.json" />
+    <EmbeddedResource Include="TestData\LearnerWithMissingApprenticeship\Dlock02_DataLocks.json" />
+    <EmbeddedResource Include="TestData\LearnerWithMissingApprenticeship\EarningEvents.json" />
   </ItemGroup>
 
   <ItemGroup>
