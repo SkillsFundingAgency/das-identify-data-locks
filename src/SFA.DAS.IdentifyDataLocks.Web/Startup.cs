@@ -82,6 +82,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<SecurityHeadersMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
