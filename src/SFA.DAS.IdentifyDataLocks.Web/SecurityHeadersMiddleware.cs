@@ -18,7 +18,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             context.Response.Headers.Add("x-xss-protection", new StringValues("0"));
             context.Response.Headers.Add(
                 "Content-Security-Policy",
-                new StringValues("default-src 'self' das-at-frnt-end.azureedge.net;"));
+                new StringValues("default-src 'self' das-at-frnt-end.azureedge.net das-pp-frnt-end.azureedge.net das-mo-frnt-end.azureedge.net das-prd-frnt-end.azureedge.net;"));
 
             await next(context);
         }
