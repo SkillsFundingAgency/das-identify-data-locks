@@ -16,17 +16,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public TnpDataLockRowModel(
             CollectionPeriod period,
             string heading,
-            Func<DataMatch, List<(DateTime, decimal)>> valueExtractor)
+            Func<DataMatch, List<AmountFromDate>> valueExtractor)
         {
             RowClass = heading.ToLower().Replace(" ", "");
             Heading = heading;
             if (period.Ilr != null)
             {
-                IlrValues = valueExtractor(period.Ilr).Select(x => new AmountFromDate
-                {
-                    Start = x.Item1,
-                    Amount = x.Item2
-                });
+                IlrValues = valueExtractor(period.Ilr);
             }
         }
     }
