@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.IdentifyDataLocks.Domain
 {
@@ -18,7 +19,7 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
         public DateTime? StoppedOn { get; set; }
         public DateTime? PlannedCompletion { get; set; }
         public ApprenticeshipStatus CompletionStatus { get; set; }
-        public decimal? Tnp1 { get; set; }
+        public List<(DateTime, decimal)> Tnp1 { get; set; }
         public decimal? Tnp2 { get; set; }
         public decimal? Tnp3 { get; set; }
         public decimal? Tnp4 { get; set; }

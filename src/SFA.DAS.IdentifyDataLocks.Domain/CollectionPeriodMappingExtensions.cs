@@ -61,7 +61,7 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 PriceStart = earning.PriceEpisodes.FirstOrDefault()?.StartDate,
                 StoppedOn = earning.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
                 IlrSubmissionDate = earning.IlrSubmissionDateTime,
-                Tnp1 = earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice1,
+                Tnp1 = earning.PriceEpisodes.Select(x => (x.StartDate, x.TotalNegotiatedPrice1)).ToList(),
                 Tnp2 = earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice2,
                 Tnp3 = earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice3,
                 Tnp4 = earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice4,

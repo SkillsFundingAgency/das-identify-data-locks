@@ -1,4 +1,3 @@
-using AngleSharp;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
@@ -24,7 +23,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests.LearnerWithStoppedApprentic
     public class LearnerWithMultiplePriceEpisodes : WebApplicationTestFixture
     {
         [Test]
-        public async Task RendersTNPs()
+        public async Task RendersTNPForOncePriceEpisodes()
         {
             await Arrange("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData");
 
@@ -38,12 +37,18 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests.LearnerWithStoppedApprentic
             var document = parser.ParseDocument(body);
             var tnp1Row = document.QuerySelector("tr.tnp1");
             tnp1Row.Should().NotBeNull();
-            tnp1Row.Children.Should().BeEquivalentTo(new[] {
-                new { TextContent = "TNP 1" },
-                new { TextContent = "n/a" },
-                new { TextContent = "£24,872.00" },
-                new { TextContent = " - " }
-                });
+            tnp1Row.Children.Should().BeEquivalentTo(
+                new[]
+                {
+                    new { TextContent = "TNP 1" },
+                    new { TextContent = "n/a" },
+                    new { TextContent = "Date: 01/12/2019\n        Price: ï¿½24,872.00" },
+                    new { TextContent = " - " }
+                },
+                options =>
+                   options.Using<string>(ctx =>
+                        ctx.Subject.Trim().Should().Be(ctx.Expectation.Trim()))
+                   .WhenTypeIs<string>());
         }
     }
 }
