@@ -1,3 +1,4 @@
+using AngleSharp;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
@@ -32,7 +33,17 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests.LearnerWithStoppedApprentic
             result.EnsureSuccessStatusCode(); // Status Code 200-299
             result.Content.Should().NotBeNull();
             var body = await result.Content.ReadAsStringAsync();
-            body.Should().Contain("&#xA3;24,872.00");
+
+            var parser = new AngleSharp.Html.Parser.HtmlParser();
+            var document = parser.ParseDocument(body);
+            var tnp1Row = document.QuerySelector("tr.tnp1");
+            tnp1Row.Should().NotBeNull();
+            tnp1Row.Children.Should().BeEquivalentTo(new[] {
+                new { TextContent = "TNP 1" },
+                new { TextContent = "n/a" },
+                new { TextContent = "£24,872.00" },
+                new { TextContent = " - " }
+                });
         }
     }
 }

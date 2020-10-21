@@ -5,6 +5,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
     public class TnpDataLockRowModel
     {
+        public string RowClass { get; }
         public string Heading { get; }
         public string? IlrValue { get; }
 
@@ -13,6 +14,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             string heading,
             Func<DataMatch, decimal?> valueExtractor)
         {
+            RowClass = heading.ToLower().Replace(" ", "");
             Heading = heading;
             var ilr = period.Ilr;
             IlrValue = (ilr != null ? valueExtractor(ilr) : null)?.ToString("c") ?? "-";
