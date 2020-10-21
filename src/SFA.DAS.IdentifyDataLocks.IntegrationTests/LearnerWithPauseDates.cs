@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
 {
+    [Explicit]
     public class LearnerWithPauseDates
     {
         private ApprenticeshipModel apprenticeship;

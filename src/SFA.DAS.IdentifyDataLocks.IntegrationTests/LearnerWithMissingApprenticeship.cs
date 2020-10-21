@@ -11,6 +11,7 @@ using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
 {
+    [Explicit]
     public class LearnerWithMissingApprenticeship
     {
         [SetUp]
