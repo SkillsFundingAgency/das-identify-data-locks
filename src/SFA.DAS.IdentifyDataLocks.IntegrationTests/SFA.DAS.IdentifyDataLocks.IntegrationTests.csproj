@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\Apprenticeships.json" />
+    <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\Datalocks.json" />
+    <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\EarningEvents.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="TestData\DataLocks.json" />
     <None Remove="TestData\Dlock01_Apprenticeship.json" />
     <None Remove="TestData\Dlock01_DataLocks.json" />
@@ -31,6 +37,8 @@
     <EmbeddedResource Include="TestData\Dlock01_DataLocks.json" />
     <EmbeddedResource Include="TestData\Dlock01_Earnings.json" />
     <EmbeddedResource Include="TestData\EarningEvents.json" />
+    <EmbeddedResource Include="TestData\LearnerWithMultiplePriceEpisodes\Apprenticeships.json" />
+    <EmbeddedResource Include="TestData\LearnerWithMultiplePriceEpisodes\EarningEvents.json" />
     <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\Apprenticeships.json" />
     <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\Datalocks.json" />
     <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\EarningEvents.json" />
@@ -63,6 +71,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.IdentifyDataLocks.Web\SFA.DAS.IdentifyDataLocks.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TestData\LearnerWithMultiplePriceEpisodes\Datalocks.json" />
   </ItemGroup>
 
   <ItemGroup>

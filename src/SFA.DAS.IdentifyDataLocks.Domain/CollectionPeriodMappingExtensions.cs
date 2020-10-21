@@ -62,9 +62,9 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 StoppedOn = earning.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
                 IlrSubmissionDate = earning.IlrSubmissionDateTime,
                 Tnp1 = earning.PriceEpisodes.Select(x => (x.StartDate, x.TotalNegotiatedPrice1)).ToList(),
-                Tnp2 = earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice2,
-                Tnp3 = earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice3,
-                Tnp4 = earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice4,
+                Tnp2 = earning.PriceEpisodes.Select(x => (x.StartDate, x.TotalNegotiatedPrice2)).ToList(),
+                Tnp3 = earning.PriceEpisodes.Select(x => (x.StartDate, x.TotalNegotiatedPrice3)).ToList(),
+                Tnp4 = earning.PriceEpisodes.Select(x => (x.StartDate, x.TotalNegotiatedPrice4)).ToList(),
             };
 
         private static decimal CalculateCost(this EarningEventModel earning)

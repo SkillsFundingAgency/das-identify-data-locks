@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.IdentifyDataLocks.Domain
 {
+    public class AmountFromDate
+    {
+        public DateTime Start { get; set; }
+        public decimal Amount { get; set; }
+    }
+
     public class DataMatch
     {
         public long Ukprn { get; set; }
@@ -20,9 +26,9 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
         public DateTime? PlannedCompletion { get; set; }
         public ApprenticeshipStatus CompletionStatus { get; set; }
         public List<(DateTime, decimal)> Tnp1 { get; set; }
-        public decimal? Tnp2 { get; set; }
-        public decimal? Tnp3 { get; set; }
-        public decimal? Tnp4 { get; set; }
+        public List<(DateTime, decimal)> Tnp2 { get; set; }
+        public List<(DateTime, decimal)> Tnp3 { get; set; }
+        public List<(DateTime, decimal)> Tnp4 { get; set; }
         public DateTime IlrSubmissionDate { get; set; }
     }
 }

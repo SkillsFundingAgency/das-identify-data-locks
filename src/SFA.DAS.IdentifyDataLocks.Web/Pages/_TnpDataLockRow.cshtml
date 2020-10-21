@@ -6,7 +6,7 @@
     <td class="govuk-table__cell">@foreach(var v in Model.IlrValues)
     {
         <p>Date: @v.Start.ToShortDateString()</p>
-        <p>Price: @Model.IlrValue</p>
+        <p>Price: @v.Amount.ToString("c")</p>
     }</td>
     <td class="govuk-table__cell"> - </td>
 </tr>

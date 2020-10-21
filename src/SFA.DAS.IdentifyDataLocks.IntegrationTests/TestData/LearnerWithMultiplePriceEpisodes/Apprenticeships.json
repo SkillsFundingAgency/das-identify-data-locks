@@ -1,0 +1,32 @@
+[{
+        "Id": 0,
+        "AccountId": 55127,
+        "AgreementId": "ABC123",
+        "AgreedOnDate": "2020-10-01T00:00:00",
+        "Uln": 8444744466,
+        "Ukprn": 10001234,
+        "EstimatedStartDate": "2020-09-01T00:00:00",
+        "EstimatedEndDate": "2022-05-01T00:00:00",
+        "StandardCode": 297,
+        "ProgrammeType": 25,
+        "FrameworkCode": 0,
+        "PathwayCode": 0,
+        "LegalEntityName": "Skills Funding Agency",
+        "TransferSendingEmployerAccountId": null,
+        "StopDate": null,
+        "Priority": 0,
+        "Status": 1,
+        "IsLevyPayer": true,
+        "ApprenticeshipPriceEpisodes": [{
+                "Id": 0,
+                "ApprenticeshipId": 934873,
+                "StartDate": "2020-09-01T00:00:00",
+                "EndDate": null,
+                "Cost": 5000.00000,
+                "Removed": false
+            }
+        ],
+        "ApprenticeshipEmployerType": 0,
+        "ApprenticeshipPauses": null
+    }
+]
