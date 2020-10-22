@@ -9,9 +9,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
     {
         public string RowClass { get; }
         public string Heading { get; }
-
-        public IEnumerable<AmountFromDate> IlrValues { get; set; } =
-            Enumerable.Empty<AmountFromDate>();
+        public IEnumerable<AmountFromDate> IlrValues { get; set; }
 
         public TnpDataLockRowModel(
             CollectionPeriod period,
@@ -20,10 +18,10 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         {
             RowClass = heading.ToLower().Replace(" ", "");
             Heading = heading;
-            if (period.Ilr != null)
-            {
-                IlrValues = valueExtractor(period.Ilr);
-            }
+
+            IlrValues = (period.Ilr != null)
+                ? valueExtractor(period.Ilr)
+                : Enumerable.Empty<AmountFromDate>();
         }
     }
 }
