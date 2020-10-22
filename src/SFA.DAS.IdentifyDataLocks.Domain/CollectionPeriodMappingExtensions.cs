@@ -61,11 +61,21 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 PriceStart = earning.PriceEpisodes.FirstOrDefault()?.StartDate,
                 StoppedOn = earning.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
                 IlrSubmissionDate = earning.IlrSubmissionDateTime,
-                Tnp1 = earning.PriceEpisodes.Select(x => (AmountFromDate)(x.StartDate, x.TotalNegotiatedPrice1)).ToList(),
-                Tnp3 = earning.PriceEpisodes.Select(x => (AmountFromDate)(x.StartDate, x.TotalNegotiatedPrice3)).ToList(),
-                Tnp4 = earning.PriceEpisodes.Select(x => (AmountFromDate)(x.StartDate, x.TotalNegotiatedPrice4)).ToList(),
-                Tnp2 = earning.PriceEpisodes.Select(x => (AmountFromDate)(x.StartDate, x.TotalNegotiatedPrice2)).ToList(),
+                Tnp1 = GetTnpValue(earning, x => x.TotalNegotiatedPrice1),
+                Tnp2 = GetTnpValue(earning, x => x.TotalNegotiatedPrice2),
+                Tnp3 = GetTnpValue(earning, x => x.TotalNegotiatedPrice3),
+                Tnp4 = GetTnpValue(earning, x => x.TotalNegotiatedPrice4),
             };
+
+        private static List<AmountFromDate> GetTnpValue(
+            EarningEventModel earning,
+            Func<EarningEventPriceEpisodeModel, decimal> tnpSelector)
+        {
+            return earning.PriceEpisodes.Select(AmountSelector).ToList();
+
+            AmountFromDate AmountSelector(EarningEventPriceEpisodeModel pe) =>
+                (pe.StartDate, tnpSelector(pe));
+        }
 
         private static decimal CalculateCost(this EarningEventModel earning)
         {
