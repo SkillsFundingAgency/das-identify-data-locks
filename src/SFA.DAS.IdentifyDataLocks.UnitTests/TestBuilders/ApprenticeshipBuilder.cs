@@ -270,49 +270,32 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
             this.With(x => x.CurrentEpisode.NumberOfEarningPeriods = numMonths);
 
         internal ApprenticePriceEpisodeBuilder Stopped(DateTime stopped) =>
-            this.With(x =>
-            {
-                x.CurrentEpisode.StoppedDate = stopped;
-            });
+            this.With(x => x.CurrentEpisode.StoppedDate = stopped);
+
+        internal ApprenticePriceEpisodeBuilder AddPriceEpisode() =>
+            this.With(x => x.Episodes.Add(new Data()));
 
         internal ApprenticePriceEpisodeBuilder Configure(
             Func<ApprenticePriceEpisodeBuilder, ApprenticePriceEpisodeBuilder>? configure)
             => configure?.Invoke(this) ?? this;
 
-        internal ApprenticePriceEpisodeBuilder AddPriceEpisode()
-        {
-            return this.With(x =>
+        internal List<EarningEventPriceEpisodeModel> ToEarningsModel() =>
+            Episodes.Select(x => new EarningEventPriceEpisodeModel
             {
-            });
-        }
+                StartDate = x.StartDate,
+                ActualEndDate = x.StoppedDate,
+                TotalNegotiatedPrice1 = x.TotalNegotiatedPrice1,
+                TotalNegotiatedPrice2 = x.TotalNegotiatedPrice2,
+                TotalNegotiatedPrice3 = x.TotalNegotiatedPrice3,
+                TotalNegotiatedPrice4 = x.TotalNegotiatedPrice4,
+            }).ToList();
 
-        internal List<EarningEventPriceEpisodeModel> ToEarningsModel()
-        {
-            return new List<EarningEventPriceEpisodeModel>
+        internal List<ApprenticeshipPriceEpisodeModel> ToApprenticeshipModel() =>
+            Episodes.Select(x => new ApprenticeshipPriceEpisodeModel
             {
-                new EarningEventPriceEpisodeModel
-                {
-                    StartDate = StartDate,
-                    ActualEndDate = StoppedDate,
-                    TotalNegotiatedPrice1 = CurrentEpisode.TotalNegotiatedPrice1,
-                    TotalNegotiatedPrice2 = CurrentEpisode.TotalNegotiatedPrice2,
-                    TotalNegotiatedPrice3 = CurrentEpisode.TotalNegotiatedPrice3,
-                    TotalNegotiatedPrice4 = CurrentEpisode.TotalNegotiatedPrice4,
-                }
-            };
-        }
-
-        internal List<ApprenticeshipPriceEpisodeModel> ToApprenticeshipModel()
-        {
-            return new List<ApprenticeshipPriceEpisodeModel>
-            {
-                new ApprenticeshipPriceEpisodeModel
-                {
-                    StartDate = StartDate,
-                    EndDate = StoppedDate,
-                    Cost = CurrentEpisode.Cost,
-                }
-            };
-        }
+                StartDate = x.StartDate,
+                EndDate = x.StoppedDate,
+                Cost = x.Cost,
+            }).ToList();
     }
 }
