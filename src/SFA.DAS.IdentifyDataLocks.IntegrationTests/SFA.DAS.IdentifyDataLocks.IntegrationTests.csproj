@@ -6,7 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="TestData\Apprenticeship.json" />
+    <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\Apprenticeships.json" />
+    <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\Datalocks.json" />
+    <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\EarningEvents.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="TestData\DataLocks.json" />
     <None Remove="TestData\Dlock01_Apprenticeship.json" />
     <None Remove="TestData\Dlock01_DataLocks.json" />
@@ -26,12 +31,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="TestData\Apprenticeship.json" />
-    <EmbeddedResource Include="TestData\DataLocks.json" />
+    <EmbeddedResource Include="TestData\Apprenticeships.json" />
+    <EmbeddedResource Include="TestData\Datalocks.json" />
     <EmbeddedResource Include="TestData\Dlock01_Apprenticeship.json" />
     <EmbeddedResource Include="TestData\Dlock01_DataLocks.json" />
     <EmbeddedResource Include="TestData\Dlock01_Earnings.json" />
     <EmbeddedResource Include="TestData\EarningEvents.json" />
+    <EmbeddedResource Include="TestData\LearnerWithMultiplePriceEpisodes\Apprenticeships.json" />
+    <EmbeddedResource Include="TestData\LearnerWithMultiplePriceEpisodes\EarningEvents.json" />
     <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\Apprenticeships.json" />
     <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\Datalocks.json" />
     <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\EarningEvents.json" />
@@ -51,6 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.6" />
@@ -63,6 +71,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.IdentifyDataLocks.Web\SFA.DAS.IdentifyDataLocks.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TestData\LearnerWithMultiplePriceEpisodes\Datalocks.json" />
   </ItemGroup>
 
   <ItemGroup>

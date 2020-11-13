@@ -1,0 +1,56 @@
+[{
+        "Id": 0,
+        "EarningEventId": "e48fec06-d569-48a9-a20e-77b88276405d",
+        "ContractType": 0,
+        "AgreementId": null,
+        "LearningAimSequenceNumber": null,
+        "NonPayablePeriods": [{
+                "Id": 0,
+                "DataLockEventId": "7b5e6eef-f78c-490f-b3fb-e886b8b43c61",
+                "DataLockEventNonPayablePeriodId": "ceecabf5-04f0-4e4b-85e4-66ada2985d67",
+                "PriceEpisodeIdentifier": "25-297-07/09/2020",
+                "TransactionType": 1,
+                "DeliveryPeriod": 2,
+                "Amount": 211.76471,
+                "SfaContributionPercentage": 1.00000,
+                "LearningStartDate": "2020-09-07T00:00:00",
+                "DataLockEventNonPayablePeriodFailures": [{
+                        "Id": 0,
+                        "DataLockEventNonPayablePeriodId": "ceecabf5-04f0-4e4b-85e4-66ada2985d67",
+                        "DataLockFailure": 7,
+                        "Apprenticeship": null,
+                        "ApprenticeshipId": 934873
+                    }
+                ]
+            }
+        ],
+        "IlrFileName": null,
+        "SfaContributionPercentage": null,
+        "EventType": null,
+        "IsPayable": false,
+        "DataLockSource": 0,
+        "EventId": "7b5e6eef-f78c-490f-b3fb-e886b8b43c61",
+        "AcademicYear": 2021,
+        "StartDate": "0001-01-01T00:00:00",
+        "PlannedEndDate": null,
+        "ActualEndDate": null,
+        "CompletionStatus": 0,
+        "CompletionAmount": 0.0,
+        "InstalmentAmount": 0.0,
+        "NumberOfInstalments": 0,
+        "LearningStartDate": "2020-09-07T00:00:00",
+        "CollectionPeriod": 2,
+        "LearnerReferenceNumber": "20156597",
+        "LearnerUln": 8444744466,
+        "LearningAimReference": "ZPROG001",
+        "LearningAimProgrammeType": 25,
+        "LearningAimStandardCode": 297,
+        "LearningAimFrameworkCode": 0,
+        "LearningAimPathwayCode": 0,
+        "LearningAimFundingLineType": null,
+        "Ukprn": 10001234,
+        "IlrSubmissionDateTime": "2020-10-06T19:33:17.78",
+        "JobId": 440175,
+        "EventTime": "2020-10-06T20:43:24.1564344+00:00"
+    }
+]

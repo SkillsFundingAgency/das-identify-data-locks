@@ -8,7 +8,6 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
 {
     public static class CollectionPeriodMappingExtensions
     {
-        const string NotApplicable = "n/a";
         public static CollectionPeriod ToCollectionPeriod(
             this EarningEventModel earning,
             ApprenticeshipModel apprenticeship,
@@ -37,10 +36,6 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 CompletionStatus = (ApprenticeshipStatus)apprenticeship.Status,
                 PausedOn = GetPausedOnDate(apprenticeship),
                 ResumedOn = GetResumedOnDate(apprenticeship),
-                Tnp1 = NotApplicable,
-                Tnp2 = NotApplicable,
-                Tnp3 = NotApplicable,
-                Tnp4 = NotApplicable
             };
 
         private static DateTime? GetPausedOnDate(ApprenticeshipModel apprenticeship)
@@ -66,14 +61,21 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
                 PriceStart = earning.PriceEpisodes.FirstOrDefault()?.StartDate,
                 StoppedOn = earning.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
                 IlrSubmissionDate = earning.IlrSubmissionDateTime,
-                Tnp1 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice1),
-                Tnp2 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice2),
-                Tnp3 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice3),
-                Tnp4 = GetTnpValue(earning.PriceEpisodes.FirstOrDefault()?.TotalNegotiatedPrice4)
+                Tnp1 = GetTnpValue(earning, x => x.TotalNegotiatedPrice1),
+                Tnp2 = GetTnpValue(earning, x => x.TotalNegotiatedPrice2),
+                Tnp3 = GetTnpValue(earning, x => x.TotalNegotiatedPrice3),
+                Tnp4 = GetTnpValue(earning, x => x.TotalNegotiatedPrice4),
             };
 
-        private static string GetTnpValue(decimal? tnp) => 
-            tnp?.ToString("c") ?? "-";
+        private static List<AmountFromDate> GetTnpValue(
+            EarningEventModel earning,
+            Func<EarningEventPriceEpisodeModel, decimal> tnpSelector)
+        {
+            return earning.PriceEpisodes.Select(AmountSelector).ToList();
+
+            AmountFromDate AmountSelector(EarningEventPriceEpisodeModel pe) =>
+                (pe.StartDate, tnpSelector(pe));
+        }
 
         private static decimal CalculateCost(this EarningEventModel earning)
         {

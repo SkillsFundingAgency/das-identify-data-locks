@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.IdentifyDataLocks.IntegrationTests.LearnerWithStoppedApprenticeship
 {
+    [Explicit]
     public class LearnerWithStoppedApprenticeship : WebApplicationTestFixture
     {
         [Test]

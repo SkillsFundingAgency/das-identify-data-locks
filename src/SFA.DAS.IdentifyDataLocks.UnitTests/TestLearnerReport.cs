@@ -150,5 +150,47 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
 
             sut.CollectionPeriodsByYear.Should().ContainKeys(1920, 2021);
         }
+
+        [Test]
+        public void Populates_Cost_From_Tnp_1_And_2()
+        {
+            var builder = new ApprenticeshipBuilder()
+                .ForProgramme(episodes: episodes => episodes
+                    .WithPriceFromTnp(1, 2, 3, 4)
+                    .Starting(new DateTime(2020, 03, 15))
+                    .AddPriceEpisode()
+                    .WithPriceFromTnp1And2(5, 6)
+                    .Starting(new DateTime(2020, 03, 20))
+                    );
+
+            var sut = builder.CreateLearnerReport();
+
+            sut.CollectionPeriods.Should().ContainEquivalentOf(new
+            {
+                Ilr = new
+                {
+                    Tnp1 = new[]
+                    {
+                        new AmountFromDate(new DateTime(2020, 03, 15), 1),
+                        new AmountFromDate(new DateTime(2020, 03, 20), 5),
+                    },
+                    Tnp2 = new[]
+                    {
+                        new AmountFromDate(new DateTime(2020, 03, 15), 2),
+                        new AmountFromDate(new DateTime(2020, 03, 20), 6),
+                    },
+                    Tnp3 = new[]
+                    {
+                        new AmountFromDate(new DateTime(2020, 03, 15), 3),
+                        new AmountFromDate(new DateTime(2020, 03, 20), 0),
+                    },
+                    Tnp4 = new[]
+                    {
+                        new AmountFromDate(new DateTime(2020, 03, 15), 4),
+                        new AmountFromDate(new DateTime(2020, 03, 20), 0),
+                    },
+                }
+            });
+        }
     }
 }

@@ -1,7 +1,29 @@
 using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.IdentifyDataLocks.Domain
 {
+    public class AmountFromDate
+    {
+        public AmountFromDate(DateTime start, decimal amount)
+        {
+            (Start, Amount) = (start, amount);
+        }
+
+        public static implicit operator AmountFromDate((DateTime start, decimal amount) x)
+        {
+            return new AmountFromDate(x.start, x.amount);
+        }
+
+        public DateTime Start { get; set; }
+        public decimal Amount { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Amount:c} from {Start.ToShortDateString()}";
+        }
+    }
+
     public class DataMatch
     {
         public long Ukprn { get; set; }
@@ -18,10 +40,10 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
         public DateTime? StoppedOn { get; set; }
         public DateTime? PlannedCompletion { get; set; }
         public ApprenticeshipStatus CompletionStatus { get; set; }
-        public string Tnp1 { get; set; }
-        public string Tnp2 { get; set; }
-        public string Tnp3 { get; set; }
-        public string Tnp4 { get; set; }
+        public List<AmountFromDate> Tnp1 { get; set; }
+        public List<AmountFromDate> Tnp2 { get; set; }
+        public List<AmountFromDate> Tnp3 { get; set; }
+        public List<AmountFromDate> Tnp4 { get; set; }
         public DateTime IlrSubmissionDate { get; set; }
     }
 }
