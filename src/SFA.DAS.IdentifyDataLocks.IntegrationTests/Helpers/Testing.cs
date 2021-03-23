@@ -7,7 +7,6 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.IdentifyDataLocks.IntegrationTests;
 using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
-using SFA.DAS.Providers.Api.Client;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -28,7 +27,7 @@ public static class Testing
     public static ScopedContext Context { get; private set; }
 
     public static ICommitmentsApiClient CommitmentsApi;
-    public static IProviderApiClient ProviderApi;
+    public static IRoatpService RoatpApi;
     public static IAccountApiClient AccountsApi;
     public static ITimeProvider TimeProvider;
 
@@ -53,7 +52,7 @@ public static class Testing
         services
             .AddSingleton(configuration)
             .ConfigureMockService(_ => CommitmentsApi)
-            .ConfigureMockService(_ => ProviderApi)
+            .ConfigureMockService(_ => RoatpApi)
             .ConfigureMockService(_ => AccountsApi)
             .ConfigureMockService(_ => TimeProvider);
         return services;
@@ -69,7 +68,7 @@ public static class Testing
         await Context.Reset();
         Context = new ScopedContext(scopeFactory);
         CommitmentsApi = Substitute.For<ICommitmentsApiClient>();
-        ProviderApi = Substitute.For<IProviderApiClient>();
+        RoatpApi = Substitute.For<IRoatpService>();
         AccountsApi = Substitute.For<IAccountApiClient>();
         TimeProvider = Substitute.For<ITimeProvider>();
     }

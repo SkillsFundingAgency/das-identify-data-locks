@@ -3,12 +3,12 @@ using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.IdentifyDataLocks.Domain;
 using SFA.DAS.IdentifyDataLocks.IntegrationTests.Helpers;
+using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using SFA.DAS.IdentifyDataLocks.Web.Pages;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -149,12 +149,12 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         [Test]
         public async Task Provider_details_are_shown()
         {
-            Testing.ProviderApi
-                .Get(apprenticeship.Ukprn)
+            Testing.RoatpApi
+                .GetProvider(apprenticeship.Ukprn)
                 .Returns(new Provider
                 {
-                    Ukprn = apprenticeship.Ukprn,
-                    ProviderName = "Best Training Provider",
+                    Ukprn = (int)apprenticeship.Ukprn, 
+                    Name = "Best Training Provider",
                 });
 
             var learner = Testing.CreatePage<LearnerModel>();
