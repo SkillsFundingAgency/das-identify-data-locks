@@ -39,7 +39,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 
         public RoatpService(IRoatpApiHttpClientFactory roatpApiHttpClientFactory)
         {
-            _client = roatpApiHttpClientFactory.CreateRestHttpClient();
+            _client = roatpApiHttpClientFactory.CreateClient();
         }
 
         public async Task<Provider> GetProvider(long ukprn)

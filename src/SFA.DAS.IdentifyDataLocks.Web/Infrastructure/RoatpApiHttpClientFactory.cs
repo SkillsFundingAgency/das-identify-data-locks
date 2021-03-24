@@ -10,7 +10,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
         {
             _settings = settings;
         }
-        public IRestHttpClient CreateRestHttpClient()
+        public IRestHttpClient CreateClient()
         {
             return new RestHttpClient(new ManagedIdentityHttpClientFactory(_settings).CreateHttpClient());
         }
@@ -18,6 +18,6 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 
     public interface IRoatpApiHttpClientFactory
     {
-        IRestHttpClient CreateRestHttpClient();
+        IRestHttpClient CreateClient();
     }
 }

@@ -105,7 +105,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             services.AddTransient<IAccountApiClient, AccountApiClient>();
             services.AddTransient<EmployerService>();
 
-            //services.AddTransient<IProviderApiClient>((x) => new ProviderApiClient(Configuration.GetValue<string>("FatApiBaseUri")));
+            var roatpApiConfiguration = new RoatpApiClientSettings();
+            Configuration.GetSection(nameof(RoatpApiClientSettings)).Bind(roatpApiConfiguration);
+            services.AddSingleton(roatpApiConfiguration);
+            services.AddSingleton<IRoatpApiHttpClientFactory, RoatpApiHttpClientFactory>();
+            services.AddTransient(x => x.GetService<IRoatpApiHttpClientFactory>().CreateClient());
+            services.AddTransient<RoatpService>();
+
             services.AddTransient<ProviderService>();
             services.AddTransient<DataLockService>();
             services.AddTransient<LearnerReportProvider>();
