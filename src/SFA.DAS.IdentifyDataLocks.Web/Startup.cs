@@ -112,6 +112,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             services.AddTransient(x => x.GetService<IRoatpApiHttpClientFactory>().CreateClient());
             services.AddTransient<RoatpService>();
 
+            services.AddTransient<IRoatpService, RoatpService>();
             services.AddTransient<ProviderService>();
             services.AddTransient<DataLockService>();
             services.AddTransient<LearnerReportProvider>();
