@@ -41,13 +41,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 
             if (activeApprenticeship != null)
             {
-                var providerName = providerService.GetProviderName(activeApprenticeship.Ukprn);
+                var providerName = await providerService.GetProviderName(activeApprenticeship.Ukprn);
                 var (employerName, employerId) = await employerService.GetEmployerName(activeApprenticeship.AccountId);
                 var learnerName = await commitmentsService.GetApprenticesName(uln.ToString(), activeApprenticeship.AccountId);
 
                 learnerReport.Learner = (uln.ToString(), learnerName);
                 learnerReport.Employer = (employerId, employerName);
-                learnerReport.Provider = (activeApprenticeship.Ukprn.ToString(), providerName.Result);
+                learnerReport.Provider = (activeApprenticeship.Ukprn.ToString(), providerName);
                 learnerReport.HasMultipleProviders = earnings.Any(e => e.Ukprn != activeApprenticeship.Ukprn);
             }
 
