@@ -110,8 +110,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             services.AddSingleton(roatpApiConfiguration);
             services.AddSingleton<IRoatpApiHttpClientFactory, RoatpApiHttpClientFactory>();
             services.AddTransient(x => x.GetService<IRoatpApiHttpClientFactory>().CreateClient());
-            services.AddTransient<RoatpService>();
-
+            
             services.AddTransient<IRoatpService, RoatpService>();
             services.AddTransient<ProviderService>();
             services.AddTransient<DataLockService>();
