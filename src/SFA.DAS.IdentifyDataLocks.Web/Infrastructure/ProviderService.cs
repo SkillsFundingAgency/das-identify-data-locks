@@ -14,7 +14,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
             try
             {
                 var provider = await providerApiClient.GetProvider(ukprn);
-                return provider.Name ?? string.Empty;
+                return provider?.Name ?? string.Empty;
             }
             catch
             {
