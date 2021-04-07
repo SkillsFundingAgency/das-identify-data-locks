@@ -45,10 +45,10 @@ To get apprentice’s name, we depend on the `api/apprenticeships/?accountId` en
 
 `ULN` is sourced from user input.
 
-### FAT API
+### RoATP API
 
-https://findapprenticeshiptraining-api.apprenticeships.education.gov.uk/swagger/index.html
+https://test-providers-api.apprenticeships.education.gov.uk/swagger/index.html
 
-To get provider’s name, we use FAT api’s `providers/{ukprn}` endpoint.
+To get provider’s name, we use RoATP api’s `/api/v1/Search?SearchTerm={ukprn}` endpoint.
 
 `UKPRN` is sourced from the payments database.

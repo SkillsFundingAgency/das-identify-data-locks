@@ -1,20 +1,20 @@
-using SFA.DAS.Providers.Api.Client;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 {
     public class ProviderService
     {
-        private readonly IProviderApiClient providerApiClient;
+        private readonly IRoatpService providerApiClient;
 
-        public ProviderService(IProviderApiClient providerApiClient) =>
+        public ProviderService(IRoatpService providerApiClient) =>
             this.providerApiClient = providerApiClient;
 
-        public string GetProviderName(long ukprn)
+        public async Task<string> GetProviderName(long ukprn)
         {
             try
             {
-                var provider = providerApiClient.Get(ukprn);
-                return provider.ProviderName;
+                var provider = await providerApiClient.GetProvider(ukprn);
+                return provider?.Name ?? string.Empty;
             }
             catch
             {

@@ -41,7 +41,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 
             if (activeApprenticeship != null)
             {
-                var providerName = providerService.GetProviderName(activeApprenticeship.Ukprn);
+                var providerName = await providerService.GetProviderName(activeApprenticeship.Ukprn);
                 var (employerName, employerId) = await employerService.GetEmployerName(activeApprenticeship.AccountId);
                 var learnerName = await commitmentsService.GetApprenticesName(uln.ToString(), activeApprenticeship.AccountId);
 

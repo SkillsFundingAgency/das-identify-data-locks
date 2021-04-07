@@ -11,7 +11,6 @@ using SFA.DAS.IdentifyDataLocks.IntegrationTests.Helpers;
 using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Providers.Api.Client;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -30,7 +29,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         public ApprenticeshipModel Apprenticeship { get; private set; }
 
         public ICommitmentsApiClient CommitmentsApi;
-        public IProviderApiClient ProviderApi;
+        public IRoatpService RoatpApi;
         public IAccountApiClient AccountsApi;
         public ITimeProvider TimeProvider;
 
@@ -43,7 +42,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
                     {
                         services
                             .ConfigureMockService(_ => CommitmentsApi)
-                            .ConfigureMockService(_ => ProviderApi)
+                            .ConfigureMockService(_ => RoatpApi)
                             .ConfigureMockService(_ => AccountsApi)
                             .ConfigureMockService(_ => TimeProvider);
                     });
@@ -58,7 +57,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Context.Reset();
             CommitmentsApi = Substitute.For<ICommitmentsApiClient>();
-            ProviderApi = Substitute.For<IProviderApiClient>();
+            RoatpApi = Substitute.For<IRoatpService>();
             AccountsApi = Substitute.For<IAccountApiClient>();
             TimeProvider = Substitute.For<ITimeProvider>();
         }
