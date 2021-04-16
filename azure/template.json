@@ -39,9 +39,8 @@
         "sharedManagementResourceGroup": {
             "type": "string"
         },
-        "appServiceAllowedIPs": {
-            "type": "array",
-            "defaultValue": []
+        "frontEndAccessRestrictions": {
+            "type": "array"
         },
         "configNames": {
             "type": "string",
@@ -163,7 +162,7 @@
                         "value": "[reference('app-service-certificate').outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
-                        "value": "[parameters('appServiceAllowedIPs')]"
+                        "value": "[parameters('frontEndAccessRestrictions')]"
                     }
                 }
             },
