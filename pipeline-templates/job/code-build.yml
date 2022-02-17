@@ -1,0 +1,39 @@
+jobs:
+- job: CodeBuild
+  pool:
+    name: DAS - Continuous Integration Agents
+    workspace:
+      clean: all
+  variables:
+  - name: BuildConfiguration
+    value: release
+  - group: BUILD Management Resources
+  steps:
+  - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+
+  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+    parameters:
+      SonarCloudProjectKey: SkillsFundingAgency_das-identify-data-locks
+
+  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
+
+  - task: DotNetCoreCLI@2
+    displayName: "Publish - dotnet publish $(SolutionBaseName)"
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: "src/$(SolutionBaseName)/$(SolutionBaseName).csproj"
+      arguments: "-o $(build.artifactstagingdirectory)/publish -c $(BuildConfiguration)"
+
+  - task: CopyFiles@2
+    displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+    inputs:
+      Contents: |
+        azure/**
+      TargetFolder: "$(build.artifactstagingdirectory)/publish"
+      OverWrite: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact"
+    inputs:
+      PathtoPublish: "$(build.artifactstagingdirectory)/publish"
