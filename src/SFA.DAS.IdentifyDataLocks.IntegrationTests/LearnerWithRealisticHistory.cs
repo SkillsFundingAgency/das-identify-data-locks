@@ -15,8 +15,8 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.IdentifyDataLocks.Web.Model;
 using PaymentsApprenticeshipStatus = SFA.DAS.Payments.Model.Core.Entities.ApprenticeshipStatus;
+using Provider = SFA.DAS.IdentifyDataLocks.Web.Model.Provider;
 
 namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
 {
