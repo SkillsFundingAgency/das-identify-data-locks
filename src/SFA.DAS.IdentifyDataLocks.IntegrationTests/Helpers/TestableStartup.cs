@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.IdentifyDataLocks.Web;
 
@@ -6,8 +7,8 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
 {
     public class TestableStartup : Startup
     {
-        public TestableStartup(IConfiguration configuration)
-            : base(configuration)
+        public TestableStartup(IConfiguration configuration, IWebHostEnvironment environment)
+            : base(configuration, environment)
         {
         }
 

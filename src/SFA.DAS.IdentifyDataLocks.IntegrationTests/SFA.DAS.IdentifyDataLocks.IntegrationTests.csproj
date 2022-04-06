@@ -60,8 +60,8 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.23" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.23" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="NUnit" Version="3.12.0" />
