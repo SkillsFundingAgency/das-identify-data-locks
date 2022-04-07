@@ -27,6 +27,14 @@ The prototype directly access the Payments database tables to retrieve its data,
 ## Authentication and authorization
 The website will use STAFF IDAMs for authentication. The authenticated users will have to belong to role `Apprenticeship Service – Data Locks`.
 
+## Getting Started
+
+* Clone this repo: https://github.com/SkillsFundingAgency/das-identify-data-locks
+* Obtain cloud config for:
+  * SFA.DAS.IdentifyDataLocks.Web_1.0
+* Start Microsoft Azure Storage Emulator
+* Run SFA.DAS.IdentifyDataLocks.Web
+
 ## External dependencies
 
 ### EAS API

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -45,8 +46,9 @@ public static class Testing
 
     private static ServiceCollection CreateServices()
     {
+        var environment = Substitute.For<IWebHostEnvironment>();
         var services = new ServiceCollection();
-        new TestableStartup(configuration).ConfigureServices(services);
+        new TestableStartup(configuration, environment).ConfigureServices(services);
         services.AddLogging();
         services.AddPages();
         services

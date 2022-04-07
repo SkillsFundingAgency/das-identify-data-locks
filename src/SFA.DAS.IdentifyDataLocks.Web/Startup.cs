@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.IdentifyDataLocks.Web.Extensions;
 using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 
@@ -16,9 +17,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
-        public Startup(IConfiguration configuration) =>
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        {
             Configuration = configuration;
+            Environment = environment;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -56,6 +61,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
 
             services.AddAuthentication(authenticationConfig);
             services.AddAuthorization(authorizationConfig);
+            services.AddDataProtection(Configuration, Environment);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
         }
