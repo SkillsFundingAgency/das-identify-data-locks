@@ -15,8 +15,6 @@ jobs:
     parameters:
       SonarCloudProjectKey: SkillsFundingAgency_das-identify-data-locks
 
-  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
   - task: DotNetCoreCLI@2
     displayName: "Publish - dotnet publish $(SolutionBaseName)"
     inputs:
