@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -8,16 +9,21 @@ using Microsoft.Extensions.Hosting;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.IdentifyDataLocks.Data.Repositories;
+using SFA.DAS.IdentifyDataLocks.Domain.Services;
 using SFA.DAS.IdentifyDataLocks.Web.Extensions;
-using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
-using SFA.DAS.Payments.Application.Repositories;
+#if RELEASE
+using System.Reflection;
+using SFA.DAS.Configuration.AzureTableStorage;
+#endif
+
 
 namespace SFA.DAS.IdentifyDataLocks.Web
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
+        private IConfiguration Configuration { get; set; }
+        private IWebHostEnvironment Environment { get; }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
@@ -25,24 +31,56 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             Environment = environment;
         }
 
+        public static IConfigurationRoot InitialiseConfigure(IConfiguration configuration)
+        {
+            var config = new ConfigurationBuilder()
+                .AddConfiguration(configuration)
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables();
+#if RELEASE
+
+            config.AddAzureTableStorage(options =>
+            {
+                options.ConfigurationKeys = new[] {Assembly.GetAssembly(typeof(Startup))?.GetName().Name};
+                //options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
+                //options.EnvironmentName = config["EnvironmentName"];
+                options.PreFixConfigurationKeys = false;
+            });
+#endif
+#if DEBUG
+            config.AddJsonFile("appsettings.json", optional: false);
+#endif
+            return config.Build();
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Configuration = InitialiseConfigure(Configuration);
+
             ConfigureCoreServices(services);
 
             ConfigureOperationalServices(services);
         }
 
-        protected virtual void ConfigureCoreServices(IServiceCollection services)
+        private void ConfigureCoreServices(IServiceCollection services)
         {
             services.AddDbContext<PaymentsDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("PaymentsSqlConnectionString"))
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-            services.AddScoped<IPaymentsDataContext, PaymentsDataContext>();
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("PaymentsSqlConnectionString"), builder => builder.CommandTimeout(420))
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+
+            services.AddDbContext<PaymentsAuditDataContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("PaymentsAuditSqlConnectionString"), builder => builder.CommandTimeout(420))
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
 
             services.AddRazorPages();
 
             RegisterServices(services);
+
             services.AddHealthChecks();
         }
 
@@ -63,7 +101,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             services.AddAuthorization(authorizationConfig);
             services.AddDataProtection(Configuration, Environment);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,7 +120,6 @@ namespace SFA.DAS.IdentifyDataLocks.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthentication();
@@ -114,11 +151,11 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             var roatpApiConfiguration = new RoatpApiClientSettings();
             Configuration.GetSection(nameof(RoatpApiClientSettings)).Bind(roatpApiConfiguration);
             services.AddSingleton(roatpApiConfiguration);
+
             services.AddSingleton<IRoatpApiHttpClientFactory, RoatpApiHttpClientFactory>();
             services.AddTransient(x => x.GetService<IRoatpApiHttpClientFactory>().CreateClient());
-            
-            services.AddTransient<IRoatpService, RoatpService>();
-            services.AddTransient<ProviderService>();
+            services.AddTransient<IProviderService, ProviderService>();
+
             services.AddTransient<DataLockService>();
             services.AddTransient<LearnerReportProvider>();
             services.AddTransient<ITimeProvider, TimeProvider>();

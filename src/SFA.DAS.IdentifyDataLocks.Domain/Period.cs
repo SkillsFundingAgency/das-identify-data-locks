@@ -13,23 +13,28 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
         public int Year { get; }
         public int Month { get; }
 
-        public override string ToString() =>
-            $"R{Month}";
+        public override string ToString()
+        {
+            return $"R{Month}";
+        }
 
         public int CompareTo(Period other)
-            => (Year.CompareTo(other.Year), Month.CompareTo(other.Month))
-            switch
-            {
-                (-1, _) => -1,
-                (0, -1) => -1,
-                (0, 0) => 0,
-                _ => 1,
-            };
+        {
+            return (Year.CompareTo(other.Year), Month.CompareTo(other.Month))
+                switch
+                {
+                    (-1, _) => -1,
+                    (0, -1) => -1,
+                    (0, 0) => 0,
+                    _ => 1,
+                };
+        }
 
-        public int CompareTo(object obj) =>
-            obj is Period other
+        public int CompareTo(object obj)
+        {
+            return obj is Period other
                 ? CompareTo(other)
-                : throw new ArgumentException(
-                    $"Object is not a {nameof(Period)}");
+                : throw new ArgumentException($"Object is not a {nameof(Period)}");
+        }
     }
 }

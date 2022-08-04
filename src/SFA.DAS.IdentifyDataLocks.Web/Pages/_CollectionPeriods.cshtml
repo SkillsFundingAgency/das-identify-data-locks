@@ -1,5 +1,5 @@
-@using SFA.DAS.IdentifyDataLocks.Domain;
-@model (AcademicYear AcademicYear, IEnumerable<CollectionPeriod> CollectionPeriods, bool HasDataLocks)
+@using SFA.DAS.IdentifyDataLocks.Data.Model
+@model (SFA.DAS.IdentifyDataLocks.Domain.AcademicYear AcademicYear, IEnumerable<SFA.DAS.IdentifyDataLocks.Domain.CollectionPeriod> CollectionPeriods, bool HasDataLocks)
 <div class="funding-year">
     <h2 class="govuk-heading-m">@Model.AcademicYear.ToString() funding year</h2>
     <p asp-hide="Model.HasDataLocks">There are currently no submissions for this period</p>
@@ -9,17 +9,17 @@
             <div class="entry">
                 <div class="rnumb govuk-heading-m">@period.Period</div>
                 <div class="rcontent">
-                    @foreach (var dlock in period.DataLocks)
+                    @foreach (var dlock in period.DataLockErrorCodes)
                     {
                         <p class="govuk-body govuk-!-font-weight-bold thelock">@dlock</p>
                     }
 
                     <details class="govuk-details flag" data-module="govuk-details">
                         <summary class="govuk-details__summary">
-                            <span asp-show="period.DataLocks.Any()" class="govuk-details__summary-text" style="color: #d4351c;">
+                            <span asp-show="period.DataLockErrorCodes.Any()" class="govuk-details__summary-text" style="color: #d4351c;">
                                 View data mismatches 
                             </span>
-                            <span asp-hide="period.DataLocks.Any()" class="govuk-details__summary-text" style="color: #d4351c;">
+                            <span asp-hide="period.DataLockErrorCodes.Any()" class="govuk-details__summary-text" style="color: #d4351c;">
                                 View submission details
                             </span>
                         </summary>
@@ -29,21 +29,21 @@
                                     <tr class="govuk-table__row">
                                         <th scope="col" class="govuk-table__header"></th>
                                         <th scope="col" class="govuk-table__header">Apprenticeship Service<br><div class="subHeader">Current/Live</div></th>
-                                        <th scope="col" class="govuk-table__header">ILR submission<br><div class="subHeader">@period.Ilr.IlrSubmissionDate.ToString("dd/MM/yyyy HH:mm")</div></th>
+                                        <th scope="col" class="govuk-table__header">ILR submission<br><div class="subHeader">@period.IlrEarningDataMatch.IlrSubmissionDate.ToString("dd/MM/yyyy HH:mm")</div></th>
                                         <th scope="col" class="govuk-table__header">Data lock</th>
                                     </tr>
                                 </thead>
                                 <tbody class="govuk-table__body">
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock01, "UKPRN", x => x.Ukprn)' />
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock02, "ULN", x => x.Uln)' />
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock03, "Standard code", x => x.Standard)' />
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock04, "Framework code", x => x.Framework)' />
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock05, "Program type", x => x.Program)' />
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock06, "Pathway code", x => x.Pathway)' />
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock07, "Cost", x => x.Cost.ToString("C"))' />
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock09, "Start date", x => x.PriceStart?.ToShortDateString())' />
-                                    <partial name="_PauseDateDataLockRow" model='new PauseDateDataLockRowModel(period, Domain.DataLock.Dlock12, "Pause date")' />
-                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, Domain.DataLock.Dlock10, "Stop date" , x=> x.StoppedOn?.ToShortDateString())' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock01, "UKPRN", x => x.Ukprn)' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock02, "ULN", x => x.Uln)' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock03, "Standard code", x => x.Standard)' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock04, "Framework code", x => x.Framework)' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock05, "Program type", x => x.Program)' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock06, "Pathway code", x => x.Pathway)' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock07, "Cost", x => x.Cost.ToString("C"))' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock09, "Start date", x => x.PriceStart?.ToShortDateString())' />
+                                    <partial name="_PauseDateDataLockRow" model='new PauseDateDataLockRowModel(period, DataLockErrorCode.Dlock12, "Pause date")' />
+                                    <partial name="_DataLockRow" model='new DataLockRowModel(period, DataLockErrorCode.Dlock10, "Stop date" , x=> x.StoppedOn?.ToShortDateString())' />
                                     <partial name="_DataLockRow" model='new DataLockRowModel(period, "Planned completion date", x => x.PlannedCompletion)' />
                                     <partial name="_DataLockRow" model='new DataLockRowModel(period, "Completion status", x => x.CompletionStatus)' />
                                     <partial name="_TnpDataLockRow" model='new TnpDataLockRowModel(period, "TNP 1", x => x.Tnp1)' />

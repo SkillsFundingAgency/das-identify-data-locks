@@ -1,10 +1,14 @@
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
-using SFA.DAS.IdentifyDataLocks.Web.Model;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.Http;
+using SFA.DAS.IdentifyDataLocks.Domain;
+using SFA.DAS.IdentifyDataLocks.Domain.Services;
 
 namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web.Infrastructure
 {
@@ -13,21 +17,21 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web.Infrastructure
         [Test]
         public async Task WhenValidUkprn_ThenReturnProviderName()
         {
-            var mockClient = new Mock<IRoatpService>();
+            var mockClient = new Mock<IRestHttpClient>();
             var expectedName = "Provider Name";
-            mockClient.Setup(x => x.GetProvider(It.IsAny<long>())).ReturnsAsync(new Provider { Name = expectedName });
+            mockClient.Setup(x => x.Get<RoatpProviderResult>(It.IsAny<string>(), null, CancellationToken.None)).ReturnsAsync(new RoatpProviderResult{SearchResults = new List<OrganisationSearchResult>{new OrganisationSearchResult{LegalName = expectedName}}});
             var sut = new ProviderService(mockClient.Object);
-            var actual = await sut.GetProviderName(1234);
+            var actual = await sut.GetProvider(1234);
             actual.Should().Be(expectedName);
         }
 
         [Test]
         public async Task WhenInValidUkprn_ThenReturnEmptyString()
         {
-            var mockClient = new Mock<IRoatpService>();
-            mockClient.Setup(x => x.GetProvider(It.IsAny<long>())).Throws(new HttpRequestException());
+            var mockClient = new Mock<IRestHttpClient>();
+            mockClient.Setup(x => x.Get<RoatpProviderResult>(It.IsAny<string>(), null, CancellationToken.None)).Throws(new HttpRequestException());
             var sut = new ProviderService(mockClient.Object);
-            var actual = await sut.GetProviderName(1234);
+            var actual = await sut.GetProvider(1234);
             actual.Should().Be(string.Empty);
         }
     }

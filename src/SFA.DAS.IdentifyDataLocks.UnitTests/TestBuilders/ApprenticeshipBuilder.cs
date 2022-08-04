@@ -1,96 +1,103 @@
-﻿using SFA.DAS.IdentifyDataLocks.Domain;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Audit;
-using SFA.DAS.Payments.Model.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.IdentifyDataLocks.Data.Model;
+using SFA.DAS.IdentifyDataLocks.Domain;
+using SFA.DAS.IdentifyDataLocks.UnitTests.Utilities;
 
 namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
 {
     public class ApprenticeshipBuilder
     {
-        public long IlrUln { get; private set; } = 123456789;
-        public long? ApprenticeshipUln { get; private set; } = 123456789;
-        public string FirstName { get; private set; } = "Stephen";
+        private long IlrUln { get; set; } = 123456789;
+        private long? ApprenticeshipUln { get; set; } = 123456789;
+        private string FirstName { get; set; } = "Stephen";
 
-        public string LastName { get; private set; } = "Hawking";
-        public int StandardCode { get; private set; } = 50;
-        public int FrameworkCode { get; private set; } = 25;
-        public int ProgrammeType { get; private set; } = 12;
-        public int PathwayCode { get; private set; } = 11;
-        public bool IncludeFunctionalSkills { get; private set; }
+        private string LastName { get; set; } = "Hawking";
+        private short? StandardCode { get; set; } = 50;
+        private short? FrameworkCode { get; set; } = 25;
+        private short? ProgrammeType { get; set; } = 12;
+        private short? PathwayCode { get; set; } = 11;
+        private bool IncludeFunctionalSkills { get; set; }
 
-        public ApprenticePriceEpisodeBuilder Episodes { get; private set; }
-            = new ApprenticePriceEpisodeBuilder();
+        private ApprenticePriceEpisodeBuilder Episodes { get; set; } = new ApprenticePriceEpisodeBuilder();
 
-        public int Ukprn { get; private set; } = 111222333;
+        private int Ukprn { get; set; } = 111222333;
 
-        public string ProviderName { get; private set; } = "Cambridge College";
+        private string ProviderName { get; set; } = "Cambridge College";
 
         private int? LockedUkprn { get; set; }
 
-        private (int? standard, int? framework, int? programme, int? pathway)? LockedProgramme;
+        private (short? standard, short? framework, short? programme, short? pathway)? _lockedProgramme;
 
         internal ApprenticeshipBuilder ForLearner(
             int uln = 123456789,
             string firstName = "Stephen",
-            string lastName = "Hawking",
-            int? lockedUln = null) =>
-            this.With(x =>
+            string lastName = "Hawking")
+        {
+            return this.With(x =>
             {
                 x.ApprenticeshipUln = x.IlrUln = uln;
                 x.FirstName = firstName;
                 x.LastName = lastName;
                 //x.LockedUln = lockedUln;
             });
+        }
 
         internal ApprenticeshipBuilder ForMissingLearner(
             int uln = 123456789,
             string firstName = "Stephen",
             string lastName = "Hawking")
-            => ForLearner(uln, firstName, lastName)
+        {
+            return ForLearner(uln, firstName, lastName)
                 .With(x => x.ApprenticeshipUln = null);
+        }
 
         internal ApprenticeshipBuilder WithProvider(
             int ukprn = 111222333,
             string name = "Cambridge College",
-            int? lockedUkprn = null) =>
-            this.With(x =>
+            int? lockedUkprn = null)
+        {
+            return this.With(x =>
             {
                 x.Ukprn = ukprn;
                 x.ProviderName = name;
                 x.LockedUkprn = lockedUkprn;
             });
+        }
 
         internal ApprenticeshipBuilder ForProgramme(
-            int standardCode = 50,
-            int frameworkCode = 25,
-            int programmeType = 12,
-            int pathwayCode = 11,
-            int? lockedStandardCode = null,
-            int? lockedFrameworkCode = null,
-            int? lockedProgrammeType = null,
-            int? lockedPathwayCode = null,
-            Func<ApprenticePriceEpisodeBuilder, ApprenticePriceEpisodeBuilder>? episodes = null) =>
-            this.With(x =>
+            short? standardCode = 50,
+            short? frameworkCode = 25,
+            short? programmeType = 12,
+            short? pathwayCode = 11,
+            short? lockedStandardCode = null,
+            short? lockedFrameworkCode = null,
+            short? lockedProgrammeType = null,
+            short? lockedPathwayCode = null,
+            Func<ApprenticePriceEpisodeBuilder, ApprenticePriceEpisodeBuilder> episodes = null)
+        {
+            return this.With(x =>
             {
                 x.StandardCode = standardCode;
                 x.FrameworkCode = frameworkCode;
                 x.ProgrammeType = programmeType;
                 x.PathwayCode = pathwayCode;
-                x.LockedProgramme =
+                x._lockedProgramme =
                     (lockedStandardCode
                         , lockedFrameworkCode
                         , lockedProgrammeType
                         , lockedPathwayCode);
                 x.Episodes = x.Episodes.Copy().Configure(episodes);
             });
+        }
 
-        internal ApprenticeshipBuilder WithFunctionalSkills() =>
-            this.With(x => x.IncludeFunctionalSkills = true);
+        internal ApprenticeshipBuilder WithFunctionalSkills()
+        {
+            return this.With(x => x.IncludeFunctionalSkills = true);
+        }
 
-        internal IEnumerable<ApprenticeshipModel> BuildApprentices()
+        private IEnumerable<ApprenticeshipModel> BuildApprentices()
         {
             if (ApprenticeshipUln == null)
                 return Enumerable.Empty<ApprenticeshipModel>();
@@ -101,7 +108,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                 {
                     Uln = ApprenticeshipUln.Value,
                     Ukprn = Ukprn,
-                    Status = Payments.Model.Core.Entities.ApprenticeshipStatus.Active,
+                    Status = ApprenticeshipStatus.Active,
                     StandardCode = StandardCode,
                     FrameworkCode = FrameworkCode,
                     ProgrammeType = ProgrammeType,
@@ -112,9 +119,12 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
             }.ToList();
         }
 
-        private List<EarningEventModel> Earnings => LazyEarnings ??= BuildEarnings();
+        private List<EarningEventModel> Earnings
+        {
+            get { return _lazyEarnings ??= BuildEarnings(); }
+        }
 
-        private List<EarningEventModel>? LazyEarnings;
+        private List<EarningEventModel> _lazyEarnings;
 
         private List<EarningEventModel> BuildEarnings()
         {
@@ -142,7 +152,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                     LearnerUln = IlrUln,
                     AcademicYear = (short)new AcademicYear(Episodes.StartDate.AddMonths(month)),
                     LearningAimReference = aimReference,
-                    LearningAimStandardCode = LockedProgramme?.standard ?? StandardCode,
+                    LearningAimStandardCode = _lockedProgramme?.standard ?? StandardCode,
                     LearningAimFrameworkCode = FrameworkCode,
                     LearningAimProgrammeType = ProgrammeType,
                     LearningAimPathwayCode = PathwayCode,
@@ -160,13 +170,13 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                 var dlock = new DataLockEventModel
                 {
                     Ukprn = Ukprn,
-                    EarningEventId = earning?.EventId ?? Guid.Empty,
+                    //EarningEventId = earning?.EventId ?? Guid.Empty,
                     AcademicYear = earning?.AcademicYear ?? default,
                     LearnerUln = IlrUln,
-                    LearningAimStandardCode = StandardCode,
-                    LearningAimFrameworkCode = FrameworkCode,
-                    LearningAimProgrammeType = ProgrammeType,
-                    LearningAimPathwayCode = PathwayCode,
+                    //LearningAimStandardCode =  (int)StandardCode,
+                    //LearningAimFrameworkCode = (int)FrameworkCode,
+                    //LearningAimProgrammeType = (int)ProgrammeType,
+                    //LearningAimPathwayCode =   (int)PathwayCode,
                     NonPayablePeriods = new List<DataLockEventNonPayablePeriodModel>
                     {
                         new DataLockEventNonPayablePeriodModel
@@ -187,31 +197,43 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
             }
 
             if (LockedUkprn != null)
-                yield return BuildLock(DataLockErrorCode.DLOCK_01, dlock => dlock.Ukprn = LockedUkprn.Value);
+                yield return BuildLock(DataLockErrorCode.Dlock01, dlock => dlock.Ukprn = LockedUkprn.Value);
 
             if (ApprenticeshipUln == null)
-                yield return BuildLock(DataLockErrorCode.DLOCK_02, dlock => dlock.LearnerUln = IlrUln);
+                yield return BuildLock(DataLockErrorCode.Dlock02, dlock => dlock.LearnerUln = IlrUln);
 
-            if (LockedProgramme?.standard != null)
-                yield return BuildLock(DataLockErrorCode.DLOCK_03, dlock => dlock.LearningAimStandardCode = LockedProgramme.Value.standard.Value);
+            if (_lockedProgramme?.standard != null)
+                yield return BuildLock(DataLockErrorCode.Dlock03, dlock => { });
 
-            if (LockedProgramme?.framework != null)
-                yield return BuildLock(DataLockErrorCode.DLOCK_04, dlock => dlock.LearningAimStandardCode = LockedProgramme.Value.framework.Value);
+            if (_lockedProgramme?.framework != null)
+                yield return BuildLock(DataLockErrorCode.Dlock04, dlock => { });
 
-            if (LockedProgramme?.programme != null)
-                yield return BuildLock(DataLockErrorCode.DLOCK_05, dlock => dlock.LearningAimProgrammeType = LockedProgramme.Value.programme.Value);
+            if (_lockedProgramme?.programme != null)
+                yield return BuildLock(DataLockErrorCode.Dlock05, dlock => { });
         }
 
-        internal CollectionPeriodReport CreateLearnerReport(
-            Func<IEnumerable<DataLockEventModel>, IEnumerable<DataLockEventModel>>? modifyLocks = null
-                                                           )
+        internal LearnerReport CreateLearnerReport(Func<IEnumerable<DataLockEventModel>, IEnumerable<DataLockEventModel>> modifyLocks = null)
         {
             var apprenticeships = BuildApprentices();
 
             var locks = BuildDataLocks();
+
             if (modifyLocks != null) locks = modifyLocks(locks);
 
-            return new CollectionPeriodReport(apprenticeships.FirstOrDefault(), Earnings, locks.ToList());
+            var dataLockFailures = locks.Select(d => new DataLockFailureModel
+            {
+                Ukprn = d.Ukprn,
+                CollectionPeriod = d.CollectionPeriod,
+                AcademicYear = d.AcademicYear,
+                DataLockFailures = d.NonPayablePeriods
+                    .SelectMany(f => f.DataLockEventNonPayablePeriodFailures)
+                    .Select(fe => fe.DataLockFailure)
+                    .Distinct()
+                    .OrderBy(x => x)
+                    .ToList()
+            }).ToList();
+
+            return new LearnerReport(apprenticeships.FirstOrDefault(), Earnings, dataLockFailures, (new AcademicYear(DateTime.Today), new AcademicYear(DateTime.Today) - 1));
         }
     }
 
@@ -229,16 +251,19 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
             public decimal Cost { get; set; }
         }
 
-        private readonly List<Data> Episodes = new List<Data> { new Data() };
+        private readonly List<Data> _episodes = new List<Data> { new Data() };
 
-        private Data CurrentEpisode => Episodes.Last();
+        private Data CurrentEpisode => _episodes.Last();
 
         public DateTime StartDate => CurrentEpisode.StartDate;
+
         public DateTime? StoppedDate => CurrentEpisode.StoppedDate;
+
         public int NumberOfEarningPeriods => CurrentEpisode.NumberOfEarningPeriods;
 
         internal ApprenticePriceEpisodeBuilder WithPriceFromTnp(int tnp1, int tnp2, int tnp3, int tnp4)
-            => this.With(x =>
+        {
+            return this.With(x =>
             {
                 x.CurrentEpisode.TotalNegotiatedPrice1 = tnp1;
                 x.CurrentEpisode.TotalNegotiatedPrice2 = tnp2;
@@ -246,9 +271,11 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                 x.CurrentEpisode.TotalNegotiatedPrice4 = tnp4;
                 x.CurrentEpisode.Cost = tnp3 + tnp4;
             });
+        }
 
         internal ApprenticePriceEpisodeBuilder WithPriceFromTnp1And2(int tnp1, int tnp2)
-            => this.With(x =>
+        {
+            return this.With(x =>
             {
                 x.CurrentEpisode.TotalNegotiatedPrice1 = tnp1;
                 x.CurrentEpisode.TotalNegotiatedPrice2 = tnp2;
@@ -256,31 +283,41 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                 x.CurrentEpisode.TotalNegotiatedPrice4 = 0;
                 x.CurrentEpisode.Cost = tnp1 + tnp2;
             });
+        }
 
         internal ApprenticePriceEpisodeBuilder WithPriceFromTnp3And4(int tnp3, int tnp4)
-            => WithPriceFromTnp(0, 0, tnp3, tnp4);
+        {
+            return WithPriceFromTnp(0, 0, tnp3, tnp4);
+        }
 
-        internal ApprenticePriceEpisodeBuilder Starting(DateTime starting) =>
-            this.With(x =>
-            {
-                x.CurrentEpisode.StartDate = starting;
-            });
+        internal ApprenticePriceEpisodeBuilder Starting(DateTime starting)
+        {
+            return this.With(x => { x.CurrentEpisode.StartDate = starting; });
+        }
 
-        internal ApprenticePriceEpisodeBuilder WithEarnings(int numMonths) =>
-            this.With(x => x.CurrentEpisode.NumberOfEarningPeriods = numMonths);
+        internal ApprenticePriceEpisodeBuilder WithEarnings(int numMonths)
+        {
+            return this.With(x => x.CurrentEpisode.NumberOfEarningPeriods = numMonths);
+        }
 
-        internal ApprenticePriceEpisodeBuilder Stopped(DateTime stopped) =>
-            this.With(x => x.CurrentEpisode.StoppedDate = stopped);
+        internal ApprenticePriceEpisodeBuilder Stopped(DateTime stopped)
+        {
+            return this.With(x => x.CurrentEpisode.StoppedDate = stopped);
+        }
 
-        internal ApprenticePriceEpisodeBuilder AddPriceEpisode() =>
-            this.With(x => x.Episodes.Add(new Data()));
+        internal ApprenticePriceEpisodeBuilder AddPriceEpisode()
+        {
+            return this.With(x => x._episodes.Add(new Data()));
+        }
 
-        internal ApprenticePriceEpisodeBuilder Configure(
-            Func<ApprenticePriceEpisodeBuilder, ApprenticePriceEpisodeBuilder>? configure)
-            => configure?.Invoke(this) ?? this;
+        internal ApprenticePriceEpisodeBuilder Configure(Func<ApprenticePriceEpisodeBuilder, ApprenticePriceEpisodeBuilder> configure)
+        {
+            return configure?.Invoke(this) ?? this;
+        }
 
-        internal List<EarningEventPriceEpisodeModel> ToEarningsModel() =>
-            Episodes.Select(x => new EarningEventPriceEpisodeModel
+        internal List<EarningEventPriceEpisodeModel> ToEarningsModel()
+        {
+            return _episodes.Select(x => new EarningEventPriceEpisodeModel
             {
                 StartDate = x.StartDate,
                 ActualEndDate = x.StoppedDate,
@@ -289,13 +326,16 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders
                 TotalNegotiatedPrice3 = x.TotalNegotiatedPrice3,
                 TotalNegotiatedPrice4 = x.TotalNegotiatedPrice4,
             }).ToList();
+        }
 
-        internal List<ApprenticeshipPriceEpisodeModel> ToApprenticeshipModel() =>
-            Episodes.Select(x => new ApprenticeshipPriceEpisodeModel
+        internal List<ApprenticeshipPriceEpisodeModel> ToApprenticeshipModel()
+        {
+            return _episodes.Select(x => new ApprenticeshipPriceEpisodeModel
             {
                 StartDate = x.StartDate,
                 EndDate = x.StoppedDate,
                 Cost = x.Cost,
             }).ToList();
+        }
     }
 }

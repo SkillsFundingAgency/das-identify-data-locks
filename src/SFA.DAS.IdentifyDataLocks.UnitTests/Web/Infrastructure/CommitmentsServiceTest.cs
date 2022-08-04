@@ -6,7 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
+using SFA.DAS.IdentifyDataLocks.Domain.Services;
 
 namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web.Infrastructure
 {
@@ -22,7 +22,8 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web.Infrastructure
             var populatedResponse = new GetApprenticeshipsResponse
             {
                 Apprenticeships = new[]
-                { new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse() {
+                { new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse
+                {
                     FirstName = firstName, LastName = lastName
                 } }
             };

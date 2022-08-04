@@ -1,14 +1,14 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.IdentifyDataLocks.Domain;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.IdentifyDataLocks.UnitTests
 {
     public class TestPeriodSorting
     {
-        private static readonly IEnumerable<TestCaseData> values = new[]
+        private static readonly IEnumerable<TestCaseData> Values = new[]
         {
             new TestCaseData(
                 new[] {new Period(1819, 1), new Period(1819, 2) },
@@ -46,7 +46,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
                 }),
         };
 
-        [Test, TestCaseSource(nameof(values))]
+        [Test, TestCaseSource(nameof(Values))]
         public void Sorts(Period[] unordered, Period[] expected)
         {
             unordered.OrderBy(x => x).Should().ContainInOrder(expected);

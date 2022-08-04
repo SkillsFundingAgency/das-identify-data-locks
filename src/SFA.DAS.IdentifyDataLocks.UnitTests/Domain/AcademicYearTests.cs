@@ -1,7 +1,7 @@
+using System;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.IdentifyDataLocks.Domain;
-using System;
 
 namespace SFA.DAS.IdentifyDataLocks.UnitTests.Domain
 {
@@ -33,7 +33,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Domain
         [Test]
         public void RefusesToGenerateAcademicYearsFromInvalidShortInt()
         {
-            Action act = () => { AcademicYear _ = 1821; };
+            var act = () => { AcademicYear _ = 1821; };
             act
               .Should().Throw<ArgumentException>()
               .And.Message.Should().Contain("1821", because: "Exceptions should report the data that caused them");

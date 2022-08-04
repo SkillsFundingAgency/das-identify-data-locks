@@ -1,8 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.IdentifyDataLocks.Data.Model;
 using SFA.DAS.IdentifyDataLocks.Domain;
 using SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders;
-using System.Linq;
 
 namespace SFA.DAS.IdentifyDataLocks.UnitTests
 {
@@ -20,9 +21,9 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
             sut.CollectionPeriods.First()
                .Should().BeEquivalentTo(new
                {
-                   Apprenticeship = (DataMatch?)null,
-                   Ilr = new { Uln = 22 },
-                   DataLocks = new[] { DataLock.Dlock02 },
+                   ApprenticeshipDataMatch = (DataMatch)null,
+                   IlrEarningDataMatch = new { Uln = 22 },
+                   DataLockErrorCodes = new[] { DataLockErrorCode.Dlock02 },
                });
         }
 
@@ -38,7 +39,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
             sut.CollectionPeriods.First()
                .Should().BeEquivalentTo(new
                {
-                   Ilr = new { Cost = 20 },
+                   IlrEarningDataMatch = new { Cost = 20 },
                });
         }
     }

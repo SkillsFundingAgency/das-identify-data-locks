@@ -1,37 +1,29 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using SFA.DAS.Payments.Application.Repositories;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
     public class StartModel : PageModel
     {
-        private readonly IPaymentsDataContext _context;
-        [BindProperty]
-        public string Uln { get; set; }
+        [BindProperty] public string Uln { get; set; } = "";
 
-        public StartModel(IPaymentsDataContext context) =>
-            _context = context;
-
-        public async Task<IActionResult> OnPost()
+        public IActionResult OnPost()
         {
-            await ValidateModel();
+            ValidateModel();
+
             if(ModelState.IsValid)
             {
-                return RedirectToPage("learner", new { Uln = Uln });
+                return RedirectToPage("learner", new { Uln });
             }
-            else
-            {
-                return Page();
-            }
+
+            return Page();
         }
 
-        private async Task ValidateModel()
+        private void ValidateModel()
         {
-            var isUlnANumber = long.TryParse(Uln, out long uln);
-            if(Uln == null || isUlnANumber == false || uln <= 0 || uln > 9999999999)
+            var isUlnANumber = long.TryParse(Uln, out var uln);
+
+            if(isUlnANumber == false || uln <= 0 || uln > 9999999999)
             {
                 ModelState.AddModelError(nameof(Uln), "Enter a valid ULN");
             }

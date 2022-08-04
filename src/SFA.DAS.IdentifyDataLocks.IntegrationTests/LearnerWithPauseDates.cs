@@ -2,55 +2,39 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
+using SFA.DAS.IdentifyDataLocks.Data.Model;
 using SFA.DAS.IdentifyDataLocks.IntegrationTests.Helpers;
 using SFA.DAS.IdentifyDataLocks.Web.Pages;
-using SFA.DAS.Payments.Model.Core.Audit;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
 {
-    [Explicit]
     public class LearnerWithPauseDates
     {
-        private ApprenticeshipModel apprenticeship;
+        private ApprenticeshipModel _apprenticeship;
 
-        public async Task Arrange(string apprenticeshipResourceName, bool loadDataLocks = false)
+        private async Task Arrange(string apprenticeshipResourceName, bool loadDataLocks = false)
         {
-            await Testing.Reset();
+            RazorPagesTestFixture.Reset();
 
-            var apps = await Testing.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>(apprenticeshipResourceName);
+            var apps = await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>(apprenticeshipResourceName);
 
-            apprenticeship = apps.FirstOrDefault();
+            _apprenticeship = apps.FirstOrDefault();
 
-            await Testing.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.EarningEvents.json");
+            await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.EarningEvents.json");
 
             
             if(loadDataLocks)
             {
-                await LoadDataLocksFromJson("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.Dlock12_DataLocks.json");
+                await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<DataLockEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.Dlock12_DataLocks.json");
             }
             else
             {
-                await LoadDataLocksFromJson("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.Dlock06_DataLocks.json");
+                await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<DataLockEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.Dlock06_DataLocks.json");
             }
 
-            Testing.TimeProvider.Today.Returns(new DateTime(2019, 08, 01));
-        }
-
-        private async Task LoadDataLocksFromJson(string filename)
-        {
-            var dataLocks = JsonConvert.DeserializeObject<DataLockEventModel[]>(
-                Resources.LoadAsString(filename));
-            foreach (var l in dataLocks
-            .SelectMany(x => x.NonPayablePeriods)
-            .SelectMany(x => x.DataLockEventNonPayablePeriodFailures))
-            {
-                l.ApprenticeshipId = apprenticeship.Id;
-            }
-            await Testing.Context.AddEntities(dataLocks);
+            RazorPagesTestFixture.TimeProvider.Today.Returns(new DateTime(2019, 08, 01));
         }
 
         [Test]
@@ -58,13 +42,13 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Arrange("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.Active_Apprenticeship_With_Multiple_Pause_Dates.json");
 
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.CurrentYearDataLocks.First().Apprenticeship.PausedOn.Should().Be(new DateTime(2019, 1, 1));
-            learner.CurrentYearDataLocks.First().Apprenticeship.ResumedOn.Should().Be(new DateTime(2019, 3, 1));
-            learner.CurrentYearDataLocks.First().Apprenticeship.CompletionStatus.Should().Be(ApprenticeshipStatus.Active);
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.PausedOn.Should().Be(new DateTime(2019, 1, 1));
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.ResumedOn.Should().Be(new DateTime(2019, 3, 1));
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.CompletionStatus.Should().Be(ApprenticeshipStatus.Active);
         }
 
         [Test]
@@ -72,13 +56,13 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Arrange("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.Active_Apprenticeship_With_No_Pause_Dates.json");
 
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.CurrentYearDataLocks.First().Apprenticeship.PausedOn.Should().BeNull();
-            learner.CurrentYearDataLocks.First().Apprenticeship.ResumedOn.Should().BeNull();
-            learner.CurrentYearDataLocks.First().Apprenticeship.CompletionStatus.Should().Be(ApprenticeshipStatus.Active);
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.PausedOn.Should().BeNull();
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.ResumedOn.Should().BeNull();
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.CompletionStatus.Should().Be(ApprenticeshipStatus.Active);
         }
 
         [Test]
@@ -86,13 +70,13 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Arrange("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.Active_Apprenticeship_With_Single_Pause_Record.json");
 
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.CurrentYearDataLocks.First().Apprenticeship.PausedOn.Should().Be(new DateTime(2019, 1, 1));
-            learner.CurrentYearDataLocks.First().Apprenticeship.ResumedOn.Should().Be(new DateTime(2019, 3, 1));
-            learner.CurrentYearDataLocks.First().Apprenticeship.CompletionStatus.Should().Be(ApprenticeshipStatus.Active);
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.PausedOn.Should().Be(new DateTime(2019, 1, 1));
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.ResumedOn.Should().Be(new DateTime(2019, 3, 1));
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.CompletionStatus.Should().Be(ApprenticeshipStatus.Active);
         }
 
         [Test]
@@ -100,13 +84,13 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             await Arrange("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.ApprenticeshipsWithPausedDates.Paused_Apprenticeship.json", true);
 
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.CurrentYearDataLocks.First().Apprenticeship.PausedOn.Should().Be(new DateTime(2018, 6, 7));
-            learner.CurrentYearDataLocks.First().Apprenticeship.ResumedOn.Should().BeNull();
-            learner.CurrentYearDataLocks.First().Apprenticeship.CompletionStatus.Should().Be(ApprenticeshipStatus.Paused);
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.PausedOn.Should().Be(new DateTime(2018, 6, 7));
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.ResumedOn.Should().BeNull();
+            learner.CurrentYearDataLocks.First().ApprenticeshipDataMatch.CompletionStatus.Should().Be(ApprenticeshipStatus.Paused);
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.IdentifyDataLocks.Domain;
-using SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
+using NUnit.Framework;
+using SFA.DAS.IdentifyDataLocks.Data.Model;
+using SFA.DAS.IdentifyDataLocks.Domain;
+using SFA.DAS.IdentifyDataLocks.UnitTests.TestBuilders;
 
 namespace SFA.DAS.IdentifyDataLocks.UnitTests
 {
@@ -12,72 +13,75 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
     {
         private static IEnumerable<TestCaseData> IndividualPeriodValues()
         {
-            static IEnumerable<(string name, Func<ApprenticeshipBuilder> input, object expected)> cases()
+            static IEnumerable<(string name, Func<ApprenticeshipBuilder> input, object expected)> Cases()
             {
                 yield return (
                     "UKPRN",
-                    () => builder().WithProvider(ukprn: 12),
+                    () => Builder().WithProvider(ukprn: 12),
                     new { Ukprn = 12 });
 
                 yield return (
                     "ULN",
-                    () => builder().ForLearner(uln: 12),
+                    () => Builder().ForLearner(uln: 12),
                     new { Uln = 12 });
 
                 yield return (
                     "Standard Code",
-                    () => builder().ForProgramme(standardCode: 12),
+                    () => Builder().ForProgramme(standardCode: 12),
                     new { Standard = 12 });
 
                 yield return (
                     "Framework Code",
-                    () => builder().ForProgramme(frameworkCode: 12),
+                    () => Builder().ForProgramme(frameworkCode: 12),
                     new { Framework = 12 });
 
                 yield return (
                     "Programme Type",
-                    () => builder().ForProgramme(programmeType: 12),
+                    () => Builder().ForProgramme(programmeType: 12),
                     new { Program = 12 });
 
                 yield return (
                     "Pathway Code",
-                    () => builder().ForProgramme(pathwayCode: 12),
+                    () => Builder().ForProgramme(pathwayCode: 12),
                     new { Pathway = 12 });
 
                 yield return (
                     "Cost from TNP1/2",
-                    () => builder().ForProgramme(episodes: episodes =>
+                    () => Builder().ForProgramme(episodes: episodes =>
                                                  episodes.WithPriceFromTnp1And2(1, 2)),
                     new { Cost = 3 });
 
                 yield return (
                     "Cost from TNP3/4",
-                    () => builder().ForProgramme(episodes: episodes =>
+                    () => Builder().ForProgramme(episodes: episodes =>
                                                  episodes.WithPriceFromTnp3And4(3, 4)),
                     new { Cost = 7 });
 
                 yield return (
                     "Cost from TNP3/4 (ignores TNP1/2)",
-                    () => builder().ForProgramme(episodes: episodes =>
+                    () => Builder().ForProgramme(episodes: episodes =>
                                                  episodes.WithPriceFromTnp(1, 2, 3, 4)),
                     new { Cost = 7 });
 
                 yield return (
                     "Starting",
-                    () => builder().ForProgramme(episodes: episodes =>
+                    () => Builder().ForProgramme(episodes: episodes =>
                                                  episodes.Starting(new DateTime(2020, 01, 25))),
                     new { PriceStart = new DateTime(2020, 01, 25) });
 
                 yield return (
                     "Stopped",
-                    () => builder().ForProgramme(episodes: episodes =>
+                    () => Builder().ForProgramme(episodes: episodes =>
                                                  episodes.Stopped(new DateTime(2020, 01, 26))),
                     new { StoppedOn = new DateTime(2020, 01, 26) });
             }
 
-            static ApprenticeshipBuilder builder() => new ApprenticeshipBuilder();
+            static ApprenticeshipBuilder Builder()
+            {
+                return new ApprenticeshipBuilder();
+            }
 
-            return cases().Select(x => new TestCaseData(x.input, x.expected)
+            return Cases().Select(x => new TestCaseData(x.input, x.expected)
                                                .SetName($"Populates {x.name}"));
         }
 
@@ -91,8 +95,8 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
             sut.CollectionPeriods.Should().ContainEquivalentOf(
                 new
                 {
-                    Apprenticeship = period,
-                    Ilr = period,
+                    ApprenticeshipDataMatch = period,
+                    IlrEarningDataMatch = period,
                 });
         }
 
@@ -107,7 +111,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
             sut.CollectionPeriods.Should().ContainEquivalentOf(
                 new
                 {
-                    DataLocks = new[] { DataLock.Dlock03 },
+                    DataLockErrorCodes = new[] { DataLockErrorCode.Dlock03 },
                 });
         }
 
@@ -125,7 +129,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
                     .First()));
 
             foreach (var p in sut.CollectionPeriods)
-                p.DataLocks.Should().HaveCountGreaterOrEqualTo(2).And.BeInAscendingOrder(x => x);
+                p.DataLockErrorCodes.Should().HaveCountGreaterOrEqualTo(2).And.BeInAscendingOrder(x => x);
         }
 
         [Test]
@@ -137,7 +141,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
             var sut = builder.CreateLearnerReport(modifyLocks: l => l.Append(l.First()));
 
             foreach (var p in sut.CollectionPeriods)
-                p.DataLocks.Should().OnlyHaveUniqueItems();
+                p.DataLockErrorCodes.Should().OnlyHaveUniqueItems();
         }
 
         [Test]
@@ -148,7 +152,9 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
 
             var sut = builder.CreateLearnerReport();
 
-            sut.CollectionPeriodsByYear.Should().ContainKeys(1920, 2021);
+            sut.CollectionPeriods.GroupBy(c => (AcademicYear) c.Period.Year)
+                .ToDictionary(g => g.Key, g => g.ToList())
+                .Should().ContainKeys(1920, 2021);
         }
 
         [Test]
@@ -167,7 +173,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests
 
             sut.CollectionPeriods.Should().ContainEquivalentOf(new
             {
-                Ilr = new
+                IlrEarningDataMatch = new
                 {
                     Tnp1 = new[]
                     {

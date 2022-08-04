@@ -1,68 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
-using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.EAS.Account.Api.Types;
+using SFA.DAS.IdentifyDataLocks.Data.Model;
 using SFA.DAS.IdentifyDataLocks.Domain;
 using SFA.DAS.IdentifyDataLocks.IntegrationTests.Helpers;
-using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using SFA.DAS.IdentifyDataLocks.Web.Pages;
-using SFA.DAS.Payments.Model.Core.Audit;
-using SFA.DAS.Payments.Model.Core.Entities;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using PaymentsApprenticeshipStatus = SFA.DAS.Payments.Model.Core.Entities.ApprenticeshipStatus;
-using Provider = SFA.DAS.IdentifyDataLocks.Web.Model.Provider;
 
 namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
 {
-    [Explicit]
     public class LearnerWithRealisticHistory
     {
         [SetUp]
         public async Task SetUp()
         {
-            await Testing.Reset();
+            RazorPagesTestFixture.Reset();
 
-            var apps = await Testing.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Apprenticeships.json");
+            var apps = await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Apprenticeships.json");
             if (apps.Length == 0) throw new Exception("There must be an apprenticeship to run these tests.");
 
-            apprenticeship = apps.FirstOrDefault(x => x.Status == PaymentsApprenticeshipStatus.Active);
-            var appid = apprenticeship.Id;
+            _apprenticeship = apps.FirstOrDefault(x => x.Status == ApprenticeshipStatus.Active);
 
-            await Testing.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.EarningEvents.json");
+            await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.EarningEvents.json");
 
-            var dlocks = JsonConvert.DeserializeObject<DataLockEventModel[]>(
-                Resources.LoadAsString("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Datalocks.json"));
-            foreach (var l in dlocks
-                .SelectMany(x => x.NonPayablePeriods)
-                .SelectMany(x => x.DataLockEventNonPayablePeriodFailures))
-            {
-                l.ApprenticeshipId = appid;
-            }
+            await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<DataLockEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Datalocks.json");
 
-            await Testing.Context.AddEntities(dlocks);
-
-            Testing.TimeProvider.Today.Returns(new DateTime(2019, 8, 1));
+            RazorPagesTestFixture.TimeProvider.Today.Returns(new DateTime(2019, 8, 1));
         }
 
-        private ApprenticeshipModel apprenticeship;
+        private ApprenticeshipModel _apprenticeship;
 
         [Test]
         public async Task Finds_collection_period_data()
         {
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.CurrentYearDataLocks.Should().ContainEquivalentOf(
                 new
                 {
-                    Apprenticeship = new
+                    ApprenticeshipDataMatch = new
                     {
                         Ukprn = 10003678,
                         Standard = 50,
@@ -71,9 +55,9 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
                         Pathway = 0,
                         Cost = 25972.0,
                         PriceStart = new DateTime(2019, 12, 01),
-                        CompletionStatus = Domain.ApprenticeshipStatus.Active,
+                        CompletionStatus = ApprenticeshipStatus.Active,
                     },
-                    Ilr = new
+                    IlrEarningDataMatch = new
                     {
                         Ukprn = 10003678,
                         Standard = 50,
@@ -90,44 +74,47 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         [Test]
         public async Task History_is_ordered()
         {
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
+
+            var collectionPeriods = new List<CollectionPeriod>
+            {
+               new CollectionPeriod { Period = new Period(1920, 12) },
+               new CollectionPeriod { Period = new Period(1920, 11) },
+               new CollectionPeriod { Period = new Period(1920, 10) },
+               new CollectionPeriod { Period = new Period(1920, 9) },
+               new CollectionPeriod { Period = new Period(1920, 8) },
+               new CollectionPeriod { Period = new Period(1920, 7) },
+               new CollectionPeriod { Period = new Period(1920, 6) },
+               new CollectionPeriod { Period = new Period(1920, 5) }
+            };
 
             learner.CurrentYearDataLocks.Should()
                 .NotBeEmpty()
                 .And.BeInDescendingOrder()
-                .And.BeEquivalentTo(
-                    new { Period = new Period(1920, 12) },
-                    new { Period = new Period(1920, 11) },
-                    new { Period = new Period(1920, 10) },
-                    new { Period = new Period(1920, 9) },
-                    new { Period = new Period(1920, 8) },
-                    new { Period = new Period(1920, 7) },
-                    new { Period = new Period(1920, 6) },
-                    new { Period = new Period(1920, 5) }
-                                   );
+                .And.BeEquivalentTo(collectionPeriods, option => option.Excluding(x=> x.ApprenticeshipDataMatch).Excluding(x => x.DataLockErrorCodes).Excluding(x => x.IlrEarningDataMatch));
         }
 
         [Test]
         public async Task History_only_contains_active_provider()
         {
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.CurrentYearDataLocks.Should()
-                .OnlyContain(x => x.Apprenticeship.Ukprn == 10003678);
+                .OnlyContain(x => x.ApprenticeshipDataMatch.Ukprn == 10003678);
         }
 
         [Test]
         public async Task Learner_name_is_shown()
         {
-            Testing.CommitmentsApi
+            RazorPagesTestFixture.CommitmentsApi
                 .GetApprenticeships(Arg.Is<GetApprenticeshipsRequest>(
                     req =>
-                        req.AccountId == apprenticeship.AccountId &&
-                        req.SearchTerm == apprenticeship.Uln.ToString()))
+                        req.AccountId == _apprenticeship.AccountId &&
+                        req.SearchTerm == _apprenticeship.Uln.ToString()))
                 .Returns(Task.FromResult(new GetApprenticeshipsResponse
                 {
                     Apprenticeships = new[]
@@ -140,8 +127,8 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
                     }
                 }));
 
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.LearnerName.Should().Be("LearnerFirstname LearnerLastname");
@@ -150,35 +137,31 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         [Test]
         public async Task Provider_details_are_shown()
         {
-            Testing.RoatpApi
-                .GetProvider(apprenticeship.Ukprn)
-                .Returns(new Provider
-                {
-                    Ukprn = (int)apprenticeship.Ukprn, 
-                    Name = "Best Training Provider",
-                });
+            RazorPagesTestFixture.ProviderApi
+                .GetProvider(_apprenticeship.Ukprn)
+                .Returns(info =>  "Best Training Provider");
 
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.ProviderId.Should().Be(apprenticeship.Ukprn.ToString());
+            learner.ProviderId.Should().Be(_apprenticeship.Ukprn.ToString());
             learner.ProviderName.Should().Be("Best Training Provider");
         }
 
         [Test]
         public async Task Account_details_are_shown()
         {
-            Testing.AccountsApi
-                .GetAccount(apprenticeship.AccountId)
+            RazorPagesTestFixture.AccountsApi
+                .GetAccount(_apprenticeship.AccountId)
                 .Returns(Task.FromResult(new AccountDetailViewModel
                 {
                     DasAccountName = "Fantastic Employer",
                     PublicHashedAccountId = "qwerty",
                 }));
 
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.EmployerId.Should().Be("qwerty");
@@ -188,8 +171,8 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         [Test]
         public async Task Data_locks_are_shown()
         {
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
             learner.DataLockNames.Should().Contain("Dlock01");
@@ -198,8 +181,8 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         [Test]
         public void Correct_academic_years_are_populated()
         {
-            Testing.TimeProvider.Today.Returns(new DateTime(2011, 8, 1));
-            var learner = Testing.CreatePage<LearnerModel>();
+            RazorPagesTestFixture.TimeProvider.Today.Returns(new DateTime(2011, 8, 1));
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
 
             learner.AcademicYears.Current.Should().Be((AcademicYear)1112);
             learner.AcademicYears.Previous.Should().Be((AcademicYear)1011);
@@ -208,9 +191,9 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         [Test]
         public async Task Has_data_locks_should_be_false()
         {
-            Testing.TimeProvider.Today.Returns(new DateTime(2011, 8, 1));
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            RazorPagesTestFixture.TimeProvider.Today.Returns(new DateTime(2011, 8, 1));
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
             learner.HasDataLocks.Should().BeFalse();
         }
@@ -219,9 +202,9 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         [TestCase(2020, false, true)]
         public async Task Populate_datalocks_in_right_academic_year_collection(int year, bool expectedHasDataInCurrentYear, bool expectedHasDataInPreviousYear)
         {
-            Testing.TimeProvider.Today.Returns(new DateTime(year, 8, 1));
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            RazorPagesTestFixture.TimeProvider.Today.Returns(new DateTime(year, 8, 1));
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
             learner.HasDataLocks.Should().BeTrue();
             learner.HasDataLocksInCurrentYear.Should().Be(expectedHasDataInCurrentYear);

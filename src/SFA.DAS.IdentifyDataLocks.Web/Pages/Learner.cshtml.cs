@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SFA.DAS.IdentifyDataLocks.Domain;
-using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
+using SFA.DAS.IdentifyDataLocks.Domain.Services;
+using SFA.DAS.IdentifyDataLocks.Web.Helpers;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
@@ -13,10 +14,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
     {
         [BindProperty(SupportsGet = true)]
         public string Uln { get; set; }
-
         public IEnumerable<CollectionPeriod> CurrentYearDataLocks { get; set; } = Enumerable.Empty<CollectionPeriod>();
         public IEnumerable<CollectionPeriod> PreviousYearDataLocks { get; set; } = Enumerable.Empty<CollectionPeriod>();
-
         public string LearnerName { get; private set; }
         public string EmployerName { get; private set; }
         public string EmployerId { get; private set; }
@@ -24,33 +23,45 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public string ProviderId { get; private set; }
         public bool HasDataLocks { get; private set; }
         public bool HasMultipleProviders { get; set; }
-        
-        public IEnumerable<string> DataLockNames =>
-            CurrentYearDataLocks
-            .SelectMany(x => x.DataLocks)
-            .Select(x => x.ToString())
-            .OrderBy(x => x);
 
-        public IEnumerable<DataLockHelpCentreLink> DataLockLinks =>
-            CurrentYearDataLocks
-                .Concat(PreviousYearDataLocks)
-                .SelectMany(x => x.DataLocks)
-                .Distinct()
-                .Select(DataLockHelpCentreLink.Create)
-                .OrderBy(x => x.Name);
+        public IEnumerable<string> DataLockNames
+        {
+            get
+            {
+                return CurrentYearDataLocks
+                    .SelectMany(x => x.DataLockErrorCodes)
+                    .Distinct()
+                    .Select(x => x.ToString())
+                    .OrderBy(x => x);
+            }
+        }
+
+        public IEnumerable<DataLockHelpCentreLink> DataLockLinks
+        {
+            get
+            {
+                return CurrentYearDataLocks
+                    .Concat(PreviousYearDataLocks)
+                    .SelectMany(x => x.DataLockErrorCodes)
+                    .Distinct()
+                    .Select(DataLockHelpCentreLink.Create)
+                    .OrderBy(x => x.Name);
+            }
+        }
 
         public bool HasDataLocksInCurrentYear => CurrentYearDataLocks.Any();
+
         public bool HasDataLocksInPreviousYear => PreviousYearDataLocks.Any();
 
-        public (AcademicYear Current, AcademicYear Previous) AcademicYears => (new AcademicYear(timeProvider.Today), new AcademicYear(timeProvider.Today) - 1);
+        public (AcademicYear Current, AcademicYear Previous) AcademicYears => (new AcademicYear(_timeProvider.Today), new AcademicYear(_timeProvider.Today) - 1);
 
-        private readonly LearnerReportProvider learnerReportProvider;
-        private readonly ITimeProvider timeProvider;
+        private readonly LearnerReportProvider _learnerReportProvider;
+        private readonly ITimeProvider _timeProvider;
 
         public LearnerModel(LearnerReportProvider learnerReportProvider, ITimeProvider timeProvider)
         {
-            this.learnerReportProvider = learnerReportProvider;
-            this.timeProvider = timeProvider;
+            _learnerReportProvider = learnerReportProvider;
+            _timeProvider = timeProvider;
         }
 
         public async Task OnGetAsync()
@@ -58,10 +69,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             if (!long.TryParse(Uln, out var uln))
                 throw new Exception("Invalid ULN");
 
-            var report = await learnerReportProvider.BuildLearnerReport(uln, AcademicYears);
-
-            Func<int, IEnumerable<CollectionPeriod>> GetDataLocksForAcademicYear =
-                (year) => report.DataLocks.ContainsKey(year) ? report.DataLocks[year] : Enumerable.Empty<CollectionPeriod>();
+            var report = await _learnerReportProvider.BuildLearnerReport(uln, AcademicYears);
 
             HasDataLocks = report.HasDataLocks;
             HasMultipleProviders = report.HasMultipleProviders;
@@ -70,8 +78,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             ProviderId = report.Provider.Id;
             EmployerName = report.Employer.Name;
             EmployerId = report.Employer.Id;
-            CurrentYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Current);
-            PreviousYearDataLocks = GetDataLocksForAcademicYear(AcademicYears.Previous);
+            CurrentYearDataLocks = report.CurrentYearDataLocks;
+            PreviousYearDataLocks = report.PreviousYearDataLocks;
         }
     }
 }

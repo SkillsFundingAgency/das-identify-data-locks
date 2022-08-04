@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.IdentifyDataLocks.Web
 {
     public class SecurityHeadersMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
 
-        public SecurityHeadersMiddleware(RequestDelegate next) => this.next = next;
+        public SecurityHeadersMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
 
         public async Task InvokeAsync(HttpContext context)
         {
@@ -20,7 +23,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                 "Content-Security-Policy",
                 new StringValues("default-src 'self' das-at-frnt-end.azureedge.net das-pp-frnt-end.azureedge.net das-mo-frnt-end.azureedge.net das-prd-frnt-end.azureedge.net;"));
 
-            await next(context);
+            await _next(context);
         }
     }
 }

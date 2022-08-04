@@ -1,6 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.IdentifyDataLocks.Data.Model;
 using SFA.DAS.IdentifyDataLocks.Domain;
 using SFA.DAS.IdentifyDataLocks.Web.Pages;
 
@@ -11,18 +12,18 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         [Test, AutoData]
         public void Extracts_values_from_correct_datamatch(CollectionPeriod period)
         {
-            period.Apprenticeship.Cost.Should().NotBe(period.Ilr.Cost);
+            period.ApprenticeshipDataMatch.Cost.Should().NotBe(period.IlrEarningDataMatch.Cost);
 
             var sut = new DataLockRowModel(period, "", m => m.Cost);
 
-            sut.ApprenticeValue.Should().Be(period.Apprenticeship.Cost.ToString());
-            sut.IlrValue.Should().Be(period.Ilr.Cost.ToString());
+            sut.ApprenticeValue.Should().Be(period.ApprenticeshipDataMatch.Cost.ToString());
+            sut.IlrValue.Should().Be(period.IlrEarningDataMatch.Cost.ToString());
         }
 
         [Test, AutoData]
         public void Copes_with_null_apprenticeship(CollectionPeriod period)
         {
-            period.Apprenticeship = null;
+            period.ApprenticeshipDataMatch = null;
 
             var sut = new DataLockRowModel(period, "", m => m.Cost);
 
@@ -32,8 +33,8 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         [Test, AutoData]
         public void Copes_with_null_datamatch_value(CollectionPeriod period)
         {
-            period.Apprenticeship.Standard = null;
-            period.Ilr.Standard = null;
+            period.ApprenticeshipDataMatch.Standard = null;
+            period.IlrEarningDataMatch.Standard = null;
 
             var sut = new DataLockRowModel(period, "", m => m.Standard);
 
@@ -44,8 +45,8 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         [Test, AutoData]
         public void Copes_with_null_extractor(CollectionPeriod period)
         {
-            period.Apprenticeship.Standard = null;
-            period.Ilr.Standard = null;
+            period.ApprenticeshipDataMatch.Standard = null;
+            period.IlrEarningDataMatch.Standard = null;
 
             var sut = new DataLockRowModel(period, "", _ => null);
 
@@ -56,7 +57,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         [Test, AutoData]
         public void Reports_datalock_name(CollectionPeriod period)
         {
-            var datalock = period.DataLocks[0];
+            var datalock = period.DataLockErrorCodes[0];
 
             var sut = new DataLockRowModel(period, datalock, "", _ => null);
 
@@ -67,9 +68,9 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         [Test, AutoData]
         public void Reports_dash_for_absent_datalock(CollectionPeriod period)
         {
-            period.DataLocks.Clear();
+            period.DataLockErrorCodes.Clear();
 
-            var sut = new DataLockRowModel(period, DataLock.Dlock01, "", _ => null);
+            var sut = new DataLockRowModel(period, DataLockErrorCode.Dlock01, "", _ => null);
 
             sut.IsLocked.Should().BeFalse();
             sut.ActiveDataLock.Should().Be("-");
@@ -78,7 +79,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         [Test, AutoData]
         public void Reports_pause_datalock_name(CollectionPeriod period)
         {
-            var datalock = period.DataLocks[0];
+            var datalock = period.DataLockErrorCodes[0];
 
             var sut = new PauseDateDataLockRowModel(period, datalock, "");
 
@@ -89,7 +90,7 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         [Test, AutoData]
         public void Reports_dash_for_absent_pause_datalock([Frozen] CollectionPeriod period, PauseDateDataLockRowModel sut)
         {
-            period.DataLocks.Clear();
+            period.DataLockErrorCodes.Clear();
 
             sut.IsLocked.Should().BeFalse();
             sut.ActiveDataLock.Should().Be("-");
@@ -99,15 +100,15 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         public void Reports_pause_start_date([Frozen] CollectionPeriod period, PauseDateDataLockRowModel sut)
         {
             sut.HasPausedDate.Should().BeTrue();
-            sut.PausedOnDate.Should().Be(period.Apprenticeship.PausedOn!.Value.ToShortDateString());
+            sut.PausedOnDate.Should().Be(period.ApprenticeshipDataMatch.PausedOn!.Value.ToShortDateString());
         }
 
         [Test, AutoData]
         public void Reports_not_paused(CollectionPeriod period)
         {
-            period.Apprenticeship.PausedOn = null;
+            period.ApprenticeshipDataMatch.PausedOn = null;
 
-            var sut = new PauseDateDataLockRowModel(period, DataLock.Dlock12, "");
+            var sut = new PauseDateDataLockRowModel(period, DataLockErrorCode.Dlock12, "");
 
             sut.HasPausedDate.Should().BeFalse();
             sut.PausedOnDate.Should().BeNull();
@@ -116,15 +117,15 @@ namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web
         [Test, AutoData]
         public void Reports_resumed([Frozen] CollectionPeriod period, PauseDateDataLockRowModel sut)
         {
-            sut.ResumedOnDate.Should().Be(period.Apprenticeship.ResumedOn!.Value.ToShortDateString());
+            sut.ResumedOnDate.Should().Be(period.ApprenticeshipDataMatch.ResumedOn!.Value.ToShortDateString());
         }
 
         [Test, AutoData]
         public void Reports_not_resumed(CollectionPeriod period)
         {
-            period.Apprenticeship.ResumedOn = null;
+            period.ApprenticeshipDataMatch.ResumedOn = null;
 
-            var sut = new PauseDateDataLockRowModel(period, DataLock.Dlock12, "");
+            var sut = new PauseDateDataLockRowModel(period, DataLockErrorCode.Dlock12, "");
 
             sut.ResumedOnDate.Should().Be("Present");
         }

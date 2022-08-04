@@ -5,7 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
-using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
+using SFA.DAS.IdentifyDataLocks.Domain.Services;
 
 namespace SFA.DAS.IdentifyDataLocks.UnitTests.Web.Infrastructure
 {

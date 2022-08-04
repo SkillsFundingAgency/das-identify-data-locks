@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.IdentifyDataLocks.Web;
 
-namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
+namespace SFA.DAS.IdentifyDataLocks.IntegrationTests.Helpers
 {
     public class TestableStartup : Startup
     {

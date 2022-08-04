@@ -1,67 +1,51 @@
-﻿using FluentAssertions;
-using Newtonsoft.Json;
-using NSubstitute;
-using NUnit.Framework;
-using NUnit.Framework.Internal;
-using SFA.DAS.IdentifyDataLocks.IntegrationTests.Helpers;
-using SFA.DAS.IdentifyDataLocks.Web.Pages;
-using SFA.DAS.Payments.Model.Core.Audit;
-using SFA.DAS.Payments.Model.Core.Entities;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using PaymentsApprenticeshipStatus = SFA.DAS.Payments.Model.Core.Entities.ApprenticeshipStatus;
+using FluentAssertions;
+using NSubstitute;
+using NUnit.Framework;
+using SFA.DAS.IdentifyDataLocks.Data.Model;
+using SFA.DAS.IdentifyDataLocks.IntegrationTests.Helpers;
+using SFA.DAS.IdentifyDataLocks.Web.Pages;
 
 namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
 {
-    [Explicit]
     public class LearnerWithIlrPaymentsNotShowing
     {
         [SetUp]
         public async Task SetUp()
         {
-            await Testing.Reset();
+            RazorPagesTestFixture.Reset();
 
-            var apps = await Testing.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Missing_ILR_Cost_Apprenticeship.json");
+            var apps = await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<ApprenticeshipModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Missing_ILR_Cost_Apprenticeship.json");
             if (apps.Length == 0) throw new Exception("There must be an apprenticeship to run these tests.");
 
-            apprenticeship = apps.FirstOrDefault(x => x.Status == PaymentsApprenticeshipStatus.Active);
-            var appid = apprenticeship.Id;
+            _apprenticeship = apps.FirstOrDefault(x => x.Status == ApprenticeshipStatus.Active);
 
-            await Testing.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Missing_ILR_Cost_Earnings.json");
+            await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<EarningEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Missing_ILR_Cost_Earnings.json");
 
-            var dlocks = JsonConvert.DeserializeObject<DataLockEventModel[]>(
-                Resources.LoadAsString("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Dlock01_DataLocks.json"));
-            foreach (var l in dlocks
-                .SelectMany(x => x.NonPayablePeriods)
-                .SelectMany(x => x.DataLockEventNonPayablePeriodFailures))
-            {
-                l.ApprenticeshipId = appid;
-            }
-
-            await Testing.Context.AddEntities(dlocks);
+            await RazorPagesTestFixture.Context.AddEntitiesFromJsonResource<DataLockEventModel>("SFA.DAS.IdentifyDataLocks.IntegrationTests.TestData.Dlock01_DataLocks.json");
         }
 
-        private ApprenticeshipModel apprenticeship;
+        private ApprenticeshipModel _apprenticeship;
 
         [Test]
         public async Task Searching_for_apprenticeship_UKPRN_finds_dlocks()
         {
-            Testing.TimeProvider.Today.Returns(new DateTime(2020, 08, 01));
+            RazorPagesTestFixture.TimeProvider.Today.Returns(new DateTime(2020, 08, 01));
 
-            var learner = Testing.CreatePage<LearnerModel>();
-            learner.Uln = apprenticeship.Uln.ToString();
+            var learner = RazorPagesTestFixture.CreatePage<LearnerModel>();
+            learner.Uln = _apprenticeship.Uln.ToString();
             await learner.OnGetAsync();
 
-            learner.CurrentYearDataLocks.Should()
-                .ContainEquivalentOf(new
+            learner.CurrentYearDataLocks.Should().ContainEquivalentOf(new
+            {
+                IlrEarningDataMatch = new
                 {
-                    Ilr = new
-                    {
-                        Ukprn = 10018916,
-                        Cost = 3000,
-                    },
-                });
+                    Ukprn = 10018916,
+                    Cost = 3000,
+                },
+            });
         }
     }
 }

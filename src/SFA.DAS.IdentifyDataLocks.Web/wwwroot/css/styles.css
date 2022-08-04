@@ -11,6 +11,7 @@
     top: -10px;
 }
 .timeline:before {
+	/* ReSharper disable once InvalidValue */
     background-color: "transparent" ;
 }
 

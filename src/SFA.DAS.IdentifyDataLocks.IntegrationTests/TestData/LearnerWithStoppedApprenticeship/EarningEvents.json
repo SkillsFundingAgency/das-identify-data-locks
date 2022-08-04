@@ -1,10 +1,12 @@
-[{
+[
+    {
         "Id": 0,
         "ContractType": 1,
         "AgreementId": null,
         "LearningAimSequenceNumber": 2,
         "Periods": null,
-        "PriceEpisodes": [{
+        "PriceEpisodes": [
+            {
                 "Id": 0,
                 "EarningEventId": "bf17b32a-c27a-467a-b4ff-b6f611342115",
                 "PriceEpisodeIdentifier": "25-241-01/08/2020",
@@ -53,13 +55,15 @@
         "IlrSubmissionDateTime": "2020-09-04T19:09:11.947",
         "JobId": 395086,
         "EventTime": "2020-09-04T20:33:02.3481864+00:00"
-    }, {
+    },
+    {
         "Id": 0,
         "ContractType": 1,
         "AgreementId": "None",
         "LearningAimSequenceNumber": 2,
         "Periods": null,
-        "PriceEpisodes": [{
+        "PriceEpisodes": [
+            {
                 "Id": 0,
                 "EarningEventId": "b99b38f9-21fa-431b-b05d-0f75f1569fc7",
                 "PriceEpisodeIdentifier": "25-241-08/06/2020",
@@ -108,13 +112,15 @@
         "IlrSubmissionDateTime": "2020-09-04T07:18:09.11",
         "JobId": 391654,
         "EventTime": "2020-09-04T07:26:02.6481329+00:00"
-    }, {
+    },
+    {
         "Id": 0,
         "ContractType": 1,
         "AgreementId": "None",
         "LearningAimSequenceNumber": 2,
         "Periods": null,
-        "PriceEpisodes": [{
+        "PriceEpisodes": [
+            {
                 "Id": 0,
                 "EarningEventId": "2d1d5682-78a6-4e9e-82da-10902edf6de5",
                 "PriceEpisodeIdentifier": "25-241-08/06/2020",

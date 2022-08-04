@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using StackExchange.Redis;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Extensions

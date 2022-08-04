@@ -1,8 +1,9 @@
-﻿using System.ArrayExtensions;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using SFA.DAS.IdentifyDataLocks.UnitTests.Utilities.ArrayExtensions;
 
-namespace System
+namespace SFA.DAS.IdentifyDataLocks.UnitTests.Utilities
 {
     // https://stackoverflow.com/a/11308879
     public static class ObjectExtensions
@@ -20,12 +21,17 @@ namespace System
             return type.IsValueType && type.IsPrimitive;
         }
 
-        public static T Copy<T>(this T original) => (T)Copy((object)original);
+        public static T Copy<T>(this T original)
+        {
+            return (T) Copy((object) original);
+        }
 
-        public static object Copy(this object originalObject) =>
-            InternalCopy(
+        public static object Copy(this object originalObject)
+        {
+            return InternalCopy(
                 originalObject,
                 new Dictionary<object, object>(new ReferenceEqualityComparer()));
+        }
 
         private static readonly MethodInfo CloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -77,11 +83,15 @@ namespace System
 
     public class ReferenceEqualityComparer : EqualityComparer<object>
     {
-        public override bool Equals(object x, object y) =>
-            ReferenceEquals(x, y);
+        public override bool Equals(object x, object y)
+        {
+            return ReferenceEquals(x, y);
+        }
 
-        public override int GetHashCode(object obj) =>
-            obj?.GetHashCode() ?? 0;
+        public override int GetHashCode(object obj)
+        {
+            return obj?.GetHashCode() ?? 0;
+        }
     }
 
     namespace ArrayExtensions
@@ -100,26 +110,26 @@ namespace System
         internal class ArrayTraverse
         {
             public int[] Position;
-            private int[] maxLengths;
+            private int[] _maxLengths;
 
             public ArrayTraverse(Array array)
             {
-                maxLengths = new int[array.Rank];
-                for (int i = 0; i < array.Rank; ++i)
+                _maxLengths = new int[array.Rank];
+                for (var i = 0; i < array.Rank; ++i)
                 {
-                    maxLengths[i] = array.GetLength(i) - 1;
+                    _maxLengths[i] = array.GetLength(i) - 1;
                 }
                 Position = new int[array.Rank];
             }
 
             public bool Step()
             {
-                for (int i = 0; i < Position.Length; ++i)
+                for (var i = 0; i < Position.Length; ++i)
                 {
-                    if (Position[i] < maxLengths[i])
+                    if (Position[i] < _maxLengths[i])
                     {
                         Position[i]++;
-                        for (int j = 0; j < i; j++)
+                        for (var j = 0; j < i; j++)
                         {
                             Position[j] = 0;
                         }

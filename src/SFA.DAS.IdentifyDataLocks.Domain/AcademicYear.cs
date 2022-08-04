@@ -21,24 +21,31 @@ namespace SFA.DAS.IdentifyDataLocks.Domain
             StartingDate = new DateTime(2000 + firstYear, FirstMonthOfAcademicYear, 01);
         }
 
-        public static implicit operator AcademicYear(int shortInt) =>
-            new AcademicYear(shortInt);
+        public static implicit operator AcademicYear(int shortInt)
+        {
+            return new AcademicYear(shortInt);
+        }
 
-        public static implicit operator int(AcademicYear year) =>
-            year.ToShortInt();
+        public static implicit operator int(AcademicYear year)
+        {
+            return year.ToShortInt();
+        }
 
         public static AcademicYear operator +(AcademicYear d, int years)
-            => new AcademicYear(
-                new DateTime(
-                    d.StartingDate.Year + years,
-                    d.StartingDate.Month,
-                    d.StartingDate.Day));
+        {
+            return new AcademicYear(new DateTime(d.StartingDate.Year + years, d.StartingDate.Month,
+                d.StartingDate.Day));
+        }
 
         public static AcademicYear operator -(AcademicYear d, int years)
-            => d + -years;
+        {
+            return d + -years;
+        }
 
-        public override string ToString() =>
-            $"{StartingDate.Year} - {StartingDate.Year + 1}";
+        public override string ToString()
+        {
+            return $"{StartingDate.Year} - {StartingDate.Year + 1}";
+        }
 
         private int ToShortInt()
         {

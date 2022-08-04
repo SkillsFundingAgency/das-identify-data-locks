@@ -1,101 +1,89 @@
-﻿using SFA.DAS.Payments.Model.Core.Audit;
-using SFA.DAS.Payments.Model.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.IdentifyDataLocks.Data.Model;
 
 namespace SFA.DAS.IdentifyDataLocks.Domain
 {
     public static class CollectionPeriodMappingExtensions
     {
-        public static CollectionPeriod ToCollectionPeriod(
-            this EarningEventModel earning,
-            ApprenticeshipModel apprenticeship,
-            IEnumerable<DataLockEventModel> datalocks)
-            =>
-            new CollectionPeriod
+        public static CollectionPeriod ToCollectionPeriod(this EarningEventModel earning, ApprenticeshipModel apprenticeship, IEnumerable<DataLockFailureModel> dataLockFailures)
+        {
+            return new CollectionPeriod
             {
                 Period = new Period(earning.AcademicYear, earning.CollectionPeriod),
-                DataLocks = datalocks.ToDataLocks(earning),
-                Apprenticeship = apprenticeship?.ToDataMatch(),
-                Ilr = earning.ToDataMatch(),
+                DataLockErrorCodes = dataLockFailures.GetErrorCodes(earning),
+                ApprenticeshipDataMatch = apprenticeship?.ToApprenticeshipDataMatch(),
+                IlrEarningDataMatch = earning.ToEarningDataMatch(),
             };
+        }
 
-        private static DataMatch ToDataMatch(this ApprenticeshipModel apprenticeship) =>
-            new DataMatch
+        private static DataMatch ToApprenticeshipDataMatch(this ApprenticeshipModel apprenticeship)
+        {
+            var apprenticeshipPause = apprenticeship.ApprenticeshipPauses?.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault();
+
+            return new DataMatch
             {
                 Ukprn = apprenticeship.Ukprn,
                 Uln = apprenticeship.Uln,
-                Standard = (short?)apprenticeship.StandardCode,
-                Framework = (short?)apprenticeship.FrameworkCode,
-                Program = (short?)apprenticeship.ProgrammeType,
-                Pathway = (short?)apprenticeship.PathwayCode,
+                Standard = apprenticeship.StandardCode,
+                Framework = apprenticeship.FrameworkCode,
+                Program = apprenticeship.ProgrammeType,
+                Pathway = apprenticeship.PathwayCode,
+                StoppedOn = apprenticeship.StopDate,
+                CompletionStatus = apprenticeship.Status,
+
                 Cost = apprenticeship.ApprenticeshipPriceEpisodes.Sum(y => y.Cost),
                 PriceStart = apprenticeship.ApprenticeshipPriceEpisodes.FirstOrDefault()?.StartDate,
-                StoppedOn = apprenticeship.StopDate,
-                CompletionStatus = (ApprenticeshipStatus)apprenticeship.Status,
-                PausedOn = GetPausedOnDate(apprenticeship),
-                ResumedOn = GetResumedOnDate(apprenticeship),
+                PausedOn = apprenticeshipPause?.PauseDate,
+                ResumedOn = apprenticeshipPause?.ResumeDate,
             };
-
-        private static DateTime? GetPausedOnDate(ApprenticeshipModel apprenticeship)
-        {
-            return apprenticeship.ApprenticeshipPauses?.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.PauseDate;
         }
 
-        private static DateTime? GetResumedOnDate(ApprenticeshipModel apprenticeship)
+        private static DataMatch ToEarningDataMatch(this EarningEventModel earning)
         {
-            return apprenticeship.ApprenticeshipPauses?.OrderByDescending(p => p.PauseDate).Take(1).FirstOrDefault()?.ResumeDate;
-        }
-
-        private static DataMatch ToDataMatch(this EarningEventModel earning) =>
-            new DataMatch
+            return new DataMatch
             {
-                Uln = earning.LearnerUln,
                 Ukprn = earning.Ukprn,
-                Standard = (short)earning.LearningAimStandardCode,
-                Framework = (short)earning.LearningAimFrameworkCode,
-                Program = (short)earning.LearningAimProgrammeType,
-                Pathway = (short)earning.LearningAimPathwayCode,
+                Uln = earning.LearnerUln,
+                Standard = earning.LearningAimStandardCode,
+                Framework = earning.LearningAimFrameworkCode,
+                Program = earning.LearningAimProgrammeType,
+                Pathway = earning.LearningAimPathwayCode,
+                IlrSubmissionDate = earning.IlrSubmissionDateTime,
+
                 Cost = earning.CalculateCost(),
                 PriceStart = earning.PriceEpisodes.FirstOrDefault()?.StartDate,
                 StoppedOn = earning.PriceEpisodes.FirstOrDefault()?.ActualEndDate,
-                IlrSubmissionDate = earning.IlrSubmissionDateTime,
-                Tnp1 = GetTnpValue(earning, x => x.TotalNegotiatedPrice1),
-                Tnp2 = GetTnpValue(earning, x => x.TotalNegotiatedPrice2),
-                Tnp3 = GetTnpValue(earning, x => x.TotalNegotiatedPrice3),
-                Tnp4 = GetTnpValue(earning, x => x.TotalNegotiatedPrice4),
+                Tnp1 = earning.GetTnpValue(x => x.TotalNegotiatedPrice1),
+                Tnp2 = earning.GetTnpValue(x => x.TotalNegotiatedPrice2),
+                Tnp3 = earning.GetTnpValue(x => x.TotalNegotiatedPrice3),
+                Tnp4 = earning.GetTnpValue(x => x.TotalNegotiatedPrice4),
             };
-
-        private static List<AmountFromDate> GetTnpValue(
-            EarningEventModel earning,
-            Func<EarningEventPriceEpisodeModel, decimal> tnpSelector)
+        }
+        
+        private static List<AmountFromDate> GetTnpValue(this EarningEventModel earning, Func<EarningEventPriceEpisodeModel, decimal> tnpSelector)
         {
-            return earning.PriceEpisodes.Select(AmountSelector).ToList();
-
-            AmountFromDate AmountSelector(EarningEventPriceEpisodeModel pe) =>
-                (pe.StartDate, tnpSelector(pe));
+            return earning.PriceEpisodes.Select(pe => new AmountFromDate(pe.StartDate, tnpSelector(pe))).ToList();
         }
 
         private static decimal CalculateCost(this EarningEventModel earning)
         {
-            var tnp1and2 = earning.PriceEpisodes.Sum(e =>
-                e.TotalNegotiatedPrice1 + e.TotalNegotiatedPrice2);
+            var tnp1And2 = earning.PriceEpisodes.Sum(e => e.TotalNegotiatedPrice1 + e.TotalNegotiatedPrice2);
 
-            var tnp3and4 = earning.PriceEpisodes.Sum(e =>
-                e.TotalNegotiatedPrice3 + e.TotalNegotiatedPrice4);
+            var tnp3And4 = earning.PriceEpisodes.Sum(e => e.TotalNegotiatedPrice3 + e.TotalNegotiatedPrice4);
 
-            return tnp3and4 > 0 ? tnp3and4 : tnp1and2;
+            return tnp3And4 > 0 ? tnp3And4 : tnp1And2;
         }
 
-        private static List<DataLock> ToDataLocks(this IEnumerable<DataLockEventModel> locks, EarningEventModel earning) =>
-            locks
+        private static List<DataLockErrorCode> GetErrorCodes(this IEnumerable<DataLockFailureModel> locks, EarningEventModel earning)
+        {
+            return locks
                 .Where(l => l.Ukprn == earning.Ukprn && l.AcademicYear == earning.AcademicYear && l.CollectionPeriod == earning.CollectionPeriod)
-                .SelectMany(l => l.NonPayablePeriods)
-                .SelectMany(l => l.DataLockEventNonPayablePeriodFailures)
-                .Select(l => (DataLock)l.DataLockFailure)
+                .SelectMany(l => l.DataLockFailures)
                 .Distinct()
                 .OrderBy(x => x)
                 .ToList();
+        }
     }
 }
