@@ -49,6 +49,10 @@
         "version": {
             "type": "string",
             "defaultValue": "1.0"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow('yyMMddHHmmss')]"
         }
     },
     "variables": {
@@ -59,7 +63,7 @@
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "app-insights",
+            "name": "[concat('app-insights-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -80,7 +84,7 @@
         {
             "condition": "[greater(length(parameters('customHostName')), 0)]",
             "apiVersion": "2017-05-10",
-            "name": "app-service-certificate",
+            "name": "[concat('app-service-certificate-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -104,7 +108,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "app-service",
+            "name": "[concat('app-service-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -142,7 +146,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference('app-insights').outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat('app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "ConfigNames",
@@ -159,7 +163,7 @@
                         "value": "[parameters('customHostname')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference('app-service-certificate').outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat('app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('frontEndAccessRestrictions')]"
@@ -167,8 +171,8 @@
                 }
             },
             "dependsOn": [
-                "app-insights",
-                "app-service-certificate"
+                "[concat('app-insights-', parameters('utcValue'))]",
+                "[concat('app-service-certificate-', parameters('utcValue'))]"
             ]
         }
     ],
