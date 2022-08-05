@@ -63,7 +63,7 @@
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat('app-insights-', parameters('utcValue'))]",
+            "name": "[concat(variables('appServiceName'), 'app-insights-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -84,7 +84,7 @@
         {
             "condition": "[greater(length(parameters('customHostName')), 0)]",
             "apiVersion": "2017-05-10",
-            "name": "[concat('app-service-certificate-', parameters('utcValue'))]",
+            "name": "[concat(variables('appServiceName'), 'app-service-certificate-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -108,7 +108,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat('app-service-', parameters('utcValue'))]",
+            "name": "[concat(variables('appServiceName'), 'app-service-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -146,7 +146,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference(concat('app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat(variables('appServiceName'), 'app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "ConfigNames",
@@ -163,7 +163,7 @@
                         "value": "[parameters('customHostname')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference(concat('app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat(variables('appServiceName'), 'app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('frontEndAccessRestrictions')]"
@@ -171,8 +171,8 @@
                 }
             },
             "dependsOn": [
-                "[concat('app-insights-', parameters('utcValue'))]",
-                "[concat('app-service-certificate-', parameters('utcValue'))]"
+                "[concat(variables('appServiceName'), 'app-insights-', parameters('utcValue'))]",
+                "[concat(variables('appServiceName'), 'app-service-certificate-', parameters('utcValue'))]"
             ]
         }
     ],
