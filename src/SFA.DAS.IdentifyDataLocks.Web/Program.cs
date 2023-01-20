@@ -2,7 +2,6 @@ using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Configuration.AzureTableStorage;
-using System.Reflection;
 
 namespace SFA.DAS.IdentifyDataLocks.Web
 {
@@ -23,10 +22,9 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                 .ConfigureAppConfiguration(configBuilder =>
                 {
                     var config = configBuilder.Build();
-                    var assemblyName = Assembly.GetAssembly(typeof(Startup)).GetName().Name;
                     configBuilder.AddAzureTableStorage(options =>
                      {
-                         options.ConfigurationKeys = new[] { assemblyName };
+                         options.ConfigurationKeys = config["ConfigNames"].Split(','); // read the required config keys SFA.DAS.IdentifyDataLocks.Web and SFA.DAS.Provider.DfeSignIn from appSettings.json
                          options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
                          options.EnvironmentName = config["EnvironmentName"];
                          options.PreFixConfigurationKeys = false;
