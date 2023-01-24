@@ -24,7 +24,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                     var config = configBuilder.Build();
                     configBuilder.AddAzureTableStorage(options =>
                      {
-                         options.ConfigurationKeys = config["ConfigNames"].Split(','); // read the required config keys SFA.DAS.IdentifyDataLocks.Web and SFA.DAS.Provider.DfeSignIn from appSettings.json
+                         //options.ConfigurationKeys = config["ConfigNames"].Split(','); // read the required config keys SFA.DAS.IdentifyDataLocks.Web and SFA.DAS.Provider.DfeSignIn from appSettings.json
+                         options.ConfigurationKeys = new string[] { "SFA.DAS.IdentifyDataLocks.Web", "SFA.DAS.Provider.DfeSignIn" };
                          options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
                          options.EnvironmentName = config["EnvironmentName"];
                          options.PreFixConfigurationKeys = false;
