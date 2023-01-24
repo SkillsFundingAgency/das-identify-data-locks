@@ -21,7 +21,6 @@
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.25" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.65" />
     <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.6.3100" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="8.19.18" />
@@ -33,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.DfESignIn.Auth\SFA.DAS.DfESignIn.Auth.csproj" />
     <ProjectReference Include="..\SFA.DAS.IdentifyDataLocks.Domain\SFA.DAS.IdentifyDataLocks.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
