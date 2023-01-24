@@ -44,7 +44,7 @@
         },
         "configNames": {
             "type": "string",
-            "defaultValue": "SFA.DAS.IdentifyDataLocks.Web"
+            "defaultValue": "SFA.DAS.IdentifyDataLocks.Web,SFA.DAS.Provider.DfeSignIn"
         },
         "version": {
             "type": "string",
