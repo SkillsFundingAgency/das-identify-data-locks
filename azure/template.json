@@ -42,6 +42,9 @@
         "frontEndAccessRestrictions": {
             "type": "array"
         },
+        "configNames": {
+            "type": "string",
+        },
         "version": {
             "type": "string",
             "defaultValue": "1.0"
