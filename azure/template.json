@@ -43,7 +43,7 @@
             "type": "array"
         },
         "configNames": {
-            "type": "string",
+            "type": "string"
         },
         "version": {
             "type": "string",
