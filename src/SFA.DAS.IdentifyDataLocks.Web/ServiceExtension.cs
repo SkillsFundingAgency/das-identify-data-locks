@@ -16,7 +16,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
         {
             // condition to check if DfESignIn is allowed.
             var useDfESignIn = config.GetSection(ConfigKey.UseDfESignIn).Get<bool>();
-            if (true)
+            if (useDfESignIn)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
                 services.AddAndConfigureDfESignInAuthentication(config, CookieName.AuthCookie, typeof(CustomServiceRole));
