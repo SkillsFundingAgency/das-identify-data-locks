@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.IdentifyDataLocks.Web.Constants;
 using SFA.DAS.IdentifyDataLocks.Web.Extensions;
 using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
@@ -56,10 +57,9 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                 //This redirection is required as IDAMs is configured to return to this path for localhost.
                 options.Conventions.AddPageRoute("/accessdenied", "account/accessdenied");
             });
-            var authorizationConfig = Configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
-            var authenticationConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
-
-            services.AddAuthentication(authenticationConfig);
+            var authorizationConfig = Configuration.GetSection(ConfigKey.Authorization).Get<AuthorizationConfiguration>();
+            
+            services.AddAuthentication(Configuration);
             services.AddAuthorization(authorizationConfig);
             services.AddDataProtection(Configuration, Environment);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);

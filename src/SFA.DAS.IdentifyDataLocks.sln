@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30225.117
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.IdentifyDataLocks.Web", "SFA.DAS.IdentifyDataLocks.Web\SFA.DAS.IdentifyDataLocks.Web.csproj", "{1C7AA763-7D7F-4A3B-AEB8-49651106707B}"
 EndProject
