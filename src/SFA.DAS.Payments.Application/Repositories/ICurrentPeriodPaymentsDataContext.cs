@@ -8,7 +8,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Data;
 
 namespace SFA.DAS.Payments.Application.Repositories
 {
-    public interface IPaymentsDataContext
+    public interface ICurrentPeriodPaymentsDataContext
     {
         DbSet<LevyAccountModel> LevyAccount { get; }
         DbSet<PaymentModel> Payment { get; }

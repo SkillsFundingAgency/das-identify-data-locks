@@ -26,7 +26,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         private void EnsureDatabase()
         {
             using var scope = scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetService<PaymentsDataContext>();
+            using var context = scope.ServiceProvider.GetService<ArchivedPaymentsDataContext>();
             context.Database.EnsureCreated();
         }
 
@@ -34,14 +34,14 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         {
             using var scope = scopeFactory.CreateScope();
             var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            await checkpoint.Reset(configuration.GetConnectionString("PaymentsSqlConnectionString"));
+            await checkpoint.Reset(configuration.GetConnectionString("ArchivePaymentsSqlConnectionString"));
         }
 
         public async Task AddEntities<TEntity>(params TEntity[] entities)
             where TEntity : class
         {
             using var scope = scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetService<PaymentsDataContext>();
+            using var context = scope.ServiceProvider.GetService<ArchivedPaymentsDataContext>();
 
             foreach (var entity in entities)
                 context.Add(entity);

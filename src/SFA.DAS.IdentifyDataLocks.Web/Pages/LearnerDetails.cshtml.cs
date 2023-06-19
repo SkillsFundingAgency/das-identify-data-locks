@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Pages
@@ -26,10 +26,14 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public IEnumerable<PriceEpisodeModel> PriceEpisodes { get; set; }
         public IEnumerable<IGrouping<long, EarningEventModel>> Earnings { get; set; }
 
-        private readonly IPaymentsDataContext context;
+        private readonly IArchivedPaymentsDataContext context;
+        private readonly DataLockService dataLockService;
 
-        public LearnerDetailsModel(IPaymentsDataContext context) =>
+        public LearnerDetailsModel(IArchivedPaymentsDataContext context, DataLockService dataLockService)
+        {
             this.context = context;
+            this.dataLockService = dataLockService;
+        }
 
 
         public async Task OnGet()
@@ -40,14 +44,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
                 .Where(x => x.Uln == Uln)
                 .ToListAsync();
 
-            DataLocks = await context
-                .DataLockEvent
-                .Include(x => x.NonPayablePeriods)
-                .ThenInclude(x => x.DataLockEventNonPayablePeriodFailures)
-                .Where(x => x.LearnerUln == Uln)
-                .Where(x => x.NonPayablePeriods.Any())
-                .OrderByDescending(x => x.CollectionPeriod)
-                .ToListAsync();
+            DataLocks = await dataLockService.GetDataLocks(Uln);
 
             Earnings = (await context
                 .EarningEvent
@@ -59,20 +56,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
                 .ToListAsync())
                 .GroupBy(x => x.Ukprn)
                 ;
-
-            //PriceEpisodes = Apprenticeship
-            //    .SelectMany(x => x.ApprenticeshipPriceEpisodes, (a,b) => new PriceEpisodeModel
-            //    {
-            //        Identifier = b.
-            //    });
         }
     }
 
-    public static class PriceEpisodeExtension
-    {
-        public static string PriceEpisodeIdentifier(this ApprenticeshipModel apprenticeship)
-        {
-            return $"{apprenticeship.ProgrammeType}-{apprenticeship.PathwayCode}-{apprenticeship.EstimatedStartDate}-";
-        }
-    }
 }

@@ -8,11 +8,11 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
     public class StartModel : PageModel
     {
-        private readonly IPaymentsDataContext _context;
+        private readonly IArchivedPaymentsDataContext _context;
         [BindProperty]
         public string Uln { get; set; }
 
-        public StartModel(IPaymentsDataContext context) =>
+        public StartModel(IArchivedPaymentsDataContext context) =>
             _context = context;
 
         public async Task<IActionResult> OnPost()

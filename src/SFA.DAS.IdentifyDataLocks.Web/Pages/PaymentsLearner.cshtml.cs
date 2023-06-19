@@ -18,9 +18,9 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 
         public IEnumerable<CollectionPeriod> CollectionPeriods { get; private set; }
 
-        private readonly IPaymentsDataContext context;
+        private readonly IArchivedPaymentsDataContext context;
 
-        public PaymentsLearnerModel(IPaymentsDataContext context) =>
+        public PaymentsLearnerModel(IArchivedPaymentsDataContext context) =>
             this.context = context;
 
         public void OnGet()

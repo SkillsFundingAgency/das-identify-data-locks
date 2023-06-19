@@ -36,10 +36,15 @@ namespace SFA.DAS.IdentifyDataLocks.Web
 
         protected virtual void ConfigureCoreServices(IServiceCollection services)
         {
-            services.AddDbContext<PaymentsDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("PaymentsSqlConnectionString"))
+            services.AddDbContext<ArchivedPaymentsDataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("ArchivePaymentsSqlConnectionString"))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-            services.AddScoped<IPaymentsDataContext, PaymentsDataContext>();
+            services.AddScoped<IArchivedPaymentsDataContext, ArchivedPaymentsDataContext>();
+
+            services.AddDbContext<CurrentPeriodPaymentsDataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("CurrentPaymentsSqlConnectionString"))
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+            services.AddScoped<ICurrentPeriodPaymentsDataContext, CurrentPeriodPaymentsDataContext>();
 
             services.AddRazorPages();
 
