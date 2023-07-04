@@ -13,6 +13,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
     public static class ServiceExtension
     {
         private const string ClientName = "DataLocks";
+        private const string SignedOutCallBackPath = "/SignedOut";
 
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration config)
         {
@@ -21,7 +22,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             if (useDfESignIn)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(config, CookieName.AuthCookie, typeof(CustomServiceRole), ClientName);
+                services.AddAndConfigureDfESignInAuthentication(config, CookieName.AuthCookie, typeof(CustomServiceRole), ClientName, SignedOutCallBackPath);
             }
             else
             {
