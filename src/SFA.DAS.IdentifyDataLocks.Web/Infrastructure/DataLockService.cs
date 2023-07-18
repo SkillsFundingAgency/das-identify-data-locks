@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -10,13 +11,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 {
     public class DataLockService
     {
-        private readonly IArchivedPaymentsDataContext archiveContext;
-        private readonly ICurrentPeriodPaymentsDataContext currentPeriodContext;
+        private readonly PaymentsDataContext archiveContext;
+        private readonly PaymentsDataContext currentPeriodContext;
 
-        public DataLockService(IArchivedPaymentsDataContext archiveContext, ICurrentPeriodPaymentsDataContext currentPeriodContext)
+        public DataLockService(ArchiveContextFactory archiveContextFactory, CurrentPeriodContextFactory currentPeriodContextFactory)
         {
-            this.archiveContext = archiveContext;
-            this.currentPeriodContext = currentPeriodContext;
+            this.archiveContext = archiveContextFactory.CreateDbContext();
+            this.currentPeriodContext = currentPeriodContextFactory.CreateDbContext();
         }
 
         public async Task<ApprenticeshipModel?> GetActiveApprenticeship(long uln)

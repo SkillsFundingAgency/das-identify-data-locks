@@ -26,7 +26,8 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         private void EnsureDatabase()
         {
             using var scope = scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetService<ArchivedPaymentsDataContext>();
+            var factory = scope.ServiceProvider.GetService<ArchiveContextFactory>();
+            using var context = factory.CreateDbContext();
             context.Database.EnsureCreated();
         }
 
@@ -41,7 +42,8 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
             where TEntity : class
         {
             using var scope = scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetService<ArchivedPaymentsDataContext>();
+            var factory = scope.ServiceProvider.GetService<ArchiveContextFactory>();
+            using var context = factory.CreateDbContext();
 
             foreach (var entity in entities)
                 context.Add(entity);

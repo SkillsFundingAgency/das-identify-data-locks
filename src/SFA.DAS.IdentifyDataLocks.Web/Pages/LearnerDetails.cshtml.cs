@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -26,12 +27,12 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public IEnumerable<PriceEpisodeModel> PriceEpisodes { get; set; }
         public IEnumerable<IGrouping<long, EarningEventModel>> Earnings { get; set; }
 
-        private readonly IArchivedPaymentsDataContext context;
+        private readonly PaymentsDataContext context;
         private readonly DataLockService dataLockService;
 
-        public LearnerDetailsModel(IArchivedPaymentsDataContext context, DataLockService dataLockService)
+        public LearnerDetailsModel(ArchiveContextFactory contextFactory, DataLockService dataLockService)
         {
-            this.context = context;
+            this.context = contextFactory.CreateDbContext();
             this.dataLockService = dataLockService;
         }
 

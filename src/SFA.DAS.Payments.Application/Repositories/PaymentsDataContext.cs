@@ -6,7 +6,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Data;
 
 namespace SFA.DAS.Payments.Application.Repositories
 {
-    public class ArchivedPaymentsDataContext : DbContext, IArchivedPaymentsDataContext
+    public class PaymentsDataContext : DbContext
     {
         protected readonly string connectionString;
         public DbSet<LevyAccountModel> LevyAccount { get; protected set; }
@@ -35,12 +35,12 @@ namespace SFA.DAS.Payments.Application.Repositories
         
         public virtual DbQuery<SubmissionJobsToBeDeletedModel> SubmissionJobsToBeDeleted { get; set; }
 
-        public ArchivedPaymentsDataContext(string connectionString)
+        public PaymentsDataContext(string connectionString)
         {
             this.connectionString = connectionString;
         }
 
-        public ArchivedPaymentsDataContext(DbContextOptions<ArchivedPaymentsDataContext> options)
+        public PaymentsDataContext(DbContextOptions<PaymentsDataContext> options)
             : base(options)
         { }
 

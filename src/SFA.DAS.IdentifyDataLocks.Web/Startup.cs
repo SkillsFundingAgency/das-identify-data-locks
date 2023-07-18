@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,7 +18,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
     {
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
-
+        
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -36,15 +35,8 @@ namespace SFA.DAS.IdentifyDataLocks.Web
 
         protected virtual void ConfigureCoreServices(IServiceCollection services)
         {
-            services.AddDbContext<ArchivedPaymentsDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ArchivePaymentsSqlConnectionString"))
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-            services.AddScoped<IArchivedPaymentsDataContext, ArchivedPaymentsDataContext>();
-
-            services.AddDbContext<CurrentPeriodPaymentsDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("CurrentPaymentsSqlConnectionString"))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-            services.AddScoped<ICurrentPeriodPaymentsDataContext, CurrentPeriodPaymentsDataContext>();
+            services.AddScoped<ArchiveContextFactory>();
+            services.AddScoped<CurrentPeriodContextFactory>();
 
             services.AddRazorPages();
 
