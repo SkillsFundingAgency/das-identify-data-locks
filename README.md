@@ -9,7 +9,7 @@ Data regarding datalocks for each ILR submission is stored in the Payments table
 The Learner Report uses these three sets of data to determine and present data locks for a given learner.
 
 ![Architecture Overview](docs/architecture_simple.png)
- 
+
 ## Performance Impact
 
 It is critical that the report does not impose any performance loss on the main Payments operations of processing ILR earnings submissions.
@@ -21,6 +21,16 @@ The Payments database schema is not designed to support such a report, and the n
 ## Database Access
 
 The prototype directly access the Payments database tables to retrieve its data, using a copy of the Payments Entity Framework models.
+
+To publish the database locally, use the database project in 
+
+https://github.com/SkillsFundingAgency/das-payments-V2/blob/master/src/SFA.DAS.Payments.Database/SFA.DAS.Payments.Database.sqlproj
+
+There should be two copies of the database - Archive and Current Period. Configure the two connection strings in `appsettings.json` in the `ESFA.DAS.IdentifyDataLocks.Web` and `SFA.DAS.IdentifyDataLocks.IntegrationTests` projects accordingly. 
+
+(You may wish to use separate databases for the integration tests to prevent test data loss)
+
+
 
 ![Entity Relationships](docs/entity_relationships.png)
 
