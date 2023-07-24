@@ -1,20 +1,13 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SFA.DAS.Payments.Application.Repositories;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
     public class StartModel : PageModel
     {
-        private readonly PaymentsDataContext _context;
         [BindProperty]
         public string Uln { get; set; }
-
-        public StartModel(ArchiveContextFactory contextFactory)
-        {
-            _context = contextFactory.CreateDbContext();
-        }
 
         public async Task<IActionResult> OnPost()
         {

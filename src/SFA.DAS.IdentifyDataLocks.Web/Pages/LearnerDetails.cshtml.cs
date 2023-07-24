@@ -32,8 +32,12 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 
         public LearnerDetailsModel(ArchiveContextFactory contextFactory, DataLockService dataLockService)
         {
-            this.context = contextFactory.CreateDbContext();
+            context = contextFactory.CreateDbContext();
             this.dataLockService = dataLockService;
+            Apprenticeship = new List<ApprenticeshipModel>();
+            DataLocks = new List<DataLockEventModel>();
+            PriceEpisodes = new List<PriceEpisodeModel>();
+            Earnings = new List<IGrouping<long, EarningEventModel>>();
         }
 
 
