@@ -6,6 +6,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 {
@@ -37,7 +38,15 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
                 .Include(x => x.PriceEpisodes)
                 .Where(x => x.LearnerUln == uln)
                 .Where(x => academicYears.Contains(x.AcademicYear))
+            .ToListAsync();
+
+            var currentPeriodEarnings = await currentPeriodContext.EarningEvent
+                .Include(x => x.PriceEpisodes)
+                .Where(x => x.LearnerUln == uln)
+                .Where(x => academicYears.Contains(x.AcademicYear))
                 .ToListAsync();
+
+            earnings.AddRange(currentPeriodEarnings);
 
             var locks = await archiveContext.DataLockEvent
                 .Include(x => x.NonPayablePeriods)
