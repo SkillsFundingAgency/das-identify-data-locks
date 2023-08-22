@@ -6,7 +6,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Data;
 
 namespace SFA.DAS.Payments.Application.Repositories
 {
-    public class PaymentsDataContext : DbContext, IPaymentsDataContext
+    public class PaymentsDataContext : DbContext
     {
         protected readonly string connectionString;
         public DbSet<LevyAccountModel> LevyAccount { get; protected set; }

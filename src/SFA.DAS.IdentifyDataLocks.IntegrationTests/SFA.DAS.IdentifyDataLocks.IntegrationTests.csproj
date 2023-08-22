@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="TestData\LearnerWithArchivedAndCurrentDataLocks\Apprenticeship.json" />
+    <Content Remove="TestData\LearnerWithArchivedAndCurrentDataLocks\Datalocks_Archive.json" />
+    <Content Remove="TestData\LearnerWithArchivedAndCurrentDataLocks\Datalocks_Current.json" />
+    <Content Remove="TestData\LearnerWithArchivedAndCurrentDataLocks\EarningEvents_Archive.json" />
+    <Content Remove="TestData\LearnerWithArchivedAndCurrentDataLocks\EarningEvents_Current.json" />
     <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\Apprenticeships.json" />
     <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\Datalocks.json" />
     <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\EarningEvents.json" />
@@ -37,6 +42,11 @@
     <EmbeddedResource Include="TestData\Dlock01_DataLocks.json" />
     <EmbeddedResource Include="TestData\Dlock01_Earnings.json" />
     <EmbeddedResource Include="TestData\EarningEvents.json" />
+    <EmbeddedResource Include="TestData\LearnerWithArchivedAndCurrentDataLocks\Apprenticeship.json" />
+    <EmbeddedResource Include="TestData\LearnerWithArchivedAndCurrentDataLocks\Datalocks_Current.json" />
+    <EmbeddedResource Include="TestData\LearnerWithArchivedAndCurrentDataLocks\Datalocks_Archive.json" />
+    <EmbeddedResource Include="TestData\LearnerWithArchivedAndCurrentDataLocks\EarningEvents_Archive.json" />
+    <EmbeddedResource Include="TestData\LearnerWithArchivedAndCurrentDataLocks\EarningEvents_Current.json" />
     <EmbeddedResource Include="TestData\LearnerWithMultiplePriceEpisodes\Apprenticeships.json" />
     <EmbeddedResource Include="TestData\LearnerWithMultiplePriceEpisodes\EarningEvents.json" />
     <EmbeddedResource Include="TestData\LearnerWithStoppedApprenticeship\Apprenticeships.json" />
@@ -61,12 +71,16 @@
     <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.23" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.23" />    
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.23" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />    
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="Respawn" Version="3.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="4.7.1" />
   </ItemGroup>
 
   <ItemGroup>

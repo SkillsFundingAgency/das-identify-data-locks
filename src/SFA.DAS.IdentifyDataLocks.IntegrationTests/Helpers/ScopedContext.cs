@@ -26,22 +26,43 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
         private void EnsureDatabase()
         {
             using var scope = scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetService<PaymentsDataContext>();
-            context.Database.EnsureCreated();
+            var archiveContextFactory = scope.ServiceProvider.GetService<ArchiveContextFactory>();
+            using var archiveContext = archiveContextFactory.CreateDbContext();
+            archiveContext.Database.EnsureCreated();
+            var currentContextFactory = scope.ServiceProvider.GetService<CurrentPeriodContextFactory>();
+            using var currentContext = currentContextFactory.CreateDbContext();
+            currentContext.Database.EnsureCreated();
         }
 
         public async Task Reset()
         {
             using var scope = scopeFactory.CreateScope();
             var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            await checkpoint.Reset(configuration.GetConnectionString("PaymentsSqlConnectionString"));
+            await checkpoint.Reset(configuration.GetConnectionString("ArchivePaymentsSqlConnectionString"));
+            await checkpoint.Reset(configuration.GetConnectionString("CurrentPaymentsSqlConnectionString"));
         }
 
         public async Task AddEntities<TEntity>(params TEntity[] entities)
             where TEntity : class
         {
+            await AddEntities(false, entities);
+        }
+
+        public async Task AddEntities<TEntity>(bool currentPeriod, params TEntity[] entities)
+            where TEntity : class
+        {
+            PaymentsDataContext context;
             using var scope = scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetService<PaymentsDataContext>();
+            if (currentPeriod) 
+            {
+                var factory = scope.ServiceProvider.GetService<CurrentPeriodContextFactory>();
+                context = factory.CreateDbContext();
+            }
+            else
+            {
+                var factory = scope.ServiceProvider.GetService<ArchiveContextFactory>();
+                context = factory.CreateDbContext();
+            }
 
             foreach (var entity in entities)
                 context.Add(entity);
@@ -53,7 +74,7 @@ namespace SFA.DAS.IdentifyDataLocks.IntegrationTests
             where TEntity : class
         {
             var entities = JsonConvert.DeserializeObject<TEntity[]>(json);
-            await AddEntities(entities);
+            await AddEntities(false, entities);
             return entities;
         }
 

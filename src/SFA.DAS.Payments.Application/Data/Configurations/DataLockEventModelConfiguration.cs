@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
         {
             builder.ToTable("DataLockEvent", "Payments2");
             builder.HasKey(x => x.EventId);
-            builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired().UseSqlServerIdentityColumn();
             builder.Property(x => x.EventId).HasColumnName(@"EventId").IsRequired();
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
             builder.Property(x => x.ContractType).HasColumnName(@"ContractType").IsRequired();
