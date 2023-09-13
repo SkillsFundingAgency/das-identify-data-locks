@@ -12,8 +12,6 @@ namespace SFA.DAS.IdentifyDataLocks.Web
 {
     public static class ServiceExtension
     {
-        private const string ClientName = "DataLocks";
-
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration config)
         {
             // condition to check if DfESignIn is allowed.
@@ -21,7 +19,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             if (useDfESignIn)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(config, CookieName.AuthCookie, typeof(CustomServiceRole), ClientName);
+                services.AddAndConfigureDfESignInAuthentication(
+                    config,
+                    CookieName.AuthCookie,
+                    typeof(CustomServiceRole),
+                    DfESignIn.Auth.Enums.ClientName.DataLocks,
+                    "/SignedOut",
+                    "");
             }
             else
             {
