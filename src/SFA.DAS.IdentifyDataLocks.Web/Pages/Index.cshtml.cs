@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.IdentifyDataLocks.Web.Constants;
@@ -20,7 +21,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 
         public void OnGet()
         {
-            UseDfESignIn = _configuration.GetSection(ConfigKey.UseDfESignIn).Get<bool>();
+            UseDfESignIn = _configuration.GetValue<bool>(ConfigKey.UseDfESignIn);
         }
     }
 }
