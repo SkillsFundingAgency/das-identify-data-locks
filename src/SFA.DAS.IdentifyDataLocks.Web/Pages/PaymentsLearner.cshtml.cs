@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
+    [Authorize(Policy = AuthorizationConfiguration.PolicyName)]
     public class PaymentsLearnerModel : PageModel
     {
         [BindProperty(SupportsGet = true)]
