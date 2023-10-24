@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SFA.DAS.IdentifyDataLocks.Domain;
@@ -9,6 +10,7 @@ using SFA.DAS.IdentifyDataLocks.Web.Infrastructure;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
+    [Authorize(Policy = AuthorizationConfiguration.PolicyName)]
     public class LearnerModel : PageModel
     {
         [BindProperty(SupportsGet = true)]

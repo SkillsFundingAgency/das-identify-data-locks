@@ -1,9 +1,11 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
+    [Authorize(Policy = AuthorizationConfiguration.PolicyName)]
     public class StartModel : PageModel
     {
         [BindProperty]

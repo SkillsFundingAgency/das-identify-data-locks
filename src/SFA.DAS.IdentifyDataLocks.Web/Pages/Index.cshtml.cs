@@ -10,7 +10,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly IConfiguration _configuration;
-        
+
         public bool UseDfESignIn { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, IConfiguration configuration)
@@ -19,9 +19,13 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
             _configuration = configuration;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            if (User.Identity is { IsAuthenticated: true }) { return RedirectToPage("Start"); }
+
             UseDfESignIn = _configuration.GetValue<bool>(ConfigKey.UseDfESignIn);
+
+            return Page();
         }
     }
 }

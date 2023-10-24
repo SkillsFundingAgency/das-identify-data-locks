@@ -53,9 +53,11 @@ namespace SFA.DAS.IdentifyDataLocks.Web
                     .AllowAnonymousToPage("/index");
                 //This redirection is required as IDAMs is configured to return to this path for localhost.
                 options.Conventions.AddPageRoute("/accessdenied", "account/accessdenied");
+                //This redirection is required as DfESignIn is configured to return to this path for localhost.
+                options.Conventions.AddPageRoute("/accessdenied", "error/403");
             });
             var authorizationConfig = Configuration.GetSection(ConfigKey.Authorization).Get<AuthorizationConfiguration>();
-            
+
             services.AddAuthentication(Configuration);
             services.AddAuthorization(authorizationConfig);
             services.AddDataProtection(Configuration, Environment);

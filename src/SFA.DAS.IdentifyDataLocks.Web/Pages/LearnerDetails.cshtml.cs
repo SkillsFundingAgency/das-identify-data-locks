@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SFA.DAS.IdentifyDataLocks.Web.Pages
 {
@@ -17,6 +18,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Pages
         public string Identifier { get; set; }
     }
 
+    [Authorize(Policy = AuthorizationConfiguration.PolicyName)]
     public class LearnerDetailsModel : PageModel
     {
         [BindProperty(SupportsGet = true)]
