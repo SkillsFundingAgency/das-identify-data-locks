@@ -23,6 +23,9 @@
         "loggingRedisConnectionString": {
             "type": "securestring"
         },
+        "sharedEnvResourceGroup": {
+            "type": "string"
+        },
         "serviceName": {
             "type": "string"
         },
