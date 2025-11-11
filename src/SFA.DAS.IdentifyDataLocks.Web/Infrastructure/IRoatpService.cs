@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SFA.DAS.Http;
 using SFA.DAS.IdentifyDataLocks.Web.Model;
 
@@ -7,36 +6,38 @@ namespace SFA.DAS.IdentifyDataLocks.Web.Infrastructure
 {
     public interface IRoatpService
     {
-        Task<Provider> GetProvider(long ukprn);
+        Task<Provider?> GetProvider(long ukprn);
     }
 
     public class RoatpService : IRoatpService
     {
-        private IRestHttpClient _client;
+        private readonly IRestHttpClient _client;
 
         public RoatpService(IRoatpApiHttpClientFactory roatpApiHttpClientFactory)
         {
             _client = roatpApiHttpClientFactory.CreateClient();
         }
 
-        public async Task<Provider> GetProvider(long ukprn)
+        public async Task<Provider?> GetProvider(long ukprn)
         {
-            var employerUserEmailQueryUri = $"/api/v1/Search?SearchTerm={ukprn}";
+            var getOrganisationDetailsPath = $"/organisations/{ukprn}";
 
-            var providerResult = await _client.Get<RoatpProviderResult>(employerUserEmailQueryUri);
+            try
+            {
+                var provider = await _client.Get<OrganisationSearchResult>(getOrganisationDetailsPath);
 
-            var provider = providerResult.SearchResults.FirstOrDefault();
+                return new Provider
+                {
+                    Name = provider.Name,
+                    Ukprn = provider.Ukprn
+                };
 
-            if (provider == null)
+            }
+            catch
             {
                 return null;
             }
 
-            return new Provider
-            {
-                Name = provider.Name,
-                Ukprn = provider.Ukprn
-            };
         }
     }
 
