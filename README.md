@@ -49,7 +49,7 @@ The website will use STAFF IDAMs for authentication. The authenticated users wil
 
 ### EAS API
 
-https://test-accounts.apprenticeships.education.gov.uk/
+https://test-accounts.apprenticeships.education.gov.uk/swagger/index.html
 
 To get the employer name and public account id, we use EAS api’s `api/accounts/internal/{accountId}` endpoint. 
 
@@ -65,7 +65,7 @@ To get apprentice’s name, we depend on the `api/apprenticeships/?accountId` en
 
 ### RoATP API
 
-https://test-providers-api.apprenticeships.education.gov.uk/swagger/index.html
+https://test-providers-api.apprenticeships.education.gov.uk/index.html
 
 To get provider’s name, we use RoATP api’s `/api/v1/Search?SearchTerm={ukprn}` endpoint.
 
