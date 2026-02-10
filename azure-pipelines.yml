@@ -16,6 +16,11 @@ resources:
       ref: refs/tags/3.0.10
       endpoint: SkillsFundingAgency
 
+pool:
+  name: DAS - Continuous Integration
+  demands:
+    - Agent.OS -equals Windows_NT
+
 stages:
 - stage: Build
   jobs:
