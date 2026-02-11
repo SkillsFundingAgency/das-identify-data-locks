@@ -8,7 +8,13 @@ jobs:
   - name: BuildConfiguration
     value: release
   - group: BUILD Management Resources
+
+  
   steps:
+  - checkout: self
+    fetchDepth: 0
+    persistCredentials: true
+    
   - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
