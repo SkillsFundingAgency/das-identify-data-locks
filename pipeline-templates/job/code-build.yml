@@ -7,9 +7,7 @@ jobs:
   variables:
   - name: BuildConfiguration
     value: release
-  - group: BUILD Management Resources
-
-  
+  - group: BUILD Management Resources  
   steps:
   - checkout: self
     fetchDepth: 0
