@@ -14,7 +14,7 @@
     <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\Apprenticeships.json" />
     <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\Datalocks.json" />
     <Content Remove="TestData\LearnerWithMultiplePriceEpisodes\EarningEvents.json" />
-    <PackageReference Include="AngleSharp" Version="0.14.0" />
+    <PackageReference Include="AngleSharp" Version="1.5.0" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.22" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.22" />
