@@ -62,7 +62,7 @@ namespace SFA.DAS.IdentifyDataLocks.Web
             services.AddAuthorization(authorizationConfig);
             services.AddDataProtection(Configuration, Environment);
             services.Configure<HtmlHelperOptions>(o => o.ClientValidationEnabled = false);
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

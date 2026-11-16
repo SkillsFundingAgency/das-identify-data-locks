@@ -9,7 +9,7 @@
   <ItemGroup>
     <Content Remove="wwwroot\assets\**" />
     <Content Remove="wwwroot\js\all.js" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.22" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.22" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.22" />
